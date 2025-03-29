@@ -13,6 +13,7 @@ struct TabScreen: View {
         tabBarAppearance.configureWithDefaultBackground()
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
     }
+
     var body: some View {
         TabView {
             NavigationStack {

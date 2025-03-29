@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct CustomProgressViewStyle: ProgressViewStyle {
     var height: CGFloat = 12
     var progress: Color = .accent

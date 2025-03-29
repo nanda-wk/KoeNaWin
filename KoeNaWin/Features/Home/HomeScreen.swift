@@ -5,8 +5,8 @@
 //  Created by Nanda WK on 2025-03-29.
 //
 
-import SwiftUI
 import Charts
+import SwiftUI
 
 struct HomeScreen: View {
     var body: some View {
@@ -50,7 +50,7 @@ extension HomeScreen {
                         .foregroundStyle(.gray.opacity(0.2))
                         .cornerRadius(10)
                     }
-                    .chartBackground{ proxy in
+                    .chartBackground { _ in
                         Text("10 / 81")
                     }
                     .padding()
@@ -86,8 +86,7 @@ extension HomeScreen {
                     .font(.title2)
                     .fontWeight(.bold)
 
-                ProgressView(value: 1, total: 9) {
-                } currentValueLabel: {
+                ProgressView(value: 1, total: 9) {} currentValueLabel: {
                     HStack {
                         Text("10%")
                         Spacer()
@@ -112,7 +111,6 @@ extension HomeScreen {
                 .fontWeight(.medium)
                 .foregroundStyle(.accent)
 
-
                 Text("ဘဂဝါ")
                     .font(.title)
                     .fontWeight(.bold)
@@ -120,7 +118,6 @@ extension HomeScreen {
                 Text("အပတ်ရေ (9)ပတ်")
                     .font(.body)
                     .foregroundStyle(.secondary)
-
             }
         }
     }
