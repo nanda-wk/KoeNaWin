@@ -14,9 +14,8 @@ struct StagesScreen: View {
                 Section {
                     NavigationLink {
                         StageDetailsView(stage: stage)
-                        Text("Stage \(stage.stage)")
                     } label: {
-                        LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage))", level: stage.stage)
+                        LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
                     }
                 }
             }
@@ -31,12 +30,11 @@ extension StagesScreen {
     private func LevelCell(title: String, level: Int) -> some View {
         HStack(spacing: 6) {
             Image(systemName: "\(level).circle.fill")
-                .foregroundStyle(.black)
+                .foregroundStyle(.primary)
 
             Text(title)
                 .font(.footnote)
                 .fontWeight(.bold)
-                .foregroundColor(.primary)
         }
     }
 }

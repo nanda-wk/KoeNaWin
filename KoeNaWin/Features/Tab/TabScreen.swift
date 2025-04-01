@@ -20,28 +20,28 @@ struct TabScreen: View {
                 HomeScreen()
             }
             .tabItem {
-                Label("Home", systemImage: "house.fill")
+                Label("ပင်မစာမျက်နှာ", systemImage: "house.fill")
             }
 
             NavigationStack {
                 PracticeScreen()
             }
             .tabItem {
-                Label("Practice", systemImage: "leaf.fill")
+                Label("အဓိဌာန်ကျင့်စဉ်", systemImage: "leaf.fill")
             }
 
             NavigationStack {
                 StagesScreen()
             }
             .tabItem {
-                Label("Stages", systemImage: "squares.leading.rectangle.fill")
+                Label("အဓိဌာန်အဆင့်", systemImage: "squares.leading.rectangle.fill")
             }
 
             NavigationStack {
                 SettingsScreen()
             }
             .tabItem {
-                Label("Settings", systemImage: "gearshape.2.fill")
+                Label("ပြင်ဆင်ချက်", systemImage: "gearshape.2.fill")
             }
         }
     }
@@ -49,4 +49,5 @@ struct TabScreen: View {
 
 #Preview {
     TabScreen()
+        .previewEnvironment()
 }

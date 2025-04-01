@@ -6,22 +6,42 @@
 //
 
 import Charts
+import Combine
 import SwiftUI
 
 struct HomeScreen: View {
+    @EnvironmentObject private var vm: HomeViewModel
+    @State private var showAlert = false
+
     var body: some View {
-        List {
-            completionSection
+        ZStack {
+            Color(UIColor.systemGroupedBackground)
+                .ignoresSafeArea()
 
-            currentStageCompletion
+            if vm.isLoading {
+                ProgressView("Loading...")
+                    .scaleEffect(1.5)
+                    .tint(.accent)
+            } else if case .active = vm.status {
+                List {
+                    vegetarianSection
 
-            todayMantra
+                    completionSection
 
-            vegetarianSection
+                    currentStageCompletion
+
+                    todayMantra
+                }
+                .listSectionSpacing(25)
+            } else {
+                NoticeCard(status: vm.status)
+            }
         }
-        .listSectionSpacing(25)
         .navigationTitle("ကိုးနဝင်း")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            vm.checkProgress()
+        }
     }
 }
 
@@ -36,14 +56,14 @@ extension HomeScreen {
                 HStack {
                     Chart {
                         SectorMark(
-                            angle: .value("Done", 10),
+                            angle: .value("Done", vm.totalDay),
                             innerRadius: .ratio(0.65),
                             angularInset: 2
                         )
                         .cornerRadius(10)
 
                         SectorMark(
-                            angle: .value("In Progress", 81 - 10),
+                            angle: .value("In Progress", 81 - vm.totalDay),
                             innerRadius: .ratio(0.65),
                             angularInset: 2
                         )
@@ -51,12 +71,12 @@ extension HomeScreen {
                         .cornerRadius(10)
                     }
                     .chartBackground { _ in
-                        Text("10 / 81")
+                        Text("\(vm.totalDay.toMyanmarDigits()) / ၈၁")
                     }
                     .padding()
 
                     VStack(spacing: 20) {
-                        Text("10%")
+                        Text("\(vm.totalProgressPercentage.toMyanmarDigits()) %")
                             .font(.headline)
                             .foregroundStyle(.white)
                             .padding(.horizontal)
@@ -70,7 +90,7 @@ extension HomeScreen {
                             Image(systemName: "staroflife.fill")
                                 .font(.caption2)
 
-                            Text("71 ရက်ကျန်သည်")
+                            Text("\((81 - vm.totalDay).toMyanmarDigits()) ရက်ကျန်သည်")
                                 .lineLimit(1, reservesSpace: true)
                         }
                     }
@@ -82,15 +102,15 @@ extension HomeScreen {
     var currentStageCompletion: some View {
         Section {
             VStack {
-                Text("အဓိဌာန်အဆင့် (2)")
+                Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
                     .font(.title2)
                     .fontWeight(.bold)
 
-                ProgressView(value: 1, total: 9) {} currentValueLabel: {
+                ProgressView(value: Double(vm.day), total: 9) {} currentValueLabel: {
                     HStack {
-                        Text("10%")
+                        Text("\(vm.currentProgressPercentage.toMyanmarDigits()) %")
                         Spacer()
-                        Text("1 / 9 ရက်")
+                        Text("\(vm.day.toMyanmarDigits()) / ၉ ရက်")
                     }
                     .font(.subheadline)
                 }
@@ -103,33 +123,37 @@ extension HomeScreen {
         Section {
             VStack(spacing: 10) {
                 HStack {
-                    Text("တနင်္လာ")
+                    Text("\(vm.currentPrayer?.day.desc ?? "")")
                     Spacer()
-                    Text("အဓိဌာန်အဆင့် (2)")
+                    Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
                 }
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundStyle(.accent)
 
-                Text("ဘဂဝါ")
+                Text("\(vm.currentPrayer?.mantra ?? "")")
                     .font(.title)
                     .fontWeight(.bold)
 
-                Text("အပတ်ရေ (9)ပတ်")
+                Text("အပတ်ရေ (\((vm.currentPrayer?.rounds ?? 0).toMyanmarDigits()))ပတ်")
                     .font(.body)
                     .foregroundStyle(.secondary)
             }
         }
     }
 
+    @ViewBuilder
     var vegetarianSection: some View {
+        let todayVegetarian = vm.dayUntilVegetarian == 0
+        let message = todayVegetarian ? "ဒီနေ့ သတ်သတ်လွတ်စားရန်" : "သတ်သတ်လွတ်စားရန် \(vm.dayUntilVegetarian.toMyanmarDigits()) ရက်အလို"
         Section {
-            Text("3 day untail vegetarian.")
-                .foregroundStyle(.white)
+            Text(message)
+                .font(.headline)
+                .foregroundStyle(todayVegetarian ? .black : .white)
         }
         .listRowBackground(
             RoundedRectangle(cornerRadius: 10)
-                .fill(.accent)
+                .fill(todayVegetarian ? .green : .accent)
         )
     }
 }
@@ -137,5 +161,6 @@ extension HomeScreen {
 #Preview {
     NavigationStack {
         HomeScreen()
+            .previewEnvironment(initProgess: false)
     }
 }

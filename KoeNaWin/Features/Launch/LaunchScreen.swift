@@ -10,11 +10,17 @@ import SwiftUI
 struct LaunchScreen: View {
     var body: some View {
         VStack {
-            Text("KoeNaWin")
-                .font(.largeTitle)
+            Image(.beads)
+                .resizable()
+                .frame(width: 90, height: 90)
+
+            Text("KoeNaWin(ကိုးနဝင်း)")
+                .font(.title)
                 .fontWeight(.bold)
 
-            ProgressView("Loading...")
+            ProgressView()
+                .scaleEffect(1.5)
+                .tint(.accent)
         }
     }
 }

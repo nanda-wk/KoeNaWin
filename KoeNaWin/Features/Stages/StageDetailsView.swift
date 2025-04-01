@@ -8,13 +8,14 @@
 import SwiftUI
 
 struct StageDetailsView: View {
+    @EnvironmentObject private var vm: HomeViewModel
     let stage: KoeNaWinStage
 
     var body: some View {
         List {
             Section {
                 VStack(alignment: .leading) {
-                    Text("အဓိဌာန်အဆင့် (\(stage.stage)) အောင်မြင်ပြီးပါက")
+                    Text("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits())) အောင်မြင်ပြီးပါက")
                         .font(.headline)
 
                     Divider()
@@ -24,22 +25,27 @@ struct StageDetailsView: View {
                 }
             }
 
-            ForEach(stage.prayers) { prayer in
+            ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
+                let completed = vm.stage == stage.stage && vm.day == index + 1
                 Section {
-                    ListCell(prayer: prayer)
+                    ListCell(prayer: prayer, completed: completed)
                 }
                 .listSectionSpacing(12)
             }
         }
         .listSectionSpacing(25)
-        .navigationTitle("အဓိဌာန်အဆင့် (\(stage.stage))")
+        .navigationTitle("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            vm.checkProgress()
+        }
     }
 }
 
 struct ListCell: View {
     @State private var isExpanded = false
-    var prayer: Prayer
+    let prayer: Prayer
+    let completed: Bool
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
@@ -47,18 +53,20 @@ struct ListCell: View {
                 .font(.body)
         } label: {
             VStack(alignment: .leading, spacing: 8) {
-                HStack {
+                HStack(spacing: 10) {
                     Text(prayer.day.desc)
                         .font(.title2)
                         .fontWeight(.bold)
 
-                    Image(systemName: "checkmark.seal.fill")
-                        .symbolRenderingMode(.palette)
-                        .foregroundStyle(.white, .accent)
+                    if completed {
+                        Image(systemName: "checkmark.seal.fill")
+                            .symbolRenderingMode(.palette)
+                            .foregroundStyle(.white, .accent)
+                    }
 
                     if prayer.isVegetarian {
-                        Text("ဒီနေ့ အသားမစားရပါ။")
-                            .font(.footnote)
+                        Text("သတ်သတ်လွတ်စားရန်။")
+                            .font(.callout)
                             .foregroundStyle(.red)
                     }
                 }
@@ -68,7 +76,7 @@ struct ListCell: View {
                         .font(.body)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("(\(prayer.rounds))ပတ်")
+                    Text("(\(prayer.rounds.toMyanmarDigits()))ပတ်")
                         .font(.body)
                 }
             }
