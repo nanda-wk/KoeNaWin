@@ -18,6 +18,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var totalProgressPercentage = 0.0
     @Published private(set) var currentProgressPercentage = 0.0
     @Published private(set) var isLoading = true
+    @Published private(set) var startDate = Date.now
 
     @Published private(set) var status: ProgressStatus = .notStarted
 
@@ -43,6 +44,7 @@ final class HomeViewModel: ObservableObject {
                     self?.dayUntilVegetarian = dayUntilVegetarian
                     self?.totalProgressPercentage = (Double(totalDay) / 81) * 100
                     self?.currentProgressPercentage = (Double(progress.dayOfStage) / 9) * 100
+                    self?.startDate = progress.startDate
                 }
             }
             .store(in: &cancellables)
@@ -61,5 +63,7 @@ final class HomeViewModel: ObservableObject {
         repository.markTodayAsCompleted()
     }
 
-    func changeStartDate() {}
+    func changeStartDate(_ date: Date) {
+        repository.changeStartDate(date)
+    }
 }

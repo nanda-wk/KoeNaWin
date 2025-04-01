@@ -8,7 +8,7 @@
 import Foundation
 
 enum DateFormat: String {
-    case yyyy_MMM_d = "yyyy MMMM d"
+    case yyyy_MMMM_d = "yyyy MMMM d"
 }
 
 extension Date {

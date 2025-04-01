@@ -26,7 +26,7 @@ struct NoticeCard: View {
             }
         case let .missedDay(failureDate):
             icon = "exclamationmark.triangle.fill"
-            title = "သင်သည် အဓိဌာန်ကို \(failureDate.toStringWith(format: .yyyy_MMM_d)) ရက်နေ့တွင် ပျက်ကွက်ခဲ့သည်"
+            title = "သင်သည် အဓိဌာန်ကို \(failureDate.toStringWith(format: .yyyy_MMMM_d)) ရက်နေ့တွင် ပျက်ကွက်ခဲ့သည်"
             message = "အဓိဌာန်ကို ပြန်လည်စတင်ရန် အောက်ပါခလုတ်ကို နှိပ်ပါ"
             button = "ပြန်လည်စတင်ရန်"
         case .completed:
@@ -42,7 +42,7 @@ struct NoticeCard: View {
         case let .notMonday(nextMonday):
             icon = "exclamationmark.triangle.fill"
             title = "တနင်္လာနေ့ မဟုတ်သေးပါ"
-            message = "အဓိဌာန်ကို \(nextMonday.toStringWith(format: .yyyy_MMM_d)) (တနင်္လာနေ့) မှသာ စတင်နိုင်ပါသည်"
+            message = "အဓိဌာန်ကို တနင်္လာနေ့ မှသာ စတင်နိုင်ပါသည်။ လာမည့် \(nextMonday.toStringWith(format: .yyyy_MMMM_d)) (တနင်္လာနေ့)  တွင်စတင်နိုင်ပါသည်။"
             button = "စတင်ရန်"
         }
     }
@@ -64,7 +64,7 @@ struct NoticeCard: View {
                 .padding()
 
             if case .notMonday = vm.status {
-            } else {
+            } else if !vm.todayCompleted {
                 Button {
                     vm.startNewProgress()
                 } label: {

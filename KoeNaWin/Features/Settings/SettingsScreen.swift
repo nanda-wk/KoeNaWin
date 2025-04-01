@@ -9,7 +9,13 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @EnvironmentObject private var vm: HomeViewModel
+    @State private var date: Date = .now
     @State private var showPrivacy = false
+    @State private var showDatePicker = false
+    @State private var showAlert = false
+    @State private var alertMessage = ""
+
+    @State private var height: CGFloat = 500
 
     var body: some View {
         List {
@@ -32,6 +38,34 @@ struct SettingsScreen: View {
                             .foregroundStyle(.accent)
                     }
                 }
+            }
+
+            Section {
+                Button {
+                    showDatePicker.toggle()
+                } label: {
+                    HStack {
+                        Image(systemName: "calendar")
+                            .foregroundColor(.white)
+                            .font(.caption)
+                            .padding(5)
+                            .background(
+                                RoundedRectangle(cornerRadius: 4)
+                                    .fill(.orange)
+                            )
+
+                        Text("အဓိဌာန်စတင်ရက်")
+                            .font(.body)
+
+                        Spacer()
+
+                        Text(vm.startDate.toStringWith(format: .yyyy_MMMM_d))
+                            .font(.footnote)
+                    }
+                }
+                .foregroundStyle(.primary)
+            } footer: {
+                Text("အဓိဌာန်စတင်မည့်ရက်ကို ပြောင်းလဲရန် အပေါ်က ခလုတ်ကို နှိပ်ပါ။")
             }
 
             Section {
@@ -129,6 +163,39 @@ struct SettingsScreen: View {
         }
         .navigationTitle("ပြင်ဆင်ချက်")
         .navigationBarTitleDisplayMode(.inline)
+        .onAppear {
+            date = vm.startDate
+        }
+        .sheet(isPresented: $showDatePicker) {
+            NavigationStack {
+                VStack(alignment: .trailing) {
+                    Button("သိမ်းဆည်းမည်") {
+                        checkDate()
+                    }
+                    .padding()
+
+                    DatePicker("", selection: $date, displayedComponents: .date)
+                        .datePickerStyle(.graphical)
+                        .environment(\.locale, Locale(identifier: "my_MM"))
+                }
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .task {
+                                height = proxy.size.height
+                            }
+                    }
+                )
+                .id(height)
+                .presentationDetents([.height(height)])
+                .presentationDragIndicator(.visible)
+            }
+        }
+        .alert(alertMessage, isPresented: $showAlert) {
+            Button("အိုကေ", role: .cancel) {
+                showDatePicker.toggle()
+            }
+        }
         .popover(isPresented: $showPrivacy) {
             NavigationStack {
                 WebView(url: "https://sites.google.com/view/koenawin/privacy")
@@ -143,6 +210,41 @@ struct SettingsScreen: View {
                         }
                     }
             }
+        }
+    }
+}
+
+extension SettingsScreen {
+    private func checkDate() {
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+        let today = Date.now
+
+        // Check if date is in the future
+        if date > today {
+            date = vm.startDate
+            alertMessage = "နောင်အနာဂတ်ရက်များကို ရွေးချယ်၍မရပါ"
+            showAlert.toggle()
+            return
+        }
+
+        // Check if date is within 81 days from today
+        let minDate = calendar.date(byAdding: .day, value: -81, to: today)!
+        if date < minDate {
+            date = vm.startDate
+            alertMessage = "ရက် ၈၁ ရက်ထက်ကျော်လွန်သော ရက်များကို ရွေးချယ်၍မရပါ"
+            showAlert.toggle()
+            return
+        }
+
+        // Check if date is Monday
+        if calendar.component(.weekday, from: date) != 2 {
+            date = vm.startDate
+            alertMessage = "တနင်္လာနေ့ကိုသာ ရွေးချယ်ပေးပါ"
+            showAlert.toggle()
+        } else {
+            vm.changeStartDate(date)
+            showDatePicker = false
         }
     }
 }

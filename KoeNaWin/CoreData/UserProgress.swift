@@ -15,7 +15,7 @@ final class UserProgress: NSManagedObject {
 
 extension UserProgress {
     static var userProgressFetchRequest: NSFetchRequest<UserProgress> {
-        NSFetchRequest(entityName: "UserProgress")
+        NSFetchRequest(entityName: String(describing: UserProgress.self))
     }
 
     static func latest() -> NSFetchRequest<UserProgress> {

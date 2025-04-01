@@ -21,7 +21,11 @@ final class KoeNaWinRepository {
     private let stack = CoreDataStack.shared
     private lazy var context = stack.viewContext
 
-    private let calendar = Calendar.current
+    private let calendar: Calendar = {
+        var cal = Calendar.current
+        cal.timeZone = TimeZone.current
+        return cal
+    }()
 
     private(set) var progressPublisher = CurrentValueSubject<ProgressStatus, Never>(.notStarted)
 
@@ -67,29 +71,25 @@ final class KoeNaWinRepository {
         }
     }
 
-    private func saveFailureRecord(_ record: FailureRecord) {
-        let context = record.managedObjectContext ?? context
-        do {
-            try stack.persist(in: context)
-        } catch {
-            print("Failed to save failure record: \(error)")
-        }
-    }
-
-    private func saveFailureRecord(startDate: Date, failureDate: Date, stage: Int16, day: Int16) {
-        let record = FailureRecord(context: context)
+    private func saveUserRecord(
+        startDate: Date,
+        endDate: Date,
+        stage: Int16,
+        day: Int16,
+        status: Status
+    ) {
+        let record = UserRecord(context: context)
         record.startDate = startDate
-        record.failureDate = failureDate
+        record.endDate = endDate
         record.stage = stage
         record.day = day
+        record.status = status.rawValue
 
         let context = record.managedObjectContext ?? context
         do {
             try stack.persist(in: context)
-            try stack.deleteAll(CompletedDay.self)
-            try stack.deleteAll(UserProgress.self)
         } catch {
-            print("Failed to save failure record: \(error)")
+            print("Failed to save user record: \(error)")
         }
     }
 }
@@ -109,11 +109,12 @@ extension KoeNaWinRepository {
         for i in 0 ..< daysSinceStart {
             let checkDate = calendar.date(byAdding: .day, value: i, to: progress.startDate)!
             if !completedDays.contains(where: { calendar.isDate($0, inSameDayAs: checkDate) }) {
-                saveFailureRecord(
-                    startDate: checkDate,
-                    failureDate: progress.startDate,
+                saveUserRecord(
+                    startDate: progress.startDate,
+                    endDate: checkDate,
                     stage: progress.currentStage,
-                    day: progress.dayOfStage
+                    day: progress.dayOfStage,
+                    status: .fail
                 )
                 progressPublisher.send(.missedDay(failureDate: checkDate))
                 resetPracitceCount()
@@ -135,6 +136,13 @@ extension KoeNaWinRepository {
                 resetPracitceCount()
             }
         } else {
+            saveUserRecord(
+                startDate: progress.startDate,
+                endDate: today,
+                stage: progress.currentStage,
+                day: progress.dayOfStage,
+                status: .complete
+            )
             progressPublisher.send(.completed)
             resetPracitceCount()
         }
@@ -156,7 +164,6 @@ extension KoeNaWinRepository {
 
         resetPracitceCount()
 
-        // Refresh progress after marking today as completed
         checkProgress()
     }
 
@@ -171,6 +178,13 @@ extension KoeNaWinRepository {
             return
         }
 
+        do {
+            try stack.deleteAll(CompletedDay.self)
+            try stack.deleteAll(UserProgress.self)
+        } catch {
+            print("Failed to delete completed days or user progress")
+        }
+
         let userProgress = UserProgress(context: context)
         userProgress.startDate = Date.now
         userProgress.currentStage = 1
@@ -178,6 +192,54 @@ extension KoeNaWinRepository {
         resetPracitceCount()
         saveUserProgress(userProgress)
         checkProgress()
+    }
+
+    func changeStartDate(_ date: Date) {
+        let progress = loadUserProgress()
+
+        if let progress, calendar.isDate(date, inSameDayAs: progress.startDate) {
+            return
+        }
+
+        let today = Date.now
+        let daysSinceStart = calendar.dateComponents([.day], from: date, to: today).day ?? 0
+
+        do {
+            try stack.deleteAll(CompletedDay.self)
+        } catch {
+            print("Failed to delete completed days")
+        }
+
+        let backgroundContext = stack.newContext
+
+        let newProgress = progress ?? UserProgress(context: backgroundContext)
+
+        newProgress.startDate = date
+        newProgress.currentStage = Int16(((daysSinceStart - 1) / 9) + 1)
+        newProgress.dayOfStage = Int16(((daysSinceStart - 1) % 9) + 1)
+
+        backgroundContext.perform { [weak self] in
+            for i in 0 ..< daysSinceStart {
+                guard let self else { return }
+                if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
+                    let completedDay = CompletedDay(context: backgroundContext)
+                    completedDay.date = dayDate
+                }
+            }
+
+            do {
+                try backgroundContext.save()
+
+                DispatchQueue.main.async { [weak self] in
+                    guard let self else { return }
+                    saveUserProgress(newProgress)
+                    checkProgress()
+                }
+            } catch {
+                print("Failed to save batch of completed days: \(error)")
+            }
+        }
+        resetPracitceCount()
     }
 
     private func calculateDaysUntilVegetarian(dayInStage: Int) -> Int {

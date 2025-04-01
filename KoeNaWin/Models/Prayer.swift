@@ -44,42 +44,12 @@ extension Prayer {
             .init(day: .monday, mantra: "သမ္မာသမ္ဗုဒ္ဓေါ", rounds: 2, isVegetarian: false),
             .init(day: .tuesday, mantra: "ဘဂဝါ", rounds: 9, isVegetarian: false),
             .init(day: .wednesday, mantra: "သုဂတော", rounds: 9, isVegetarian: false),
-            .init(day: .thursday, mantra: "သတ္ထာဒေဝမနုဿာနံ", rounds: 7, isVegetarian: true),
+            .init(day: .thursday, mantra: "သတ္ထာဒေဝမနုဿာနံ", rounds: 7, isVegetarian: false),
             .init(day: .friday, mantra: "လောကဝိဒူ", rounds: 5, isVegetarian: true),
             .init(day: .saturday, mantra: "ဝိဇ္ဇာစရဏသမ္ပန္နော", rounds: 3, isVegetarian: false),
             .init(day: .sunday, mantra: "အနုတ္တရောပုရိသဓမ္မသာရထိ", rounds: 6, isVegetarian: false),
             .init(day: .monday, mantra: "အရဟံ", rounds: 1, isVegetarian: false),
             .init(day: .tuesday, mantra: "ဗုဒ္ဓေါ", rounds: 8, isVegetarian: false),
         ]
-    }
-}
-
-enum Day: String, Decodable, Equatable, Identifiable {
-    var id: String { rawValue }
-    case monday = "Monday"
-    case tuesday = "Tuesday"
-    case wednesday = "Wednesday"
-    case thursday = "Thursday"
-    case friday = "Friday"
-    case saturday = "Saturday"
-    case sunday = "Sunday"
-
-    var desc: String {
-        switch self {
-        case .monday:
-            "တနင်္လာ"
-        case .tuesday:
-            "အင်္ဂါ"
-        case .wednesday:
-            "ဗုဒ္ဓဟူး"
-        case .thursday:
-            "ကြာသပတေး"
-        case .friday:
-            "သောကြာ"
-        case .saturday:
-            "စနေ"
-        case .sunday:
-            "တနင်္ဂနွေ"
-        }
     }
 }

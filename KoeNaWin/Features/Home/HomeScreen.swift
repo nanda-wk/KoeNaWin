@@ -146,15 +146,19 @@ extension HomeScreen {
     var vegetarianSection: some View {
         let todayVegetarian = vm.dayUntilVegetarian == 0
         let message = todayVegetarian ? "ဒီနေ့ သတ်သတ်လွတ်စားရန်" : "သတ်သတ်လွတ်စားရန် \(vm.dayUntilVegetarian.toMyanmarDigits()) ရက်အလို"
-        Section {
-            Text(message)
-                .font(.headline)
-                .foregroundStyle(todayVegetarian ? .black : .white)
+        if vm.stage == 9, vm.day > 5 {
+            EmptyView()
+        } else {
+            Section {
+                Text(message)
+                    .font(.headline)
+                    .foregroundStyle(todayVegetarian ? .black : .white)
+            }
+            .listRowBackground(
+                RoundedRectangle(cornerRadius: 10)
+                    .fill(todayVegetarian ? .green : .accent)
+            )
         }
-        .listRowBackground(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(todayVegetarian ? .green : .accent)
-        )
     }
 }
 

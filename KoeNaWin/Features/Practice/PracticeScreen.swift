@@ -12,6 +12,7 @@ struct PracticeScreen: View {
     @AppStorage("count") private var count = 0
     @AppStorage("round") private var round = 0
     @State private var showDialog = false
+    @State private var showComplete = false
     private let totalCount = 108
 
     var body: some View {
@@ -109,8 +110,24 @@ struct PracticeScreen: View {
             Button("အစမှ ပြန်စမည်။", role: .destructive, action: resetCount)
             Button("မလုပ်တော့ပါ", role: .cancel, action: {})
         }
+        .alert("ဒီနေ့ အဓိဌာန် ပြီးဆုံးပါပြီ", isPresented: $showComplete) {
+            Button("ပြီးဆုံးပါပြီ") {
+                vm.markTodayComplete()
+            }
+
+            Button("မလုပ်တော့ပါ", role: .destructive, action: {})
+        }
         .navigationTitle("ဒီနေ့ အဓိဌာန်")
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            if case .active = vm.status, !vm.todayCompleted {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("ပြီးဆုံးပါပြီ") {
+                        showComplete.toggle()
+                    }
+                }
+            }
+        }
     }
 }
 

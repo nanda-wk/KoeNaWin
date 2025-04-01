@@ -26,7 +26,13 @@ struct StageDetailsView: View {
             }
 
             ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
-                let completed = vm.stage == stage.stage && vm.day == index + 1
+                var completed: Bool {
+                    if vm.stage <= stage.stage {
+                        vm.stage >= stage.stage && vm.day >= index + 1
+                    } else {
+                        true
+                    }
+                }
                 Section {
                     ListCell(prayer: prayer, completed: completed)
                 }

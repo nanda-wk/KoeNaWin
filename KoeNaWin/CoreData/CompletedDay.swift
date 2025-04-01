@@ -13,7 +13,7 @@ final class CompletedDay: NSManagedObject {
 
 extension CompletedDay {
     static var completedDayFetchRequest: NSFetchRequest<CompletedDay> {
-        NSFetchRequest(entityName: "CompletedDay")
+        NSFetchRequest(entityName: String(describing: CompletedDay.self))
     }
 
     static func latest() -> NSFetchRequest<CompletedDay> {
