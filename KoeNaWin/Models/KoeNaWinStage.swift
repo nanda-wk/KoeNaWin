@@ -9,7 +9,7 @@ import Foundation
 
 typealias KoeNaWinStages = [KoeNaWinStage]
 
-struct KoeNaWinStage: Decodable, Identifiable {
+struct KoeNaWinStage: Decodable, Identifiable, Hashable {
     var id = UUID()
     let stage: Int
     let benefits: String

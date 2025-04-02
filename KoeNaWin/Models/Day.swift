@@ -5,7 +5,7 @@
 //  Created by Nanda WK on 2025-04-02.
 //
 
-enum Day: String, Decodable, Equatable, Identifiable {
+enum Day: String, Decodable, Equatable, Identifiable, Hashable {
     var id: String { rawValue }
     case monday = "Monday"
     case tuesday = "Tuesday"

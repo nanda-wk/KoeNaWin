@@ -8,6 +8,9 @@
 import SwiftUI
 
 struct TabScreen: View {
+    @State private var selectedTab: TabItem = .home
+    @State private var path = NavigationPath()
+
     init() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithDefaultBackground()
@@ -15,13 +18,14 @@ struct TabScreen: View {
     }
 
     var body: some View {
-        TabView {
+        TabView(selection: $selectedTab) {
             NavigationStack {
-                HomeScreen()
+                HomeScreen(selectedTab: $selectedTab, path: $path)
             }
             .tabItem {
                 Label("ပင်မစာမျက်နှာ", systemImage: "house.fill")
             }
+            .tag(TabItem.home)
 
             NavigationStack {
                 PracticeScreen()
@@ -29,13 +33,15 @@ struct TabScreen: View {
             .tabItem {
                 Label("အဓိဌာန်ကျင့်စဉ်", systemImage: "leaf.fill")
             }
+            .tag(TabItem.practice)
 
-            NavigationStack {
+            NavigationStack(path: $path) {
                 StagesScreen()
             }
             .tabItem {
                 Label("အဓိဌာန်အဆင့်", systemImage: "squares.leading.rectangle.fill")
             }
+            .tag(TabItem.stages)
 
             NavigationStack {
                 SettingsScreen()
@@ -43,8 +49,14 @@ struct TabScreen: View {
             .tabItem {
                 Label("ပြင်ဆင်ချက်", systemImage: "gearshape.2.fill")
             }
+            .tag(TabItem.settings)
         }
     }
+}
+
+enum TabItem: Int, Identifiable {
+    var id: Int { rawValue }
+    case home, practice, stages, settings
 }
 
 #Preview {

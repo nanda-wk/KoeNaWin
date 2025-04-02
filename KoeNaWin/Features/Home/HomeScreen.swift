@@ -10,6 +10,8 @@ import Combine
 import SwiftUI
 
 struct HomeScreen: View {
+    @Binding var selectedTab: TabItem
+    @Binding var path: NavigationPath
     @EnvironmentObject private var vm: HomeViewModel
     @State private var showAlert = false
 
@@ -26,11 +28,11 @@ struct HomeScreen: View {
                 List {
                     vegetarianSection
 
-                    completionSection
+                    todayMantra
 
                     currentStageCompletion
 
-                    todayMantra
+                    completionSection
                 }
                 .listSectionSpacing(25)
             } else {
@@ -117,6 +119,20 @@ extension HomeScreen {
                 .progressViewStyle(CustomProgressViewStyle(height: 20))
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if let currentStage = koeNaWinStages.first(where: { $0.stage == vm.stage }) {
+                selectedTab = .stages
+                // Add the current stage to the navigation path
+                if path.count > 0 {
+                    path.removeLast(path.count)
+                }
+
+                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                    path.append(currentStage)
+                }
+            }
+        }
     }
 
     var todayMantra: some View {
@@ -140,6 +156,10 @@ extension HomeScreen {
                     .foregroundStyle(.secondary)
             }
         }
+        .contentShape(Rectangle())
+        .onTapGesture {
+            selectedTab = .practice
+        }
     }
 
     @ViewBuilder
@@ -152,19 +172,16 @@ extension HomeScreen {
             Section {
                 Text(message)
                     .font(.headline)
-                    .foregroundStyle(todayVegetarian ? .black : .white)
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .center)
             }
-            .listRowBackground(
-                RoundedRectangle(cornerRadius: 10)
-                    .fill(todayVegetarian ? .green : .accent)
-            )
         }
     }
 }
 
 #Preview {
     NavigationStack {
-        HomeScreen()
-            .previewEnvironment(initProgess: false)
+        HomeScreen(selectedTab: .constant(.home), path: .constant(NavigationPath()))
+            .previewEnvironment()
     }
 }

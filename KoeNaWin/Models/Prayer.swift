@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Prayer: Decodable, Equatable, Identifiable {
+struct Prayer: Decodable, Equatable, Identifiable, Hashable {
     var id = UUID()
     let day: Day
     let mantra: String

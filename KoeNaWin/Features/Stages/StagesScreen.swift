@@ -12,9 +12,12 @@ struct StagesScreen: View {
         List {
             ForEach(koeNaWinStages) { stage in
                 Section {
-                    NavigationLink {
-                        StageDetailsView(stage: stage)
-                    } label: {
+//                    NavigationLink {
+//                        StageDetailsView(stage: stage)
+//                    } label: {
+//                        LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
+//                    }
+                    NavigationLink(value: stage) {
                         LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
                     }
                 }
@@ -23,6 +26,9 @@ struct StagesScreen: View {
         .listSectionSpacing(12)
         .navigationTitle("အဓိဌာန်အဆင့်")
         .navigationBarTitleDisplayMode(.inline)
+        .navigationDestination(for: KoeNaWinStage.self) { stage in
+            StageDetailsView(stage: stage)
+        }
     }
 }
 
