@@ -9,21 +9,18 @@ import SwiftUI
 
 struct StagesScreen: View {
     var body: some View {
-        List {
-            ForEach(koeNaWinStages) { stage in
-                Section {
-//                    NavigationLink {
-//                        StageDetailsView(stage: stage)
-//                    } label: {
-//                        LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
-//                    }
+        ScrollView {
+            VStack(spacing: 12) {
+                ForEach(koeNaWinStages) { stage in
                     NavigationLink(value: stage) {
                         LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
                     }
+                    .buttonStyle(.plain)
                 }
             }
+            .padding()
         }
-        .listSectionSpacing(12)
+        .background(Color(UIColor.systemGroupedBackground))
         .navigationTitle("အဓိဌာန်အဆင့်")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: KoeNaWinStage.self) { stage in
@@ -41,7 +38,14 @@ extension StagesScreen {
             Text(title)
                 .font(.footnote)
                 .fontWeight(.bold)
+
+            Spacer()
+
+            Image(systemName: "chevron.right")
+                .foregroundStyle(.gray)
         }
+        .padding()
+        .listSectionBackground
     }
 }
 

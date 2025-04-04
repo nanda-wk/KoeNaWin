@@ -12,34 +12,38 @@ struct StageDetailsView: View {
     let stage: KoeNaWinStage
 
     var body: some View {
-        List {
-            Section {
-                VStack(alignment: .leading) {
-                    Text("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits())) အောင်မြင်ပြီးပါက")
-                        .font(.headline)
+        ScrollView {
+            VStack(spacing: 25) {
+                Section {
+                    VStack(alignment: .leading) {
+                        Text("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits())) အောင်မြင်ပြီးပါက")
+                            .font(.headline)
 
-                    Divider()
+                        Divider()
 
-                    Text(stage.benefits)
-                        .font(.body)
-                }
-            }
-
-            ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
-                var completed: Bool {
-                    if vm.stage <= stage.stage {
-                        vm.stage >= stage.stage && vm.day >= index + 1
-                    } else {
-                        true
+                        Text(stage.benefits)
+                            .font(.body)
                     }
                 }
-                Section {
-                    ListCell(prayer: prayer, completed: completed)
+                .padding()
+                .listSectionBackground
+
+                LazyVStack(spacing: 12) {
+                    ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
+                        var completed: Bool {
+                            if vm.stage <= stage.stage {
+                                vm.stage >= stage.stage && vm.day >= index + 1
+                            } else {
+                                true
+                            }
+                        }
+                        ListCell(prayer: prayer, completed: completed)
+                    }
                 }
-                .listSectionSpacing(12)
             }
+            .padding()
         }
-        .listSectionSpacing(25)
+        .background(Color(UIColor.systemGroupedBackground))
         .navigationTitle("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
@@ -88,30 +92,37 @@ struct ListCell: View {
             }
         }
         .disclosureGroupStyle(CustomDisclosureStyle())
+        .padding()
+        .listSectionBackground
     }
 }
 
 struct CustomDisclosureStyle: DisclosureGroupStyle {
     func makeBody(configuration: Configuration) -> some View {
-        ZStack(alignment: .topTrailing) {
-            Image(systemName: "chevron.down")
-                .rotationEffect(.degrees(configuration.isExpanded ? 180 : 0))
-                .animation(.easeInOut, value: configuration.isExpanded)
-                .foregroundColor(.accent)
-                .padding(.top)
+        VStack(alignment: .leading, spacing: 10) {
+            ZStack(alignment: .topTrailing) {
+                Image(systemName: "chevron.down")
+                    .rotationEffect(.degrees(configuration.isExpanded ? 180 : 0))
+                    .animation(.easeInOut, value: configuration.isExpanded)
+                    .foregroundColor(.accent)
+                    .padding(.top)
 
-            configuration.label
+                configuration.label
+            }
+
+            if configuration.isExpanded {
+                Divider()
+                    .padding(.vertical, 5)
+
+                configuration.content
+                    .disclosureGroupStyle(self)
+            }
         }
         .contentShape(Rectangle())
         .onTapGesture {
             withAnimation {
                 configuration.isExpanded.toggle()
             }
-        }
-
-        if configuration.isExpanded {
-            configuration.content
-                .disclosureGroupStyle(self)
         }
     }
 }

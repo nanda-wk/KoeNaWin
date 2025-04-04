@@ -25,16 +25,18 @@ struct HomeScreen: View {
                     .scaleEffect(1.5)
                     .tint(.accent)
             } else if case .active = vm.status {
-                List {
-                    vegetarianSection
+                ScrollView {
+                    VStack(spacing: 25) {
+                        vegetarianSection
 
-                    todayMantra
+                        todayMantra
 
-                    currentStageCompletion
+                        currentStageCompletion
 
-                    completionSection
+                        completionSection
+                    }
+                    .padding()
                 }
-                .listSectionSpacing(25)
             } else {
                 NoticeCard(status: vm.status)
             }
@@ -49,76 +51,75 @@ struct HomeScreen: View {
 
 extension HomeScreen {
     var completionSection: some View {
-        Section {
-            VStack {
-                Text("အဓိဌာန်ပြီးမြောက်မှု")
-                    .font(.title2)
-                    .fontWeight(.bold)
+        VStack {
+            Text("အဓိဌာန်ပြီးမြောက်မှု")
+                .font(.title2)
+                .fontWeight(.bold)
 
-                HStack {
-                    Chart {
-                        SectorMark(
-                            angle: .value("Done", vm.totalDay),
-                            innerRadius: .ratio(0.65),
-                            angularInset: 2
+            HStack {
+                ZStack {
+                    // Background circle (remaining days)
+                    Circle()
+                        .trim(from: 0, to: 1)
+                        .stroke(Color.gray.opacity(0.2), lineWidth: 24)
+                        .frame(width: 120, height: 120)
+
+                    // Progress circle (completed days)
+                    Circle()
+                        .trim(from: 0, to: max(0.02, CGFloat(vm.totalDay) / 81.0 - 0.08))
+                        .stroke(.accent, style: StrokeStyle(lineWidth: 24, lineCap: .round))
+                        .frame(width: 120, height: 120)
+                        .rotationEffect(.degrees(-90))
+
+                    // Center text
+                    Text("\(vm.totalDay.toMyanmarDigits()) / ၈၁")
+                        .font(.headline)
+                }
+                .padding()
+
+                VStack(spacing: 20) {
+                    Text("\(vm.totalProgressPercentage.toMyanmarDigits()) %")
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal)
+                        .padding(.vertical, 4)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            Capsule(style: .circular)
+                                .fill(.accent)
                         )
-                        .cornerRadius(10)
+                    HStack {
+                        Image(systemName: "staroflife.fill")
+                            .font(.caption2)
 
-                        SectorMark(
-                            angle: .value("In Progress", 81 - vm.totalDay),
-                            innerRadius: .ratio(0.65),
-                            angularInset: 2
-                        )
-                        .foregroundStyle(.gray.opacity(0.2))
-                        .cornerRadius(10)
-                    }
-                    .chartBackground { _ in
-                        Text("\(vm.totalDay.toMyanmarDigits()) / ၈၁")
-                    }
-                    .padding()
-
-                    VStack(spacing: 20) {
-                        Text("\(vm.totalProgressPercentage.toMyanmarDigits()) %")
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal)
-                            .padding(.vertical, 4)
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                Capsule(style: .circular)
-                                    .fill(.accent)
-                            )
-                        HStack {
-                            Image(systemName: "staroflife.fill")
-                                .font(.caption2)
-
-                            Text("\((81 - vm.totalDay).toMyanmarDigits()) ရက်ကျန်သည်")
-                                .lineLimit(1, reservesSpace: true)
-                        }
+                        Text("\((81 - vm.totalDay).toMyanmarDigits()) ရက်ကျန်သည်")
+                            .lineLimit(1, reservesSpace: true)
                     }
                 }
             }
         }
+        .padding()
+        .listSectionBackground
     }
 
     var currentStageCompletion: some View {
-        Section {
-            VStack {
-                Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
-                    .font(.title2)
-                    .fontWeight(.bold)
+        VStack {
+            Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
+                .font(.title2)
+                .fontWeight(.bold)
 
-                ProgressView(value: Double(vm.day), total: 9) {} currentValueLabel: {
-                    HStack {
-                        Text("\(vm.currentProgressPercentage.toMyanmarDigits()) %")
-                        Spacer()
-                        Text("\(vm.day.toMyanmarDigits()) / ၉ ရက်")
-                    }
-                    .font(.subheadline)
+            ProgressView(value: Double(vm.day), total: 9) {} currentValueLabel: {
+                HStack {
+                    Text("\(vm.currentProgressPercentage.toMyanmarDigits()) %")
+                    Spacer()
+                    Text("\(vm.day.toMyanmarDigits()) / ၉ ရက်")
                 }
-                .progressViewStyle(CustomProgressViewStyle(height: 20))
+                .font(.subheadline)
             }
+            .progressViewStyle(CustomProgressViewStyle(height: 20))
         }
+        .padding()
+        .listSectionBackground
         .contentShape(Rectangle())
         .onTapGesture {
             if let currentStage = koeNaWinStages.first(where: { $0.stage == vm.stage }) {
@@ -136,26 +137,26 @@ extension HomeScreen {
     }
 
     var todayMantra: some View {
-        Section {
-            VStack(spacing: 10) {
-                HStack {
-                    Text("\(vm.currentPrayer?.day.desc ?? "")")
-                    Spacer()
-                    Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
-                }
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundStyle(.accent)
-
-                Text("\(vm.currentPrayer?.mantra ?? "")")
-                    .font(.title)
-                    .fontWeight(.bold)
-
-                Text("အပတ်ရေ (\((vm.currentPrayer?.rounds ?? 0).toMyanmarDigits()))ပတ်")
-                    .font(.body)
-                    .foregroundStyle(.secondary)
+        VStack(spacing: 10) {
+            HStack {
+                Text("\(vm.currentPrayer?.day.desc ?? "")")
+                Spacer()
+                Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
             }
+            .font(.subheadline)
+            .fontWeight(.medium)
+            .foregroundStyle(.accent)
+
+            Text("\(vm.currentPrayer?.mantra ?? "")")
+                .font(.title)
+                .fontWeight(.bold)
+
+            Text("အပတ်ရေ (\((vm.currentPrayer?.rounds ?? 0).toMyanmarDigits()))ပတ်")
+                .font(.body)
+                .foregroundStyle(.secondary)
         }
+        .padding()
+        .listSectionBackground
         .contentShape(Rectangle())
         .onTapGesture {
             selectedTab = .practice
@@ -169,12 +170,12 @@ extension HomeScreen {
         if vm.stage == 9, vm.day > 5 {
             EmptyView()
         } else {
-            Section {
-                Text(message)
-                    .font(.headline)
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity, alignment: .center)
-            }
+            Text(message)
+                .font(.headline)
+                .foregroundStyle(.red)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding(.vertical, 10)
+                .listSectionBackground
         }
     }
 }

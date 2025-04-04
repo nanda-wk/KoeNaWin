@@ -22,3 +22,12 @@ extension View {
             .environmentObject(HomeViewModel())
     }
 }
+
+extension View {
+    var listSectionBackground: some View {
+        background(
+            RoundedRectangle(cornerRadius: 10)
+                .fill(Color(UIColor.tertiarySystemBackground))
+        )
+    }
+}
