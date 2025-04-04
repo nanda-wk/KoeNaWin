@@ -39,35 +39,12 @@ final class KoeNaWinRepository {
         return nil
     }
 
-    private func loadCompletedDays() -> [Date] {
-        let request = CompletedDay.latest()
-        var result = [Date]()
-        do {
-            let data = try context.fetch(request)
-
-            result = data.map(\.date)
-        } catch {
-            print("Failed to fetch completed days: \(error)")
-        }
-
-        return result
-    }
-
     private func saveUserProgress(_ userProgress: UserProgress) {
         let context = userProgress.managedObjectContext ?? context
         do {
             try stack.persist(in: context)
         } catch {
             print("Failed to save user progress: \(error)")
-        }
-    }
-
-    private func saveCompletedDay(_ date: CompletedDay) {
-        let context = date.managedObjectContext ?? context
-        do {
-            try stack.persist(in: context)
-        } catch {
-            print("Failed to save completed day: \(error)")
         }
     }
 
@@ -103,7 +80,7 @@ extension KoeNaWinRepository {
 
         let today = Date.now
         let daysSinceStart = calendar.dateComponents([.day], from: progress.startDate, to: today).day ?? 0
-        let completedDays = loadCompletedDays()
+        let completedDays = progress.completedDaysArray
 
         // Check for missed days
         for i in 0 ..< daysSinceStart {
@@ -151,9 +128,10 @@ extension KoeNaWinRepository {
     func markTodayAsCompleted() {
         guard let progress = loadUserProgress() else { return }
 
-        let completedDay = CompletedDay(context: context)
-        completedDay.date = Date.now
-        saveCompletedDay(completedDay)
+        var completedDays = progress.completedDaysArray
+        completedDays.append(Date.now)
+
+        progress.completedDaysArray = completedDays
 
         progress.dayOfStage += 1
         if progress.dayOfStage > 9 {
@@ -179,7 +157,6 @@ extension KoeNaWinRepository {
         }
 
         do {
-            try stack.deleteAll(CompletedDay.self)
             try stack.deleteAll(UserProgress.self)
         } catch {
             print("Failed to delete completed days or user progress")
@@ -189,6 +166,7 @@ extension KoeNaWinRepository {
         userProgress.startDate = Date.now
         userProgress.currentStage = 1
         userProgress.dayOfStage = 0
+        userProgress.completedDaysArray = []
         resetPracitceCount()
         saveUserProgress(userProgress)
         checkProgress()
@@ -204,41 +182,20 @@ extension KoeNaWinRepository {
         let today = Date.now
         let daysSinceStart = calendar.dateComponents([.day], from: date, to: today).day ?? 0
 
-        do {
-            try stack.deleteAll(CompletedDay.self)
-        } catch {
-            print("Failed to delete completed days")
-        }
-
-        let backgroundContext = stack.newContext
-
-        let newProgress = progress ?? UserProgress(context: backgroundContext)
+        let newProgress = progress ?? UserProgress(context: context)
 
         newProgress.startDate = date
         newProgress.currentStage = Int16(((daysSinceStart - 1) / 9) + 1)
         newProgress.dayOfStage = Int16(((daysSinceStart - 1) % 9) + 1)
 
-        backgroundContext.perform { [weak self] in
-            for i in 0 ..< daysSinceStart {
-                guard let self else { return }
-                if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
-                    let completedDay = CompletedDay(context: backgroundContext)
-                    completedDay.date = dayDate
-                }
-            }
-
-            do {
-                try backgroundContext.save()
-
-                DispatchQueue.main.async { [weak self] in
-                    guard let self else { return }
-                    saveUserProgress(newProgress)
-                    checkProgress()
-                }
-            } catch {
-                print("Failed to save batch of completed days: \(error)")
+        var completedDates: [Date] = []
+        for i in 0 ..< daysSinceStart {
+            if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
+                completedDates.append(dayDate)
             }
         }
+        newProgress.completedDaysArray = completedDates
+        saveUserProgress(newProgress)
         resetPracitceCount()
     }
 

@@ -11,6 +11,28 @@ final class UserProgress: NSManagedObject {
     @NSManaged var startDate: Date
     @NSManaged var currentStage: Int16
     @NSManaged var dayOfStage: Int16
+    @NSManaged var completedDays: Data
+}
+
+extension UserProgress {
+    var completedDaysArray: [Date] {
+        get {
+            do {
+                return try JSONDecoder().decode([Date].self, from: completedDays)
+            } catch {
+                print("Failed to decode completed dates: \(error)")
+                return []
+            }
+        }
+        set {
+            do {
+                completedDays = try JSONEncoder().encode(newValue.map { $0 })
+            } catch {
+                print("Failed to encode completed dates: \(error)")
+                completedDays = Data()
+            }
+        }
+    }
 }
 
 extension UserProgress {
