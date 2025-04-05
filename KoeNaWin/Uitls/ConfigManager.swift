@@ -6,15 +6,19 @@
 //
 
 import Foundation
+import SwiftUI
 
 var koeNaWinStages = KoeNaWinStages()
 
 @MainActor
 final class ConfigManager: ObservableObject {
+    @AppStorage("isEnableHaptic") var isEnableHaptic: Bool = true
+    @AppStorage("appTheme") var appTheme: AppTheme = .system
     @Published private(set) var hasLoaded = false
 
     func loadData() {
         koeNaWinStages = Bundle.main.decode(KoeNaWinStages.self, from: "KoeNaWin.json")
+        UserDefaults.standard.register(defaults: ["isEnableHaptic": true])
         hasLoaded = true
     }
 }

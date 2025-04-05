@@ -10,9 +10,10 @@ import SwiftUI
 struct LaunchScreen: View {
     var body: some View {
         VStack {
-            Image(.beads)
+            Image(.logo)
                 .resizable()
                 .frame(width: 90, height: 90)
+                .clipShape(.rect(cornerRadius: 12))
 
             Text("KoeNaWin(ကိုးနဝင်း)")
                 .font(.title)

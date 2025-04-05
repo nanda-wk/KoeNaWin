@@ -1,6 +1,7 @@
 {
   "images" : [
     {
+      "filename" : "KoeNaWin_Second_Logo.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -12,6 +13,7 @@
           "value" : "dark"
         }
       ],
+      "filename" : "KoeNaWin_Second_Logo 2.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"
@@ -23,6 +25,7 @@
           "value" : "tinted"
         }
       ],
+      "filename" : "KoeNaWin_Second_Logo 1.png",
       "idiom" : "universal",
       "platform" : "ios",
       "size" : "1024x1024"

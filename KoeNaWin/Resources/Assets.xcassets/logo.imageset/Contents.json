@@ -1,17 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "beads.png",
+      "filename" : "KoeNaWin_Second_Logo.png",
       "idiom" : "universal",
       "scale" : "1x"
     },
     {
-      "filename" : "beads 1.png",
+      "filename" : "KoeNaWin_Second_Logo 1.png",
       "idiom" : "universal",
       "scale" : "2x"
     },
     {
-      "filename" : "beads 2.png",
+      "filename" : "KoeNaWin_Second_Logo 2.png",
       "idiom" : "universal",
       "scale" : "3x"
     }

@@ -51,6 +51,9 @@ struct TabScreen: View {
             }
             .tag(TabItem.settings)
         }
+        .onChange(of: selectedTab) { _ in
+            Haptic.selection.generate()
+        }
     }
 }
 

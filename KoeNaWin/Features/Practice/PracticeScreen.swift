@@ -41,6 +41,7 @@ struct PracticeScreen: View {
                         .foregroundStyle(.accent)
 
                     Button {
+                        Haptic.impact(.soft).generate()
                         addCount()
                     } label: {
                         ZStack {
@@ -112,7 +113,7 @@ struct PracticeScreen: View {
         }
         .alert("ဒီနေ့ အဓိဌာန် ပြီးဆုံးပါပြီ", isPresented: $showComplete) {
             Button("ပြီးဆုံးပါပြီ") {
-                vm.markTodayComplete()
+                markTodayComplete()
             }
 
             Button("မလုပ်တော့ပါ", role: .destructive, action: {})
@@ -141,13 +142,19 @@ extension PracticeScreen {
 
         let prayerRound = vm.currentPrayer?.rounds ?? 0
         if round == prayerRound {
-            vm.markTodayComplete()
+            markTodayComplete()
         }
     }
 
     private func resetCount() {
         count = 0
         round = 0
+        Haptic.impact(.medium).generate()
+    }
+
+    private func markTodayComplete() {
+        Haptic.impact(.heavy).generate()
+        vm.markTodayComplete()
     }
 }
 

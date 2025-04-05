@@ -28,7 +28,7 @@ struct StageDetailsView: View {
                 .padding()
                 .listSectionBackground
 
-                LazyVStack(spacing: 12) {
+                VStack(spacing: 12) {
                     ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
                         var completed: Bool {
                             if vm.stage <= stage.stage {

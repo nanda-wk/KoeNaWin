@@ -28,6 +28,7 @@ struct KoeNaWinApp: App {
             }
             .environmentObject(configManager)
             .environmentObject(vm)
+            .preferredColorScheme(configManager.appTheme.colorScheme)
         }
     }
 }

@@ -9,6 +9,7 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @EnvironmentObject private var vm: HomeViewModel
+    @EnvironmentObject private var configManager: ConfigManager
     @State private var date: Date = .now
     @State private var showPrivacy = false
     @State private var showDatePicker = false
@@ -21,7 +22,7 @@ struct SettingsScreen: View {
         List {
             Section {
                 HStack(spacing: 14) {
-                    Image(.beads)
+                    Image(.logo)
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 60)
@@ -41,125 +42,19 @@ struct SettingsScreen: View {
             }
 
             Section {
-                Button {
-                    showDatePicker.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: "calendar")
-                            .foregroundColor(.white)
-                            .font(.caption)
-                            .padding(5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.orange)
-                            )
-
-                        Text("အဓိဌာန်စတင်ရက်")
-                            .font(.body)
-
-                        Spacer()
-
-                        Text(vm.startDate.toStringWith(format: .yyyy_MMMM_d))
-                            .font(.footnote)
-                    }
-                }
-                .foregroundStyle(.primary)
-            } footer: {
-                Text("အဓိဌာန်စတင်မည့်ရက်ကို ပြောင်းလဲရန် အပေါ်က ခလုတ်ကို နှိပ်ပါ။")
+                hapticToggle
+                notificationToggle
             }
+
+            addithanStartDate
 
             Section {
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "star.fill")
-                            .foregroundColor(.white)
-                            .font(.caption)
-                            .padding(5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.yellow)
-                            )
-
-                        Text("စတားပေးမယ်")
-                            .font(.body)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.right")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .foregroundStyle(.primary)
-
-                ShareLink(item: URL(string: "https://apps.apple.com/us")!) {
-                    HStack {
-                        Image(systemName: "square.and.arrow.up.fill")
-                            .foregroundStyle(.white)
-                            .font(.caption)
-                            .padding(5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.blue)
-                            )
-                        Text("သူငယ်ချင်းတွေကို​ ရှဲမယ်")
-                            .font(.body)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.right")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .foregroundStyle(.primary)
-
-                Button(action: {}) {
-                    HStack {
-                        Image(systemName: "paperplane.fill")
-                            .foregroundStyle(.white)
-                            .font(.caption)
-                            .padding(5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.pink)
-                            )
-
-                        Text("အကြံပြုချက်ပေးပို့မယ်")
-                            .font(.body)
-
-                        Spacer()
-
-                        Image(systemName: "arrow.up.right")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .foregroundStyle(.primary)
+                rateStart
+                shareWithFriend
+                suggestionFeedback
             }
 
-            Section {
-                Button {
-                    showPrivacy.toggle()
-                } label: {
-                    HStack {
-                        Image(systemName: "lock.shield.fill")
-                            .foregroundColor(.white)
-                            .font(.caption)
-                            .padding(5)
-                            .background(
-                                RoundedRectangle(cornerRadius: 4)
-                                    .fill(.blue)
-                            )
-
-                        Text("Privacy Policy")
-                            .font(.body)
-
-                        Spacer()
-
-                        Image(systemName: "link")
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                .foregroundStyle(.primary)
-            }
+            privacyPolicy
         }
         .navigationTitle("ပြင်ဆင်ချက်")
         .navigationBarTitleDisplayMode(.inline)
@@ -215,6 +110,151 @@ struct SettingsScreen: View {
 }
 
 extension SettingsScreen {
+    var hapticToggle: some View {
+        Toggle("တုန်ခါမှု ဖွင့်မယ်", isOn: $configManager.isEnableHaptic)
+            .tint(.accent)
+    }
+
+    var notificationToggle: some View {
+        Picker("အက်ပ် အသွင်အပြင်", selection: $configManager.appTheme) {
+            ForEach(AppTheme.allCases) { theme in
+                Text(theme.rawValue)
+                    .tag(theme)
+            }
+        }
+    }
+
+    var addithanStartDate: some View {
+        Section {
+            Button {
+                showDatePicker.toggle()
+            } label: {
+                HStack {
+                    Image(systemName: "calendar")
+                        .foregroundColor(.white)
+                        .font(.caption)
+                        .padding(5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(.orange)
+                        )
+
+                    Text("အဓိဌာန်စတင်ရက်")
+                        .font(.body)
+
+                    Spacer()
+
+                    Text(vm.startDate.toStringWith(format: .yyyy_MMMM_d))
+                        .font(.footnote)
+                }
+            }
+            .foregroundStyle(.primary)
+        } footer: {
+            Text("အဓိဌာန်စတင်မည့်ရက်ကို ပြောင်းလဲရန် အပေါ်က ခလုတ်ကို နှိပ်ပါ။")
+        }
+    }
+
+    var rateStart: some View {
+        Button(action: {}) {
+            HStack {
+                Image(systemName: "star.fill")
+                    .foregroundColor(.white)
+                    .font(.caption)
+                    .padding(5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.yellow)
+                    )
+
+                Text("စတားပေးမယ်")
+                    .font(.body)
+
+                Spacer()
+
+                Image(systemName: "arrow.up.right")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .foregroundStyle(.primary)
+    }
+
+    var shareWithFriend: some View {
+        ShareLink(item: URL(string: "https://apps.apple.com/us")!) {
+            HStack {
+                Image(systemName: "square.and.arrow.up.fill")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .padding(5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.blue)
+                    )
+                Text("သူငယ်ချင်းတွေကို​ ရှဲမယ်")
+                    .font(.body)
+
+                Spacer()
+
+                Image(systemName: "arrow.up.right")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .foregroundStyle(.primary)
+    }
+
+    var suggestionFeedback: some View {
+        Button(action: {}) {
+            HStack {
+                Image(systemName: "paperplane.fill")
+                    .foregroundStyle(.white)
+                    .font(.caption)
+                    .padding(5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.pink)
+                    )
+
+                Text("အကြံပြုချက်ပေးပို့မယ်")
+                    .font(.body)
+
+                Spacer()
+
+                Image(systemName: "arrow.up.right")
+                    .foregroundStyle(.secondary)
+            }
+        }
+        .foregroundStyle(.primary)
+    }
+
+    var privacyPolicy: some View {
+        Section {
+            Button {
+                showPrivacy.toggle()
+            } label: {
+                HStack {
+                    Image(systemName: "lock.shield.fill")
+                        .foregroundColor(.white)
+                        .font(.caption)
+                        .padding(5)
+                        .background(
+                            RoundedRectangle(cornerRadius: 4)
+                                .fill(.blue)
+                        )
+
+                    Text("Privacy Policy")
+                        .font(.body)
+
+                    Spacer()
+
+                    Image(systemName: "link")
+                        .foregroundStyle(.secondary)
+                }
+            }
+            .foregroundStyle(.primary)
+        }
+    }
+}
+
+extension SettingsScreen {
     private func checkDate() {
         var calendar = Calendar.current
         calendar.timeZone = .current
@@ -246,6 +286,7 @@ extension SettingsScreen {
             vm.changeStartDate(date)
             showDatePicker = false
         }
+        Haptic.selection.generate()
     }
 }
 
