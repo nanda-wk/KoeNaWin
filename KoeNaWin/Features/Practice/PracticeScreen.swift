@@ -149,11 +149,11 @@ extension PracticeScreen {
     private func resetCount() {
         count = 0
         round = 0
-        Haptic.impact(.medium).generate()
+        Haptic.notification(.warning).generate()
     }
 
     private func markTodayComplete() {
-        Haptic.impact(.heavy).generate()
+        Haptic.notification(.success).generate()
         vm.markTodayComplete()
     }
 }

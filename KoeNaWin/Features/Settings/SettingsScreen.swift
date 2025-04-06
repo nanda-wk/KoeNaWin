@@ -10,9 +10,11 @@ import SwiftUI
 struct SettingsScreen: View {
     @EnvironmentObject private var vm: HomeViewModel
     @EnvironmentObject private var configManager: ConfigManager
-    @State private var date: Date = .now
+    @State private var startDate: Date = .now
+    @State private var reminderDate: Date = .now
     @State private var showPrivacy = false
     @State private var showDatePicker = false
+    @State private var showTimePicker = false
     @State private var showAlert = false
     @State private var alertMessage = ""
 
@@ -43,7 +45,8 @@ struct SettingsScreen: View {
 
             Section {
                 hapticToggle
-                notificationToggle
+                reminderTime
+                appTheme
             }
 
             addithanStartDate
@@ -59,32 +62,31 @@ struct SettingsScreen: View {
         .navigationTitle("ပြင်ဆင်ချက်")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
-            date = vm.startDate
+            startDate = vm.startDate
+            reminderDate = vm.reminderDate
         }
         .sheet(isPresented: $showDatePicker) {
-            NavigationStack {
-                VStack(alignment: .trailing) {
-                    Button("သိမ်းဆည်းမည်") {
-                        checkDate()
-                    }
-                    .padding()
-
-                    DatePicker("", selection: $date, displayedComponents: .date)
-                        .datePickerStyle(.graphical)
-                        .environment(\.locale, Locale(identifier: "my_MM"))
+            VStack(alignment: .trailing) {
+                Button("သိမ်းဆည်းမည်") {
+                    checkDate()
                 }
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .task {
-                                height = proxy.size.height
-                            }
-                    }
-                )
-                .id(height)
-                .presentationDetents([.height(height)])
-                .presentationDragIndicator(.visible)
+                .padding()
+
+                DatePicker("", selection: $startDate, displayedComponents: .date)
+                    .datePickerStyle(.graphical)
+                    .environment(\.locale, Locale(identifier: "my_MM"))
             }
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .task {
+                            height = proxy.size.height
+                        }
+                }
+            )
+            .id(height)
+            .presentationDetents([.height(height)])
+            .interactiveDismissDisabled(true)
         }
         .alert(alertMessage, isPresented: $showAlert) {
             Button("အိုကေ", role: .cancel) {
@@ -115,7 +117,56 @@ extension SettingsScreen {
             .tint(.accent)
     }
 
-    var notificationToggle: some View {
+    @ViewBuilder
+    var reminderTime: some View {
+        if case .active = vm.status {
+            Button {
+                showTimePicker.toggle()
+            } label: {
+                HStack {
+                    Text("သတိပေးချက်အချိန်")
+                        .font(.body)
+
+                    Spacer()
+
+                    Text(vm.reminderDate.toStringWith(format: .hMMa))
+                        .font(.footnote)
+                }
+            }
+            .foregroundStyle(.primary)
+            .sheet(isPresented: $showTimePicker) {
+                VStack(alignment: .trailing) {
+                    Button("သိမ်းဆည်းမည်") {
+                        vm.changeReminder(reminderDate)
+                        showTimePicker.toggle()
+                    }
+
+                    DatePicker("", selection: $reminderDate, displayedComponents: .hourAndMinute)
+                        .datePickerStyle(.wheel)
+                        .labelsHidden()
+                        .environment(\.locale, Locale(identifier: "my_MM"))
+                }
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .task {
+                                height = proxy.size.height
+                            }
+                    }
+                )
+                .id(height)
+                .presentationDetents([.height(height)])
+                .interactiveDismissDisabled(true)
+            }
+            .onChange(of: vm.reminderDate) { _ in
+                reminderDate = vm.reminderDate
+            }
+        }
+    }
+
+    var appTheme: some View {
         Picker("အက်ပ် အသွင်အပြင်", selection: $configManager.appTheme) {
             ForEach(AppTheme.allCases) { theme in
                 Text(theme.rawValue)
@@ -144,7 +195,7 @@ extension SettingsScreen {
 
                     Spacer()
 
-                    Text(vm.startDate.toStringWith(format: .yyyy_MMMM_d))
+                    Text(startDate.toStringWith(format: .yyyy_MMMM_d))
                         .font(.footnote)
                 }
             }
@@ -260,31 +311,32 @@ extension SettingsScreen {
         calendar.timeZone = .current
         let today = Date.now
 
-        // Check if date is in the future
-        if date > today {
-            date = vm.startDate
+        // Check if startDate is in the future
+        if startDate > today {
+            startDate = vm.startDate
             alertMessage = "နောင်အနာဂတ်ရက်များကို ရွေးချယ်၍မရပါ"
             showAlert.toggle()
             return
         }
 
-        // Check if date is within 81 days from today
+        // Check if startDate is within 81 days from today
         let minDate = calendar.date(byAdding: .day, value: -81, to: today)!
-        if date < minDate {
-            date = vm.startDate
+        if startDate < minDate {
+            startDate = vm.startDate
             alertMessage = "ရက် ၈၁ ရက်ထက်ကျော်လွန်သော ရက်များကို ရွေးချယ်၍မရပါ"
             showAlert.toggle()
             return
         }
 
-        // Check if date is Monday
-        if calendar.component(.weekday, from: date) != 2 {
-            date = vm.startDate
+        // Check if startDate is Monday
+        if calendar.component(.weekday, from: startDate) != 2 {
+            startDate = vm.startDate
             alertMessage = "တနင်္လာနေ့ကိုသာ ရွေးချယ်ပေးပါ"
             showAlert.toggle()
         } else {
-            vm.changeStartDate(date)
+            vm.changeStartDate(startDate)
             showDatePicker = false
+            showTimePicker = false
         }
         Haptic.selection.generate()
     }

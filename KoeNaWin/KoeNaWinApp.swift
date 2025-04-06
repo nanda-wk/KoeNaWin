@@ -20,6 +20,13 @@ struct KoeNaWinApp: App {
                 } else {
                     LaunchScreen()
                         .onAppear {
+                            UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
+                                if success {
+                                    print("Permission approved!")
+                                } else if let error {
+                                    print(error.localizedDescription)
+                                }
+                            }
                             DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                                 configManager.loadData()
                             }

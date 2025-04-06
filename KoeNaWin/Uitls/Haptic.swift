@@ -11,6 +11,7 @@ import UIKit
 enum Haptic {
     case impact(UIImpactFeedbackGenerator.FeedbackStyle)
     case selection
+    case notification(UINotificationFeedbackGenerator.FeedbackType)
 
     func generate() {
         guard UserDefaults.standard.bool(forKey: "isEnableHaptic") else { return }
@@ -24,6 +25,10 @@ enum Haptic {
             let generator = UISelectionFeedbackGenerator()
             generator.prepare()
             generator.selectionChanged()
+        case let .notification(feedbackType):
+            let generator = UINotificationFeedbackGenerator()
+            generator.prepare()
+            generator.notificationOccurred(feedbackType)
         }
     }
 }

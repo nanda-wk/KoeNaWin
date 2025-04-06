@@ -19,6 +19,7 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var currentProgressPercentage = 0.0
     @Published private(set) var isLoading = true
     @Published private(set) var startDate = Date.now
+    @Published private(set) var reminderDate = Date.now
 
     @Published private(set) var status: ProgressStatus = .notStarted
 
@@ -45,6 +46,7 @@ final class HomeViewModel: ObservableObject {
                     self?.totalProgressPercentage = (Double(totalDay) / 81) * 100
                     self?.currentProgressPercentage = (Double(progress.dayOfStage) / 9) * 100
                     self?.startDate = progress.startDate
+                    self?.reminderDate = progress.reminder
                 }
             }
             .store(in: &cancellables)
@@ -65,5 +67,9 @@ final class HomeViewModel: ObservableObject {
 
     func changeStartDate(_ date: Date) {
         repository.changeStartDate(date)
+    }
+
+    func changeReminder(_ date: Date) {
+        repository.changeReminderDate(date)
     }
 }
