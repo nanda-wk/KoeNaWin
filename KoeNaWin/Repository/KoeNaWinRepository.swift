@@ -19,8 +19,9 @@ enum ProgressStatus: Equatable {
 }
 
 final class KoeNaWinRepository {
-    private let stack = CoreDataStack.shared
+    private let stack: CoreDataStack
     private lazy var context = stack.viewContext
+    private let notificationEndDateKey = "koenawin-notification-end-date"
 
     private let calendar: Calendar = {
         var cal = Calendar.current
@@ -30,7 +31,11 @@ final class KoeNaWinRepository {
 
     private(set) var progressPublisher = CurrentValueSubject<ProgressStatus, Never>(.notStarted)
 
-    private func loadUserProgress() -> UserProgress? {
+    init(coreDataStack: CoreDataStack = CoreDataStack.shared) {
+        stack = coreDataStack
+    }
+
+    func loadUserProgress() -> UserProgress? {
         let request = UserProgress.latest()
         do {
             return try context.fetch(request).first
@@ -40,7 +45,17 @@ final class KoeNaWinRepository {
         return nil
     }
 
-    private func saveUserProgress(_ userProgress: UserProgress) {
+    func loadUserRecords() -> [UserRecord] {
+        let request = UserRecord.latest()
+        do {
+            return try context.fetch(request)
+        } catch {
+            print("Failed to fetch user records: \(error)")
+        }
+        return []
+    }
+
+    func saveUserProgress(_ userProgress: UserProgress) {
         let context = userProgress.managedObjectContext ?? context
         do {
             try stack.persist(in: context)
@@ -49,7 +64,7 @@ final class KoeNaWinRepository {
         }
     }
 
-    private func saveUserRecord(
+    func saveUserRecord(
         startDate: Date,
         endDate: Date,
         stage: Int16,
@@ -131,7 +146,6 @@ extension KoeNaWinRepository {
         guard let progress = loadUserProgress() else { return }
 
         let today = Date.now
-        let daysSinceStart = calendar.dateComponents([.day], from: progress.startDate, to: today).day ?? 0
 
         var completedDays = progress.completedDaysArray
         completedDays.append(today)
@@ -144,13 +158,12 @@ extension KoeNaWinRepository {
             progress.dayOfStage = 1
         }
         saveUserProgress(progress)
-        removeNotification(identifier: "koenawin-reminder-\(daysSinceStart)")
         resetPracitceCount()
         checkProgress()
     }
 
-    func startNewProgress() {
-        let today = Date.now
+    func startNewProgress(date: Date = .now) {
+        let today = date
         let weekday = calendar.component(.weekday, from: today)
 
         if weekday != 2 {
@@ -211,11 +224,15 @@ extension KoeNaWinRepository {
         newProgress.startDate = date
         newProgress.currentStage = Int16(((daysSinceStart - 1) / 9) + 1)
         newProgress.dayOfStage = Int16(((daysSinceStart - 1) % 9) + 1)
-        newProgress.reminder = reminder
         newProgress.completedDaysArray = completedDates
+        newProgress.reminder = if let progress {
+            progress.reminder
+        } else {
+            reminder
+        }
 
         saveUserProgress(newProgress)
-        scheduleNotification(from: date)
+        changeReminderDate(newProgress.reminder)
         resetPracitceCount()
         checkProgress()
     }
@@ -235,7 +252,17 @@ extension KoeNaWinRepository {
         checkProgress()
     }
 
-    private func calculateDaysUntilVegetarian(dayInStage: Int) -> Int {
+    func checkNotificationValidity() {
+        guard let endDate = UserDefaults.standard.object(forKey: notificationEndDateKey) as? Date else {
+            return
+        }
+
+        if Date.now > endDate {
+            removeAllNotification()
+        }
+    }
+
+    func calculateDaysUntilVegetarian(dayInStage: Int) -> Int {
         var day = 0
 
         if dayInStage <= 5 {
@@ -247,57 +274,35 @@ extension KoeNaWinRepository {
         return day
     }
 
-    private func resetPracitceCount() {
+    func resetPracitceCount() {
         UserDefaults.standard.set(0, forKey: "count")
         UserDefaults.standard.set(0, forKey: "round")
     }
 
-    private func scheduleNotification(from startDate: Date, hour: Int = 20, minute: Int = 0) {
+    func scheduleNotification(from startDate: Date, hour: Int = 20, minute: Int = 0) {
         removeAllNotification()
 
-        let notificationCenter = UNUserNotificationCenter.current()
-        let modifyDate = calendar.date(byAdding: .day, value: -1, to: startDate)!
+        var dateComponents = calendar.dateComponents([.hour, .minute], from: Date())
+        dateComponents.hour = hour
+        dateComponents.minute = minute
 
-        for day in 0 ..< 81 {
-            guard let reminderDate = calendar.date(byAdding: .day, value: day, to: modifyDate) else { continue }
+        let content = UNMutableNotificationContent()
+        content.title = "ကိုးနဝင်း အဓိဌာန်"
+        content.body = "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့"
+        content.sound = .default
 
-            // Set time
-            var dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: reminderDate)
-            dateComponents.hour = hour
-            dateComponents.minute = minute
-            dateComponents.timeZone = .current
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
+        let request = UNNotificationRequest(identifier: "koenawin-daily-reminder", content: content, trigger: trigger)
 
-            // Skip if the date is in the past
-            guard let finalDate = calendar.date(from: dateComponents), finalDate > Date.now else { continue }
+        UNUserNotificationCenter.current().add(request)
 
-            // Create notification content
-            let content = UNMutableNotificationContent()
-            content.title = "ကိုးနဝင်း အဓိဌာန်"
-            content.body = "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့"
-            content.sound = .default
-
-            // Create trigger using date components for precise hour and minute
-            let trigger = UNCalendarNotificationTrigger(dateMatching: calendar.dateComponents([.year, .month, .day, .hour, .minute], from: finalDate), repeats: false)
-
-            // Create request with unique identifier
-            let request = UNNotificationRequest(identifier: "koenawin-reminder-\(day)", content: content, trigger: trigger)
-
-            // Add request to notification center
-            notificationCenter.add(request) { error in
-                if let error {
-                    print("Error scheduling notification: \(error)")
-                }
-            }
-        }
+        let endDate = calendar.date(byAdding: .day, value: 81, to: startDate)
+        UserDefaults.standard.set(endDate, forKey: notificationEndDateKey)
     }
 
-    private func removeAllNotification() {
+    func removeAllNotification() {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
         UNUserNotificationCenter.current().removeAllDeliveredNotifications()
-    }
-
-    private func removeNotification(identifier: String) {
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [identifier])
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [identifier])
+        UserDefaults.standard.removeObject(forKey: notificationEndDateKey)
     }
 }

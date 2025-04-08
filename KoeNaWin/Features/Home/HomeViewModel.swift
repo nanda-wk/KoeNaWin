@@ -17,7 +17,6 @@ final class HomeViewModel: ObservableObject {
     @Published private(set) var dayUntilVegetarian = 0
     @Published private(set) var totalProgressPercentage = 0.0
     @Published private(set) var currentProgressPercentage = 0.0
-    @Published private(set) var isLoading = true
     @Published private(set) var startDate = Date.now
     @Published private(set) var reminderDate = Date.now
 
@@ -33,7 +32,6 @@ final class HomeViewModel: ObservableObject {
             .receive(on: DispatchQueue.main)
             .sink { [weak self] status in
                 self?.status = status
-                self?.isLoading = false
 
                 if case let .active(progress, prayer, dayUntilVegetarian, todayCompleted) = status {
                     let totalDay = (progress.currentStage * 9) - (9 - progress.dayOfStage)
@@ -53,7 +51,6 @@ final class HomeViewModel: ObservableObject {
     }
 
     func checkProgress() {
-        isLoading = true
         repository.checkProgress()
     }
 
@@ -71,5 +68,9 @@ final class HomeViewModel: ObservableObject {
 
     func changeReminder(_ date: Date) {
         repository.changeReminderDate(date)
+    }
+
+    func checkNotificationValidity() {
+        repository.checkNotificationValidity()
     }
 }

@@ -12,6 +12,7 @@ var koeNaWinStages = KoeNaWinStages()
 
 @MainActor
 final class ConfigManager: ObservableObject {
+    @AppStorage("selectedTab") var selectedTab: TabItem = .home
     @AppStorage("isEnableHaptic") var isEnableHaptic: Bool = true
     @AppStorage("appTheme") var appTheme: AppTheme = .system
     @Published private(set) var hasLoaded = false

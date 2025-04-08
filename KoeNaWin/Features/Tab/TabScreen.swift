@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct TabScreen: View {
-    @State private var selectedTab: TabItem = .home
+    @EnvironmentObject private var configManager: ConfigManager
     @State private var path = NavigationPath()
 
     init() {
@@ -18,9 +18,9 @@ struct TabScreen: View {
     }
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $configManager.selectedTab) {
             NavigationStack {
-                HomeScreen(selectedTab: $selectedTab, path: $path)
+                HomeScreen(path: $path)
             }
             .tabItem {
                 Label("ပင်မစာမျက်နှာ", systemImage: "house.fill")
@@ -51,7 +51,7 @@ struct TabScreen: View {
             }
             .tag(TabItem.settings)
         }
-        .onChange(of: selectedTab) { _ in
+        .onChange(of: configManager.selectedTab) { _ in
             Haptic.selection.generate()
         }
     }

@@ -23,7 +23,7 @@ final class CoreDataStack {
 
     private init() {
         persistentContainer = NSPersistentContainer(name: "KoeNaWin")
-        if EnvironmentValues.isPreview {
+        if EnvironmentValues.isPreview || Thread.current.isRunningXCTest {
             persistentContainer.persistentStoreDescriptions.first?.url = .init(fileURLWithPath: "/dev/null")
         }
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
@@ -65,5 +65,20 @@ final class CoreDataStack {
 extension EnvironmentValues {
     static var isPreview: Bool {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"
+    }
+}
+
+extension Thread {
+    var isRunningXCTest: Bool {
+        for key in threadDictionary.allKeys {
+            guard let keyAsString = key as? String else {
+                continue
+            }
+
+            if keyAsString.split(separator: ".").contains("xctest") {
+                return true
+            }
+        }
+        return false
     }
 }

@@ -10,8 +10,8 @@ import Combine
 import SwiftUI
 
 struct HomeScreen: View {
-    @Binding var selectedTab: TabItem
     @Binding var path: NavigationPath
+    @EnvironmentObject private var configManager: ConfigManager
     @EnvironmentObject private var vm: HomeViewModel
     @State private var showAlert = false
 
@@ -20,11 +20,7 @@ struct HomeScreen: View {
             Color(UIColor.systemGroupedBackground)
                 .ignoresSafeArea()
 
-            if vm.isLoading {
-                ProgressView("Loading...")
-                    .scaleEffect(1.5)
-                    .tint(.accent)
-            } else if case .active = vm.status {
+            if case .active = vm.status {
                 ScrollView {
                     VStack(spacing: 25) {
                         vegetarianSection
@@ -43,9 +39,6 @@ struct HomeScreen: View {
         }
         .navigationTitle("ကိုးနဝင်း")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            vm.checkProgress()
-        }
     }
 }
 
@@ -123,7 +116,7 @@ extension HomeScreen {
         .contentShape(Rectangle())
         .onTapGesture {
             if let currentStage = koeNaWinStages.first(where: { $0.stage == vm.stage }) {
-                selectedTab = .stages
+                configManager.selectedTab = .stages
                 // Add the current stage to the navigation path
                 if path.count > 0 {
                     path.removeLast(path.count)
@@ -159,7 +152,7 @@ extension HomeScreen {
         .listSectionBackground
         .contentShape(Rectangle())
         .onTapGesture {
-            selectedTab = .practice
+            configManager.selectedTab = .practice
         }
     }
 
@@ -182,7 +175,7 @@ extension HomeScreen {
 
 #Preview {
     NavigationStack {
-        HomeScreen(selectedTab: .constant(.home), path: .constant(NavigationPath()))
+        HomeScreen(path: .constant(NavigationPath()))
             .previewEnvironment()
     }
 }

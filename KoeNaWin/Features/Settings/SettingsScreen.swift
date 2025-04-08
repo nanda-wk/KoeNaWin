@@ -63,7 +63,6 @@ struct SettingsScreen: View {
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             startDate = vm.startDate
-            reminderDate = vm.reminderDate
         }
         .sheet(isPresented: $showDatePicker) {
             VStack(alignment: .trailing) {
@@ -134,6 +133,9 @@ extension SettingsScreen {
                 }
             }
             .foregroundStyle(.primary)
+            .onAppear {
+                reminderDate = vm.reminderDate
+            }
             .sheet(isPresented: $showTimePicker) {
                 VStack(alignment: .trailing) {
                     Button("သိမ်းဆည်းမည်") {
