@@ -36,6 +36,7 @@ struct KoeNaWinApp: App {
                     }
                 }
                 configManager.loadData()
+                configManager.selectedTab = .home
                 vm.checkProgress()
                 vm.checkNotificationValidity()
             }
