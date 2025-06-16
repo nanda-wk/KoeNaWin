@@ -5,9 +5,11 @@
 //  Created by Nanda WK on 2025-03-29.
 //
 
+import StoreKit
 import SwiftUI
 
 struct SettingsScreen: View {
+    @Environment(\.requestReview) private var requestReview
     @EnvironmentObject private var vm: HomeViewModel
     @EnvironmentObject private var configManager: ConfigManager
     @State private var startDate: Date = .now
@@ -225,7 +227,9 @@ extension SettingsScreen {
     }
 
     var rateStars: some View {
-        Button(action: {}) {
+        Button{
+            requestReview()
+        } label: {
             HStack {
                 Image(systemName: "star.fill")
                     .foregroundColor(.white)
@@ -249,7 +253,7 @@ extension SettingsScreen {
     }
 
     var shareWithFriend: some View {
-        ShareLink(item: URL(string: "https://apps.apple.com/us")!) {
+        ShareLink(item: URL(string: "https://apps.apple.com/us/app/koenawin-practice/id6747106061")!) {
             HStack {
                 Image(systemName: "square.and.arrow.up.fill")
                     .foregroundStyle(.white)
@@ -272,7 +276,9 @@ extension SettingsScreen {
     }
 
     var suggestionFeedback: some View {
-        Button(action: {}) {
+        Button(action: {
+
+        }) {
             HStack {
                 Image(systemName: "paperplane.fill")
                     .foregroundStyle(.white)
@@ -358,6 +364,15 @@ extension SettingsScreen {
             showTimePicker = false
         }
         Haptic.selection.generate()
+    }
+
+    private func sendFeedback() {
+      let mailtoString = "mailto:nandawinkyu.ix@gmail.com?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+      let mailToUrl = URL(string: mailtoString!)!
+
+      if UIApplication.shared.canOpenURL(mailToUrl) {
+        UIApplication.shared.open(mailToUrl, options: [:])
+      }
     }
 }
 
