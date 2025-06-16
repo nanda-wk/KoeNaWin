@@ -1,0 +1,965 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+      "shouldTranslate" : false
+    },
+    "(%lld)ပတ်" : {
+      "shouldTranslate" : false
+    },
+    "%@" : {
+      "localizations" : {
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "%@ %%" : {
+      "shouldTranslate" : false
+    },
+    "%lld" : {
+      "shouldTranslate" : false
+    },
+    "%lld / 81" : {
+      "shouldTranslate" : false
+    },
+    "addhithan-stage-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhitthan Stage (%lld)"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်အဆင့် (%lld)"
+          }
+        }
+      }
+    },
+    "appearance" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အက်ပ် အသွင်အပြင်"
+          }
+        }
+      }
+    },
+    "appLanguage" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "App Language"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဘာသာစကား"
+          }
+        }
+      }
+    },
+    "bead-count-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bead count (%lld)"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld ပတ်"
+          }
+        }
+      }
+    },
+    "cancel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "မလုပ်တော့ပါ"
+          }
+        }
+      }
+    },
+    "chooseLanguage-navTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a language"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဘာသာစကား ရွေးချယ်ပါ"
+          }
+        }
+      }
+    },
+    "chooseLanguage-next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဆက်သွားပါ"
+          }
+        }
+      }
+    },
+    "Count" : {
+      "shouldTranslate" : false
+    },
+    "Count: %lld /%lld" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "Count: %1$lld /%2$lld"
+          }
+        }
+      },
+      "shouldTranslate" : false
+    },
+    "finished" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Finished"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ပြီးဆုံးပါပြီ"
+          }
+        }
+      }
+    },
+    "haptic-toggle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Haptic on"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "တုန်ခါမှု ဖွင့်မယ်"
+          }
+        }
+      }
+    },
+    "home-tab" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Home"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ပင်မစာမျက်နှာ"
+          }
+        }
+      }
+    },
+    "homeScreen-completionSection-day-left-%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ days left."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ ရက်ကျန်"
+          }
+        }
+      }
+    },
+    "homeScreen-completionSection-day-left-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld day left."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld days left."
+                }
+              }
+            }
+          }
+        },
+        "my" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "%lld ရက်ကျန်"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "homeScreen-completionSection-progress" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhitthan Progress"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်ပြီးမြောက်မှု"
+          }
+        }
+      }
+    },
+    "homeScreen-currentStageCompletion-day-%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / 9 Days"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%@ / 9 ရက်"
+          }
+        }
+      }
+    },
+    "homeScreen-currentStageCompletion-day-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / 9 Days"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld / 9 ရက်"
+          }
+        }
+      }
+    },
+    "homeScreen-navTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "KoeNaWin"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ကိုးနဝင်း"
+          }
+        }
+      }
+    },
+    "homeScreen-vegetarianSection-isVegetarian" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is vegetarian day."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့ သတ်သတ်လွတ်စားရန်။"
+          }
+        }
+      }
+    },
+    "homeScreen-vegetarianSection-vegetarian-in-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "variations" : {
+            "plural" : {
+              "one" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vegetarian day in %lld day."
+                }
+              },
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "Vegetarian day in %lld days."
+                }
+              }
+            }
+          }
+        },
+        "my" : {
+          "variations" : {
+            "plural" : {
+              "other" : {
+                "stringUnit" : {
+                  "state" : "translated",
+                  "value" : "သတ်သတ်လွတ်စားရန် %lld ရက်အလို။"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "KoeNaWin(ကိုးနဝင်း)" : {
+      "shouldTranslate" : false
+    },
+    "noticeCard-active-message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have finished today's Adhitthan."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့အတွက်အဓိဌာန်ကို အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါပြီ။"
+          }
+        }
+      }
+    },
+    "noticeCard-button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "စတင်ရန်"
+          }
+        }
+      }
+    },
+    "noticeCard-completed-button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start Again"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ပြန်လည်စတင်ရန်"
+          }
+        }
+      }
+    },
+    "noticeCard-completed-message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You have finished 9 stages of Adhitthan."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သင်သည် ကိုးနဝင်း အဓိဌာန်ကို အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါပြီ။"
+          }
+        }
+      }
+    },
+    "noticeCard-missedDay-button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ပြန်လည်စတင်ရန်"
+          }
+        }
+      }
+    },
+    "noticeCard-missedDay-message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Restart your Adhitthan today."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့ သင်၏အဓိဌာန်ကို ပြန်လည်စတင်ပါ။"
+          }
+        }
+      }
+    },
+    "noticeCard-missedDay-title-%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Missed Adhitthan on  %@."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သင်သည် အဓိဌာန်ကို %@ ရက်နေ့တွင် ပျက်ကွက်ခဲ့သည်။"
+          }
+        }
+      }
+    },
+    "noticeCard-notMonday-message-%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "You can start your Addithan only on Monday. Try again on %@."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်ကို တနင်္လာနေ့ မှသာ စတင်နိုင်ပါသည်။ လာမည့် %@ တွင်စတင်နိုင်ပါသည်။"
+          }
+        }
+      }
+    },
+    "noticeCard-notMonday-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Not Monday."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "တနင်္လာနေ့ မဟုတ်သေးပါ။"
+          }
+        }
+      }
+    },
+    "noticeCard-notStarted-message" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Start your Adhitthan now."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်ကို အခုပဲစတင်လိုက်ပါ။"
+          }
+        }
+      }
+    },
+    "noticeCard-notStarted-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Adhitthan yet."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန် မစတင်ရသေးပါ"
+          }
+        }
+      }
+    },
+    "noticeCard-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Congratulations"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဂုဏ်ယူပါတယ်။"
+          }
+        }
+      }
+    },
+    "ok" : {
+      "localizations" : {
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အိုကေ"
+          }
+        }
+      }
+    },
+    "practice-tab" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်ကျင့်စဉ်"
+          }
+        }
+      }
+    },
+    "practiceScreen-alert" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today’s Adhitthan finished."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့ အဓိဌာန် ပြီးဆုံးပါပြီ။"
+          }
+        }
+      }
+    },
+    "practiceScreen-confirmDialog" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Do you want to reset beads count?"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အပတ်ရေ အစမှ ပြန်စမလား။"
+          }
+        }
+      }
+    },
+    "practiceScreen-navTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today's Adhitthan"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့ အဓိဌာန်"
+          }
+        }
+      }
+    },
+    "practiceScreen-total-beads-%lld /%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total beads: %1$lld /%2$lld"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အပတ်ရေ : %1$lld /%2$lld"
+          }
+        }
+      }
+    },
+    "privacy-policy" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Privacy Policy"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ကိုယ်ရေးအချက်အလက် မူဝါဒ"
+          }
+        }
+      }
+    },
+    "rate-app" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rate app"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "စတားပေးမယ်"
+          }
+        }
+      }
+    },
+    "reminder-time" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reminder Time"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သတိပေးချက်အချိန်"
+          }
+        }
+      }
+    },
+    "save" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သိမ်းဆည်းမည်"
+          }
+        }
+      }
+    },
+    "send-feedback" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send Feedback"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အကြံပြုချက်ပေးပို့မယ်"
+          }
+        }
+      }
+    },
+    "settingScreen-alert-isFuture" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cannot select future dates."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "နောင်အနာဂတ်ရက်များကို ရွေးချယ်၍မရပါ။"
+          }
+        }
+      }
+    },
+    "settingScreen-alert-isPast-date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Dates beyond 81 days cannot be selected."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ရက် 81 ရက်ထက်ကျော်လွန်သော ရက်များကို ရွေးချယ်၍မရပါ။"
+          }
+        }
+      }
+    },
+    "settingScreen-alert-not-monday" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Please select Monday only."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "တနင်္လာနေ့ကိုသာ ရွေးချယ်ပေးပါ။"
+          }
+        }
+      }
+    },
+    "settingScreen-navTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Settings"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ပြင်ဆင်ချက်"
+          }
+        }
+      }
+    },
+    "settingsScreen-adhitthan-change-start-date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Change Adhitthan start date."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်စတင်မည့်ရက်ကို ပြောင်းလဲရန်။"
+          }
+        }
+      }
+    },
+    "settingsScreen-adhitthan-start-date" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhitthan Start Date"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်စတင်ရက်"
+          }
+        }
+      }
+    },
+    "share-with-friends" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Share with friends"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သူငယ်ချင်းတွေကို​ ရှဲမယ်"
+          }
+        }
+      }
+    },
+    "stageDetailsView-section-text-%lld" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်အဆင့် (%lld) အောင်မြင်ပြီးပါက"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်အဆင့် (%lld) အောင်မြင်ပြီးပါက"
+          }
+        }
+      }
+    },
+    "stagesScreen-listCell-isVegetarian" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သတ်သတ်လွတ်စားရန်။"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သတ်သတ်လွတ်စားရန်။"
+          }
+        }
+      }
+    },
+    "stagesScreen-navTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Adhitthan Stages"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်အဆင့်"
+          }
+        }
+      }
+    },
+    "V%@" : {
+      "shouldTranslate" : false
+    },
+    "yes" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Yes"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဟုတ်ကဲ့"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}

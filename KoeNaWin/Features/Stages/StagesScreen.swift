@@ -13,7 +13,7 @@ struct StagesScreen: View {
             VStack(spacing: 12) {
                 ForEach(koeNaWinStages) { stage in
                     NavigationLink(value: stage) {
-                        LevelCell(title: "အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))", level: stage.stage)
+                        StageCell(stage: stage.stage)
                     }
                     .buttonStyle(.plain)
                 }
@@ -21,7 +21,7 @@ struct StagesScreen: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("အဓိဌာန်အဆင့်")
+        .navigationTitle("stagesScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
         .navigationDestination(for: KoeNaWinStage.self) { stage in
             StageDetailsView(stage: stage)
@@ -30,12 +30,12 @@ struct StagesScreen: View {
 }
 
 extension StagesScreen {
-    private func LevelCell(title: String, level: Int) -> some View {
+    private func StageCell(stage: Int) -> some View {
         HStack(spacing: 6) {
-            Image(systemName: "\(level).circle.fill")
+            Image(systemName: "\(stage).circle.fill")
                 .foregroundStyle(.primary)
 
-            Text(title)
+            Text("addhithan-stage-\(stage)")
                 .font(.footnote)
                 .fontWeight(.bold)
 

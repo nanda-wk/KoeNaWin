@@ -16,7 +16,7 @@ struct SettingsScreen: View {
     @State private var showDatePicker = false
     @State private var showTimePicker = false
     @State private var showAlert = false
-    @State private var alertMessage = ""
+    @State private var alertMessage: LocalizedStringKey = ""
 
     @State private var height: CGFloat = 500
 
@@ -44,36 +44,36 @@ struct SettingsScreen: View {
             }
 
             Section {
+                appLanguage
                 hapticToggle
                 reminderTime
                 appTheme
             }
 
-            addithanStartDate
+            adhitthanStartDate
 
             Section {
-                rateStart
+                rateStars
                 shareWithFriend
                 suggestionFeedback
             }
 
             privacyPolicy
         }
-        .navigationTitle("ပြင်ဆင်ချက်")
+        .navigationTitle("settingScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             startDate = vm.startDate
         }
         .sheet(isPresented: $showDatePicker) {
             VStack(alignment: .trailing) {
-                Button("သိမ်းဆည်းမည်") {
+                Button("save") {
                     checkDate()
                 }
                 .padding()
 
                 DatePicker("", selection: $startDate, displayedComponents: .date)
                     .datePickerStyle(.graphical)
-                    .environment(\.locale, Locale(identifier: "my_MM"))
             }
             .background(
                 GeometryReader { proxy in
@@ -85,10 +85,9 @@ struct SettingsScreen: View {
             )
             .id(height)
             .presentationDetents([.height(height)])
-            .interactiveDismissDisabled(true)
         }
         .alert(alertMessage, isPresented: $showAlert) {
-            Button("အိုကေ", role: .cancel) {
+            Button("ok", role: .cancel) {
                 showDatePicker.toggle()
             }
         }
@@ -96,7 +95,7 @@ struct SettingsScreen: View {
             NavigationStack {
                 WebView(url: "https://sites.google.com/view/koenawin/privacy")
                     .ignoresSafeArea(edges: .bottom)
-                    .navigationTitle("Privacy Policy")
+                    .navigationTitle("privacy-policy")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
@@ -111,8 +110,27 @@ struct SettingsScreen: View {
 }
 
 extension SettingsScreen {
+    var appLanguage: some View {
+        Button {
+            if let url = URL(string: UIApplication.openSettingsURLString),
+               UIApplication.shared.canOpenURL(url)
+            {
+                UIApplication.shared.open(url)
+            }
+        } label: {
+            HStack {
+                Text("appLanguage")
+                Spacer()
+                Text(displayLocaleName)
+                    .font(.headline)
+                    .foregroundStyle(.accent)
+            }
+        }
+        .foregroundStyle(.primary)
+    }
+
     var hapticToggle: some View {
-        Toggle("တုန်ခါမှု ဖွင့်မယ်", isOn: $configManager.isEnableHaptic)
+        Toggle("haptic-toggle", isOn: $configManager.isEnableHaptic)
             .tint(.accent)
     }
 
@@ -123,7 +141,7 @@ extension SettingsScreen {
                 showTimePicker.toggle()
             } label: {
                 HStack {
-                    Text("သတိပေးချက်အချိန်")
+                    Text("reminder-time")
                         .font(.body)
 
                     Spacer()
@@ -138,7 +156,7 @@ extension SettingsScreen {
             }
             .sheet(isPresented: $showTimePicker) {
                 VStack(alignment: .trailing) {
-                    Button("သိမ်းဆည်းမည်") {
+                    Button("save") {
                         vm.changeReminder(reminderDate)
                         showTimePicker.toggle()
                     }
@@ -146,7 +164,6 @@ extension SettingsScreen {
                     DatePicker("", selection: $reminderDate, displayedComponents: .hourAndMinute)
                         .datePickerStyle(.wheel)
                         .labelsHidden()
-                        .environment(\.locale, Locale(identifier: "my_MM"))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -169,7 +186,7 @@ extension SettingsScreen {
     }
 
     var appTheme: some View {
-        Picker("အက်ပ် အသွင်အပြင်", selection: $configManager.appTheme) {
+        Picker("appearance", selection: $configManager.appTheme) {
             ForEach(AppTheme.allCases) { theme in
                 Text(theme.rawValue)
                     .tag(theme)
@@ -177,7 +194,7 @@ extension SettingsScreen {
         }
     }
 
-    var addithanStartDate: some View {
+    var adhitthanStartDate: some View {
         Section {
             Button {
                 showDatePicker.toggle()
@@ -192,7 +209,7 @@ extension SettingsScreen {
                                 .fill(.orange)
                         )
 
-                    Text("အဓိဌာန်စတင်ရက်")
+                    Text("settingsScreen-adhitthan-start-date")
                         .font(.body)
 
                     Spacer()
@@ -203,11 +220,11 @@ extension SettingsScreen {
             }
             .foregroundStyle(.primary)
         } footer: {
-            Text("အဓိဌာန်စတင်မည့်ရက်ကို ပြောင်းလဲရန် အပေါ်က ခလုတ်ကို နှိပ်ပါ။")
+            Text("settingsScreen-adhitthan-change-start-date")
         }
     }
 
-    var rateStart: some View {
+    var rateStars: some View {
         Button(action: {}) {
             HStack {
                 Image(systemName: "star.fill")
@@ -219,7 +236,7 @@ extension SettingsScreen {
                             .fill(.yellow)
                     )
 
-                Text("စတားပေးမယ်")
+                Text("rate-app")
                     .font(.body)
 
                 Spacer()
@@ -242,7 +259,7 @@ extension SettingsScreen {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(.blue)
                     )
-                Text("သူငယ်ချင်းတွေကို​ ရှဲမယ်")
+                Text("share-with-friends")
                     .font(.body)
 
                 Spacer()
@@ -266,7 +283,7 @@ extension SettingsScreen {
                             .fill(.pink)
                     )
 
-                Text("အကြံပြုချက်ပေးပို့မယ်")
+                Text("send-feedback")
                     .font(.body)
 
                 Spacer()
@@ -293,7 +310,7 @@ extension SettingsScreen {
                                 .fill(.blue)
                         )
 
-                    Text("Privacy Policy")
+                    Text("privacy-policy")
                         .font(.body)
 
                     Spacer()
@@ -316,7 +333,7 @@ extension SettingsScreen {
         // Check if startDate is in the future
         if startDate > today {
             startDate = vm.startDate
-            alertMessage = "နောင်အနာဂတ်ရက်များကို ရွေးချယ်၍မရပါ"
+            alertMessage = "settingScreen-alert-isFuture"
             showAlert.toggle()
             return
         }
@@ -325,7 +342,7 @@ extension SettingsScreen {
         let minDate = calendar.date(byAdding: .day, value: -81, to: today)!
         if startDate < minDate {
             startDate = vm.startDate
-            alertMessage = "ရက် ၈၁ ရက်ထက်ကျော်လွန်သော ရက်များကို ရွေးချယ်၍မရပါ"
+            alertMessage = "settingScreen-alert-isPast-date"
             showAlert.toggle()
             return
         }
@@ -333,7 +350,7 @@ extension SettingsScreen {
         // Check if startDate is Monday
         if calendar.component(.weekday, from: startDate) != 2 {
             startDate = vm.startDate
-            alertMessage = "တနင်္လာနေ့ကိုသာ ရွေးချယ်ပေးပါ"
+            alertMessage = "settingScreen-alert-not-monday"
             showAlert.toggle()
         } else {
             vm.changeStartDate(startDate)

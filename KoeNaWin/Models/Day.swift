@@ -33,4 +33,8 @@ enum Day: String, Decodable, Equatable, Identifiable, Hashable {
             "တနင်္ဂနွေ"
         }
     }
+
+    func localized(to language: String) -> String {
+        language == "en" ? rawValue : desc
+    }
 }

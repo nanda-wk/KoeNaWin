@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PracticeScreen: View {
+    @EnvironmentObject private var configManager: ConfigManager
     @EnvironmentObject private var vm: HomeViewModel
     @AppStorage("count") private var count = 0
     @AppStorage("round") private var round = 0
@@ -22,7 +23,7 @@ struct PracticeScreen: View {
 
             if case .active = vm.status, !vm.todayCompleted {
                 VStack {
-                    Text(vm.currentPrayer?.day.desc ?? "")
+                    Text(vm.currentPrayer?.day.localized(to: currentLanguage) ?? "")
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundStyle(.accent)
@@ -35,7 +36,7 @@ struct PracticeScreen: View {
 
                     Spacer()
 
-                    Text("\(count.toMyanmarDigits())")
+                    Text("\(count)")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                         .monospaced()
                         .foregroundStyle(.accent)
@@ -65,7 +66,7 @@ struct PracticeScreen: View {
                     Spacer()
 
                     HStack(spacing: 20) {
-                        Text("အပတ်ရေ: \(round.toMyanmarDigits()) /\((vm.currentPrayer?.rounds ?? 0).toMyanmarDigits())")
+                        Text("practiceScreen-total-beads-\(round) /\(vm.currentPrayer?.rounds ?? 0)")
                             .font(.footnote)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 10)
@@ -89,7 +90,7 @@ struct PracticeScreen: View {
                                 )
                         }
 
-                        Text("Count: \(count.toMyanmarDigits()) /\(totalCount.toMyanmarDigits())")
+                        Text("Count: \(count) /\(totalCount)")
                             .font(.footnote)
                             .foregroundStyle(.white)
                             .padding(.horizontal, 10)
@@ -107,23 +108,19 @@ struct PracticeScreen: View {
                 NoticeCard(status: vm.status)
             }
         }
-        .confirmationDialog("အဓိဌာန် အစမှ ပြန်စမလား?", isPresented: $showDialog, titleVisibility: .visible) {
-            Button("အစမှ ပြန်စမည်။", role: .destructive, action: resetCount)
-            Button("မလုပ်တော့ပါ", role: .cancel, action: {})
+        .confirmationDialog("practiceScreen-confirmDialog", isPresented: $showDialog, titleVisibility: .visible) {
+            Button("yes", action: resetCount)
         }
-        .alert("ဒီနေ့ အဓိဌာန် ပြီးဆုံးပါပြီ", isPresented: $showComplete) {
-            Button("ပြီးဆုံးပါပြီ") {
-                markTodayComplete()
-            }
-
-            Button("မလုပ်တော့ပါ", role: .destructive, action: {})
+        .alert("practiceScreen-alert", isPresented: $showComplete) {
+            Button("finished", action: markTodayComplete)
+            Button("cancel", action: {})
         }
-        .navigationTitle("ဒီနေ့ အဓိဌာန်")
+        .navigationTitle("practiceScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
             if case .active = vm.status, !vm.todayCompleted {
                 ToolbarItem(placement: .topBarTrailing) {
-                    Button("ပြီးဆုံးပါပြီ") {
+                    Button("finished") {
                         showComplete.toggle()
                     }
                 }

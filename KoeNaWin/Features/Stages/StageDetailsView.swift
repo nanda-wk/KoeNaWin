@@ -16,7 +16,7 @@ struct StageDetailsView: View {
             VStack(spacing: 25) {
                 Section {
                     VStack(alignment: .leading) {
-                        Text("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits())) အောင်မြင်ပြီးပါက")
+                        Text("stageDetailsView-section-text-\(stage.stage)")
                             .font(.headline)
 
                         Divider()
@@ -44,7 +44,7 @@ struct StageDetailsView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("အဓိဌာန်အဆင့် (\(stage.stage.toMyanmarDigits()))")
+        .navigationTitle("addhithan-stage-\(stage.stage)")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             vm.checkProgress()
@@ -75,9 +75,10 @@ struct ListCell: View {
                     }
 
                     if prayer.isVegetarian {
-                        Text("သတ်သတ်လွတ်စားရန်။")
+                        Text("stagesScreen-listCell-isVegetarian")
                             .font(.callout)
                             .foregroundStyle(.red)
+                            .padding(.leading, 15)
                     }
                 }
 
@@ -86,7 +87,7 @@ struct ListCell: View {
                         .font(.body)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("(\(prayer.rounds.toMyanmarDigits()))ပတ်")
+                    Text("(\(prayer.rounds))ပတ်")
                         .font(.body)
                 }
             }

@@ -37,7 +37,7 @@ struct HomeScreen: View {
                 NoticeCard(status: vm.status)
             }
         }
-        .navigationTitle("ကိုးနဝင်း")
+        .navigationTitle("homeScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
     }
 }
@@ -45,7 +45,7 @@ struct HomeScreen: View {
 extension HomeScreen {
     var completionSection: some View {
         VStack {
-            Text("အဓိဌာန်ပြီးမြောက်မှု")
+            Text("homeScreen-completionSection-progress")
                 .font(.title2)
                 .fontWeight(.bold)
 
@@ -65,13 +65,13 @@ extension HomeScreen {
                         .rotationEffect(.degrees(-90))
 
                     // Center text
-                    Text("\(vm.totalDay.toMyanmarDigits()) / ၈၁")
+                    Text("\(vm.totalDay) / 81")
                         .font(.headline)
                 }
                 .padding()
 
                 VStack(spacing: 20) {
-                    Text("\(vm.totalProgressPercentage.toMyanmarDigits()) %")
+                    Text("\(String(format: "%.1f", vm.totalProgressPercentage)) %")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal)
@@ -85,7 +85,7 @@ extension HomeScreen {
                         Image(systemName: "staroflife.fill")
                             .font(.caption2)
 
-                        Text("\((81 - vm.totalDay).toMyanmarDigits()) ရက်ကျန်သည်")
+                        Text("homeScreen-completionSection-day-left-\(81 - vm.totalDay)")
                             .lineLimit(1, reservesSpace: true)
                     }
                 }
@@ -97,15 +97,15 @@ extension HomeScreen {
 
     var currentStageCompletion: some View {
         VStack {
-            Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
+            Text("addhithan-stage-\(vm.stage)")
                 .font(.title2)
                 .fontWeight(.bold)
 
             ProgressView(value: Double(vm.day), total: 9) {} currentValueLabel: {
                 HStack {
-                    Text("\(vm.currentProgressPercentage.toMyanmarDigits()) %")
+                    Text("\(String(format: "%.1f", vm.currentProgressPercentage)) %")
                     Spacer()
-                    Text("\(vm.day.toMyanmarDigits()) / ၉ ရက်")
+                    Text("homeScreen-currentStageCompletion-day-\(vm.day)")
                 }
                 .font(.subheadline)
             }
@@ -132,9 +132,9 @@ extension HomeScreen {
     var todayMantra: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("\(vm.currentPrayer?.day.desc ?? "")")
+                Text("\(vm.currentPrayer?.day.localized(to: currentLanguage) ?? "")")
                 Spacer()
-                Text("အဓိဌာန်အဆင့် (\(vm.stage.toMyanmarDigits()))")
+                Text("addhithan-stage-\(vm.stage)")
             }
             .font(.subheadline)
             .fontWeight(.medium)
@@ -144,7 +144,7 @@ extension HomeScreen {
                 .font(.title)
                 .fontWeight(.bold)
 
-            Text("အပတ်ရေ (\((vm.currentPrayer?.rounds ?? 0).toMyanmarDigits()))ပတ်")
+            Text("bead-count-\(vm.currentPrayer?.rounds ?? 0)")
                 .font(.body)
                 .foregroundStyle(.secondary)
         }
@@ -159,7 +159,8 @@ extension HomeScreen {
     @ViewBuilder
     var vegetarianSection: some View {
         let todayVegetarian = vm.dayUntilVegetarian == 0
-        let message = todayVegetarian ? "ဒီနေ့ သတ်သတ်လွတ်စားရန်" : "သတ်သတ်လွတ်စားရန် \(vm.dayUntilVegetarian.toMyanmarDigits()) ရက်အလို"
+        let message: LocalizedStringKey = todayVegetarian ? "homeScreen-vegetarianSection-isVegetarian" : "homeScreen-vegetarianSection-vegetarian-in-\(vm.dayUntilVegetarian)"
+
         if vm.stage == 9, vm.day > 5 {
             EmptyView()
         } else {

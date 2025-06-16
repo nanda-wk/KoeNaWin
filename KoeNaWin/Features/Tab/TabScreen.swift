@@ -23,7 +23,7 @@ struct TabScreen: View {
                 HomeScreen(path: $path)
             }
             .tabItem {
-                Label("ပင်မစာမျက်နှာ", systemImage: "house.fill")
+                Label("home-tab", systemImage: "house.fill")
             }
             .tag(TabItem.home)
 
@@ -31,7 +31,7 @@ struct TabScreen: View {
                 PracticeScreen()
             }
             .tabItem {
-                Label("အဓိဌာန်ကျင့်စဉ်", systemImage: "leaf.fill")
+                Label("practice-tab", systemImage: "leaf.fill")
             }
             .tag(TabItem.practice)
 
@@ -39,7 +39,7 @@ struct TabScreen: View {
                 StagesScreen()
             }
             .tabItem {
-                Label("အဓိဌာန်အဆင့်", systemImage: "squares.leading.rectangle.fill")
+                Label("stagesScreen-navTitle", systemImage: "squares.leading.rectangle.fill")
             }
             .tag(TabItem.stages)
 
@@ -47,7 +47,7 @@ struct TabScreen: View {
                 SettingsScreen()
             }
             .tabItem {
-                Label("ပြင်ဆင်ချက်", systemImage: "gearshape.2.fill")
+                Label("settingScreen-navTitle", systemImage: "gearshape.2.fill")
             }
             .tag(TabItem.settings)
         }

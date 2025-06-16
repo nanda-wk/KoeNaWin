@@ -11,39 +11,39 @@ struct NoticeCard: View {
     @EnvironmentObject private var vm: HomeViewModel
 
     var icon: String = "progress.indicator"
-    var title: String = ""
-    var message: String = ""
-    var button: String = ""
+    var title: LocalizedStringKey = ""
+    var message: LocalizedStringKey = ""
+    var button: LocalizedStringKey = ""
 
     init(status: ProgressStatus) {
         switch status {
         case let .active(_, _, _, todayCompleted):
             if todayCompleted {
                 icon = "checkmark.circle.fill"
-                title = "ဒီနေ့အတွက်အဓိဌာန် ပြီးဆုံးပါပြီ"
-                message = "ဒီနေ့အတွက်အဓိဌာန်ကို အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါပြီ"
+                title = "noticeCard-title"
+                message = "noticeCard-active-message"
                 button = ""
             }
         case let .missedDay(failureDate):
             icon = "exclamationmark.triangle.fill"
-            title = "သင်သည် အဓိဌာန်ကို \(failureDate.toStringWith(format: .yyyy_MMMM_d)) ရက်နေ့တွင် ပျက်ကွက်ခဲ့သည်"
-            message = "အဓိဌာန်ကို ပြန်လည်စတင်ရန် အောက်ပါခလုတ်ကို နှိပ်ပါ"
-            button = "ပြန်လည်စတင်ရန်"
+            title = "noticeCard-missedDay-title-\(failureDate.toStringWith(format: .yyyy_MMMM_d))"
+            message = "noticeCard-missedDay-message"
+            button = "noticeCard-missedDay-button"
         case .completed:
             icon = "checkmark.circle.fill"
-            title = "အဓိဌာန် ပြီးဆုံးပါပြီ"
-            message = "သင်သည် ကိုးနဝင်း အဓိဌာန်ကို အောင်မြင်စွာ ပြီးဆုံးခဲ့ပါပြီ"
-            button = "ပြန်လည်စတင်ရန်"
+            title = "noticeCard-title"
+            message = "noticeCard-completed-message"
+            button = "noticeCard-completed-button"
         case .notStarted:
             icon = "play.circle.fill"
-            title = "အဓိဌာန် မစတင်ရသေးပါ"
-            message = "အဓိဌာန်ကို စတင်ရန် အောက်ပါခလုတ်ကို နှိပ်ပါ"
-            button = "စတင်ရန်"
+            title = "noticeCard-notStarted-title"
+            message = "noticeCard-notStarted-message"
+            button = "noticeCard-button"
         case let .notMonday(nextMonday):
             icon = "exclamationmark.triangle.fill"
-            title = "တနင်္လာနေ့ မဟုတ်သေးပါ"
-            message = "အဓိဌာန်ကို တနင်္လာနေ့ မှသာ စတင်နိုင်ပါသည်။ လာမည့် \(nextMonday.toStringWith(format: .yyyy_MMMM_d)) (တနင်္လာနေ့)  တွင်စတင်နိုင်ပါသည်။"
-            button = "စတင်ရန်"
+            title = "noticeCard-notMonday-title"
+            message = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
+            button = "noticeCard-button"
         }
     }
 
