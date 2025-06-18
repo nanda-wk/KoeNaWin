@@ -279,7 +279,7 @@ extension SettingsScreen {
     }
 
     var suggestionFeedback: some View {
-        Button(action: {}) {
+        Button(action: sendFeedback) {
             HStack {
                 Image(systemName: "paperplane.fill")
                     .foregroundStyle(.white)
