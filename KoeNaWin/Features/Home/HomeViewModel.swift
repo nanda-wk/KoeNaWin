@@ -46,6 +46,10 @@ final class HomeViewModel: ObservableObject {
                     self?.startDate = progress.startDate
                     self?.reminderDate = progress.reminder
                 }
+
+                if case let .willStart(date) = status {
+                    self?.startDate = date
+                }
             }
             .store(in: &cancellables)
     }

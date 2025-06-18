@@ -183,6 +183,9 @@ extension PracticeScreen {
         case let .notMonday(nextMonday):
             alertMessage = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
             result = true
+        case .willStart:
+            alertMessage = "noticeCard-willStart-title"
+            result = true
         }
 
         return result

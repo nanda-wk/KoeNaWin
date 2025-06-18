@@ -471,4 +471,33 @@ final class KoeNaWinRepositoryTests: XCTestCase {
             XCTAssertEqual(repository.calculateDaysUntilVegetarian(dayInStage: 9), 5) // 9 - (9 - 5) = 5
         }
     }
+
+    func testChangeStartDateToFuture() {
+        // Given
+        let calendar = Calendar.current
+        let today = Date()
+        let originalStartDate = calendar.date(byAdding: .day, value: -5, to: today)!
+        let newStartDate = calendar.date(byAdding: .day, value: 10, to: today)!
+
+        createMockUserProgress(
+            startDate: originalStartDate,
+            currentStage: 1,
+            dayOfStage: 6,
+            completedDays: []
+        )
+
+        // When
+        repository.changeStartDate(newStartDate)
+
+        let progress = repository.loadUserProgress()
+
+        // Then
+        XCTAssertEqual(progress?.startDate, newStartDate)
+
+        // Should be day 4 (3 days since start)
+        XCTAssertEqual(progress?.dayOfStage, 3)
+
+        // Should have 3 completed days (days 1-3)
+        XCTAssertEqual(progress?.completedDaysArray.count, 3)
+    }
 }

@@ -337,14 +337,6 @@ extension SettingsScreen {
         calendar.timeZone = .current
         let today = Date.now
 
-        // Check if startDate is in the future
-        if startDate > today {
-            startDate = vm.startDate
-            alertMessage = "settingScreen-alert-isFuture"
-            showAlert.toggle()
-            return
-        }
-
         // Check if startDate is within 81 days from today
         let minDate = calendar.date(byAdding: .day, value: -81, to: today)!
         if startDate < minDate {

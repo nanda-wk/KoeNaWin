@@ -8,6 +8,7 @@
 import Combine
 import CoreData
 import Foundation
+import SwiftUI
 import UserNotifications
 
 enum ProgressStatus: Equatable {
@@ -16,12 +17,15 @@ enum ProgressStatus: Equatable {
     case completed
     case notStarted
     case notMonday(nextMonday: Date)
+    case willStart(date: Date)
 }
 
 final class KoeNaWinRepository {
     private let stack: CoreDataStack
     private lazy var context = stack.viewContext
     private let notificationEndDateKey = "koenawin-notification-end-date"
+    private let dailyReminderNotificationIdentifier = "koenawin-daily-reminder"
+    private let beforeStartNotificationIdentifier = "koenawin-before-start"
 
     private let calendar: Calendar = {
         var cal = Calendar.current
@@ -95,6 +99,12 @@ extension KoeNaWinRepository {
         }
 
         let today = Date.now
+
+        if progress.startDate > today {
+            progressPublisher.send(.willStart(date: progress.startDate))
+            return
+        }
+
         let daysSinceStart = calendar.dateComponents([.day], from: progress.startDate, to: today).day ?? 0
         let completedDays = progress.completedDaysArray
 
@@ -194,7 +204,7 @@ extension KoeNaWinRepository {
 
         resetPracitceCount()
         saveUserProgress(userProgress)
-        scheduleNotification(from: today)
+        scheduleNotification(from: today, body: "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့", repeats: true, identifier: dailyReminderNotificationIdentifier)
         checkProgress()
     }
 
@@ -206,33 +216,39 @@ extension KoeNaWinRepository {
         }
 
         let today = Date.now
-        let daysSinceStart = calendar.dateComponents([.day], from: date, to: today).day ?? 0
-        var dateComponents = calendar.dateComponents([.year, .month, .day], from: today)
-        dateComponents.hour = 20
-        dateComponents.minute = 0
-
-        let reminder = calendar.date(from: dateComponents) ?? today
-
-        var completedDates: [Date] = []
-        for i in 0 ..< daysSinceStart {
-            if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
-                completedDates.append(dayDate)
-            }
-        }
-
         let newProgress = progress ?? UserProgress(context: context)
-        newProgress.startDate = date
-        newProgress.currentStage = Int16(((daysSinceStart - 1) / 9) + 1)
-        newProgress.dayOfStage = Int16(((daysSinceStart - 1) % 9) + 1)
-        newProgress.completedDaysArray = completedDates
-        newProgress.reminder = if let progress {
-            progress.reminder
+
+        if date < today {
+            let daysSinceStart = calendar.dateComponents([.day], from: date, to: today).day ?? 0
+            var dateComponents = calendar.dateComponents([.year, .month, .day], from: today)
+            dateComponents.hour = 20
+            dateComponents.minute = 0
+
+            let reminder = calendar.date(from: dateComponents) ?? today
+
+            var completedDates: [Date] = []
+            for i in 0 ..< daysSinceStart {
+                if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
+                    completedDates.append(dayDate)
+                }
+            }
+
+            newProgress.startDate = date
+            newProgress.currentStage = Int16(((daysSinceStart - 1) / 9) + 1)
+            newProgress.dayOfStage = Int16(((daysSinceStart - 1) % 9) + 1)
+            newProgress.completedDaysArray = completedDates
+            newProgress.reminder = reminder
+            changeReminderDate(newProgress.reminder)
         } else {
-            reminder
+            newProgress.startDate = date
+            newProgress.currentStage = 0
+            newProgress.dayOfStage = 0
+            newProgress.completedDaysArray = []
+            newProgress.reminder = date
+            scheduleNotification(from: date, hour: 10, body: "ဒီနေ့ အဓိဌာန် စဝင်ရန်။", identifier: beforeStartNotificationIdentifier)
         }
 
         saveUserProgress(newProgress)
-        changeReminderDate(newProgress.reminder)
         resetPracitceCount()
         checkProgress()
     }
@@ -248,7 +264,7 @@ extension KoeNaWinRepository {
 
         progress.reminder = date
         saveUserProgress(progress)
-        scheduleNotification(from: progress.startDate, hour: newDateComponents.hour!, minute: newDateComponents.minute!)
+        scheduleNotification(from: progress.startDate, hour: newDateComponents.hour!, minute: newDateComponents.minute!, body: "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့", repeats: true, identifier: dailyReminderNotificationIdentifier)
         checkProgress()
     }
 
@@ -279,20 +295,28 @@ extension KoeNaWinRepository {
         UserDefaults.standard.set(0, forKey: "round")
     }
 
-    func scheduleNotification(from startDate: Date, hour: Int = 20, minute: Int = 0) {
+    func scheduleNotification(
+        from startDate: Date,
+        hour: Int = 20,
+        minute: Int = 0,
+        title: String = "KoeNaWin(ကိုးနဝင်း)",
+        body: String,
+        repeats: Bool = false,
+        identifier: String
+    ) {
         removeAllNotification()
 
-        var dateComponents = calendar.dateComponents([.hour, .minute], from: Date())
+        var dateComponents = calendar.dateComponents([.hour, .minute], from: startDate)
         dateComponents.hour = hour
         dateComponents.minute = minute
 
         let content = UNMutableNotificationContent()
-        content.title = "ကိုးနဝင်း အဓိဌာန်"
-        content.body = "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့"
+        content.title = title
+        content.body = body
         content.sound = .default
 
-        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-        let request = UNNotificationRequest(identifier: "koenawin-daily-reminder", content: content, trigger: trigger)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: repeats)
+        let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
         UNUserNotificationCenter.current().add(request)
 
@@ -301,8 +325,8 @@ extension KoeNaWinRepository {
     }
 
     func removeAllNotification() {
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [dailyReminderNotificationIdentifier, beforeStartNotificationIdentifier])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [dailyReminderNotificationIdentifier, beforeStartNotificationIdentifier])
         UserDefaults.standard.removeObject(forKey: notificationEndDateKey)
     }
 }

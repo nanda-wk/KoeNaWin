@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct NoticeCard: View {
+    @EnvironmentObject private var configManager: ConfigManager
     @EnvironmentObject private var vm: HomeViewModel
 
     var icon: String = "progress.indicator"
@@ -44,6 +45,11 @@ struct NoticeCard: View {
             title = "noticeCard-notMonday-title"
             message = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
             button = "noticeCard-button"
+        case let .willStart(date):
+            icon = "checkmark.circle.fill"
+            title = "noticeCard-willStart-title"
+            message = "noticeCard-willStart-message-\(date.toStringWith(format: .yyyy_MMMM_d))"
+            button = "change-start-date-button"
         }
     }
 
@@ -66,7 +72,11 @@ struct NoticeCard: View {
             if case .notMonday = vm.status {
             } else if !vm.todayCompleted {
                 Button {
-                    vm.startNewProgress()
+                    if case .willStart = vm.status {
+                        configManager.selectedTab = .settings
+                    } else {
+                        vm.startNewProgress()
+                    }
                 } label: {
                     Text(button)
                         .font(.headline)

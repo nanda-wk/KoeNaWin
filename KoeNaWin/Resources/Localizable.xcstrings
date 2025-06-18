@@ -111,6 +111,23 @@
         }
       }
     },
+    "change-start-date-button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "New Start Date"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အသစ်စတင်မည့်ရက်"
+          }
+        }
+      }
+    },
     "chooseLanguage-navTitle" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -515,6 +532,40 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "ဂုဏ်ယူပါတယ်။"
+          }
+        }
+      }
+    },
+    "noticeCard-willStart-message-%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Adhitthan will start on %@."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သင်၏အဓိဌာန်သည် %@ တွင် စတင်မည်ဖြစ်သည်။"
+          }
+        }
+      }
+    },
+    "noticeCard-willStart-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Your Adhitthan is not started yet."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သင်၏အဓိဌာန်သည် မစတင်သေးပါ။"
           }
         }
       }
