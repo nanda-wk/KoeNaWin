@@ -14,6 +14,8 @@ struct PracticeScreen: View {
     @AppStorage("round") private var round = 0
     @State private var showDialog = false
     @State private var showComplete = false
+    @State private var showAlert = false
+    @State private var alertMessage: LocalizedStringKey = ""
     private let totalCount = 108
 
     var body: some View {
@@ -21,92 +23,88 @@ struct PracticeScreen: View {
             Color(UIColor.systemGroupedBackground)
                 .ignoresSafeArea()
 
-            if case .active = vm.status, !vm.todayCompleted {
-                VStack {
-                    Text(vm.currentPrayer?.day.localized(to: currentLanguage) ?? "")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.accent)
-                        .padding(.bottom, 4)
+            VStack {
+                Text(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")
+                    .font(.title3)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.accent)
+                    .padding(.bottom, 4)
 
-                    Text(vm.currentPrayer?.mantra ?? "")
-                        .lineLimit(2, reservesSpace: true)
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                Text(vm.currentPrayer?.mantra ?? "")
+                    .lineLimit(2, reservesSpace: true)
+                    .multilineTextAlignment(.center)
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
 
-                    Spacer()
+                Spacer()
 
-                    Text("\(count)")
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                        .monospaced()
-                        .foregroundStyle(.accent)
+                Text("\(count.description)")
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .monospaced()
+                    .foregroundStyle(.accent)
 
-                    Button {
-                        Haptic.impact(.soft).generate()
-                        addCount()
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .stroke(.accent, lineWidth: 10)
-                                .frame(width: 250, height: 250)
+                Button {
+                    Haptic.impact(.soft).generate()
+                    addCount()
+                } label: {
+                    ZStack {
+                        Circle()
+                            .stroke(.accent, lineWidth: 10)
+                            .frame(width: 250, height: 250)
 
-                            Circle()
-                                .fill(
-                                    .accent.opacity(0.5)
-                                )
-                                .frame(width: 230, height: 230)
-
-                            Text("Count")
-                                .font(.system(size: 36, weight: .bold))
-                                .foregroundStyle(.accent)
-                        }
-                    }
-                    .buttonStyle(PressableButtonStyle())
-
-                    Spacer()
-
-                    HStack(spacing: 20) {
-                        Text("practiceScreen-total-beads-\(round) /\(vm.currentPrayer?.rounds ?? 0)")
-                            .font(.footnote)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                Capsule()
-                                    .fill(.accent)
+                        Circle()
+                            .fill(
+                                .accent.opacity(0.5)
                             )
+                            .frame(width: 230, height: 230)
 
-                        Button {
-                            showDialog.toggle()
-                        } label: {
-                            Image(systemName: "arrow.clockwise")
-                                .font(.footnote)
-                                .foregroundStyle(.white)
-                                .padding(12)
-                                .background(
-                                    Circle()
-                                        .fill()
-                                )
-                        }
-
-                        Text("Count: \(count) /\(totalCount)")
-                            .font(.footnote)
-                            .foregroundStyle(.white)
-                            .padding(.horizontal, 10)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity)
-                            .background(
-                                Capsule()
-                                    .fill(.accent)
-                            )
+                        Text("Count")
+                            .font(.system(size: 36, weight: .bold))
+                            .foregroundStyle(.accent)
                     }
                 }
-                .padding()
-                .padding(.bottom)
-            } else {
-                NoticeCard(status: vm.status)
+                .buttonStyle(PressableButtonStyle())
+
+                Spacer()
+
+                HStack(spacing: 20) {
+                    Text("practiceScreen-total-beads-\(round.description) /\((vm.currentPrayer?.rounds ?? 0).description)")
+                        .font(.footnote)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            Capsule()
+                                .fill(.accent)
+                        )
+
+                    Button {
+                        showDialog.toggle()
+                    } label: {
+                        Image(systemName: "arrow.clockwise")
+                            .font(.footnote)
+                            .foregroundStyle(.white)
+                            .padding(12)
+                            .background(
+                                Circle()
+                                    .fill()
+                            )
+                    }
+
+                    Text("Count: \(count.description) /\(totalCount.description)")
+                        .font(.footnote)
+                        .foregroundStyle(.white)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 12)
+                        .frame(maxWidth: .infinity)
+                        .background(
+                            Capsule()
+                                .fill(.accent)
+                        )
+                }
             }
+            .padding()
+            .padding(.bottom)
         }
         .confirmationDialog("practiceScreen-confirmDialog", isPresented: $showDialog, titleVisibility: .visible) {
             Button("yes", action: resetCount)
@@ -114,6 +112,9 @@ struct PracticeScreen: View {
         .alert("practiceScreen-alert", isPresented: $showComplete) {
             Button("finished", action: markTodayComplete)
             Button("cancel", action: {})
+        }
+        .alert("", isPresented: $showAlert, actions: {}) {
+            Text(alertMessage)
         }
         .navigationTitle("practiceScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
@@ -131,6 +132,11 @@ struct PracticeScreen: View {
 
 extension PracticeScreen {
     private func addCount() {
+        if checkStatus() {
+            showAlert.toggle()
+            return
+        }
+
         count += 1
         if count > totalCount {
             count = 1
@@ -152,6 +158,34 @@ extension PracticeScreen {
     private func markTodayComplete() {
         Haptic.notification(.success).generate()
         vm.markTodayComplete()
+    }
+
+    private func checkStatus() -> Bool {
+        var result = false
+
+        if vm.todayCompleted {
+            alertMessage = "practiceScreen-todayCompleted-alertMessage"
+            return true
+        }
+
+        switch vm.status {
+        case .active:
+            result = false
+        case let .missedDay(failureDate):
+            alertMessage = "noticeCard-missedDay-title-\(failureDate.toStringWith(format: .yyyy_MMMM_d))"
+            result = true
+        case .completed:
+            alertMessage = "noticeCard-completed-message"
+            result = true
+        case .notStarted:
+            alertMessage = "noticeCard-notStarted-title"
+            result = true
+        case let .notMonday(nextMonday):
+            alertMessage = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
+            result = true
+        }
+
+        return result
     }
 }
 

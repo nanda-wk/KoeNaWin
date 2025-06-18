@@ -18,6 +18,7 @@ struct SettingsScreen: View {
     @State private var showDatePicker = false
     @State private var showTimePicker = false
     @State private var showAlert = false
+    @State private var showChooseLanguage = false
     @State private var alertMessage: LocalizedStringKey = ""
 
     @State private var height: CGFloat = 500
@@ -67,6 +68,10 @@ struct SettingsScreen: View {
         .onAppear {
             startDate = vm.startDate
         }
+        .sheet(isPresented: $showChooseLanguage) {
+            ChooseLanguageScreen()
+                .presentationDetents([.fraction(0.4)])
+        }
         .sheet(isPresented: $showDatePicker) {
             VStack(alignment: .trailing) {
                 Button("save") {
@@ -76,6 +81,7 @@ struct SettingsScreen: View {
 
                 DatePicker("", selection: $startDate, displayedComponents: .date)
                     .datePickerStyle(.graphical)
+                    .environment(\.locale, .init(identifier: "en_US_POSIX"))
             }
             .background(
                 GeometryReader { proxy in
@@ -114,16 +120,12 @@ struct SettingsScreen: View {
 extension SettingsScreen {
     var appLanguage: some View {
         Button {
-            if let url = URL(string: UIApplication.openSettingsURLString),
-               UIApplication.shared.canOpenURL(url)
-            {
-                UIApplication.shared.open(url)
-            }
+            showChooseLanguage.toggle()
         } label: {
             HStack {
                 Text("appLanguage")
                 Spacer()
-                Text(displayLocaleName)
+                Text(configManager.appLanguage.title)
                     .font(.headline)
                     .foregroundStyle(.accent)
             }
@@ -166,6 +168,7 @@ extension SettingsScreen {
                     DatePicker("", selection: $reminderDate, displayedComponents: .hourAndMinute)
                         .datePickerStyle(.wheel)
                         .labelsHidden()
+                        .environment(\.locale, .init(identifier: "en_US_POSIX"))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -227,7 +230,7 @@ extension SettingsScreen {
     }
 
     var rateStars: some View {
-        Button{
+        Button {
             requestReview()
         } label: {
             HStack {
@@ -276,9 +279,7 @@ extension SettingsScreen {
     }
 
     var suggestionFeedback: some View {
-        Button(action: {
-
-        }) {
+        Button(action: {}) {
             HStack {
                 Image(systemName: "paperplane.fill")
                     .foregroundStyle(.white)
@@ -367,12 +368,12 @@ extension SettingsScreen {
     }
 
     private func sendFeedback() {
-      let mailtoString = "mailto:nandawinkyu.ix@gmail.com?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
-      let mailToUrl = URL(string: mailtoString!)!
+        let mailtoString = "mailto:nandawinkyu.ix@gmail.com?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let mailToUrl = URL(string: mailtoString!)!
 
-      if UIApplication.shared.canOpenURL(mailToUrl) {
-        UIApplication.shared.open(mailToUrl, options: [:])
-      }
+        if UIApplication.shared.canOpenURL(mailToUrl) {
+            UIApplication.shared.open(mailToUrl, options: [:])
+        }
     }
 }
 

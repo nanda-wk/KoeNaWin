@@ -20,16 +20,7 @@ enum AppLanguage: String, CaseIterable, Identifiable {
         case .english:
             "English"
         case .myanmar:
-            "Myanmar"
-        }
-    }
-
-    var desc: String {
-        switch self {
-        case .english:
-            "(အင်္ဂလိပ်)"
-        case .myanmar:
-            "(မြန်မာ)"
+            "မြန်မာ"
         }
     }
 

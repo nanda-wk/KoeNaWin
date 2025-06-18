@@ -34,7 +34,7 @@ enum Day: String, Decodable, Equatable, Identifiable, Hashable {
         }
     }
 
-    func localized(to language: String) -> String {
-        language == "en" ? rawValue : desc
+    func localized(to language: AppLanguage) -> String {
+        language == .english ? rawValue : desc
     }
 }

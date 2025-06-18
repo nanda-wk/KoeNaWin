@@ -16,7 +16,7 @@ struct StageDetailsView: View {
             VStack(spacing: 25) {
                 Section {
                     VStack(alignment: .leading) {
-                        Text("stageDetailsView-section-text-\(stage.stage)")
+                        Text("stageDetailsView-section-text-\(stage.stage.description)")
                             .font(.headline)
 
                         Divider()
@@ -44,7 +44,7 @@ struct StageDetailsView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("addhithan-stage-\(stage.stage)")
+        .navigationTitle("addhithan-stage-\(stage.stage.description)")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {
             vm.checkProgress()
@@ -87,7 +87,7 @@ struct ListCell: View {
                         .font(.body)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("(\(prayer.rounds))ပတ်")
+                    Text("(\(prayer.rounds.description))ပတ်")
                         .font(.body)
                 }
             }

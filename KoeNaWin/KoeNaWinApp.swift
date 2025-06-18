@@ -17,11 +17,17 @@ struct KoeNaWinApp: App {
         WindowGroup {
             Group {
                 if configManager.hasLoaded {
-                    TabScreen()
+                    if configManager.isFirstLaunch {
+                        ChooseLanguageScreen()
+                    } else {
+                        TabScreen()
+                    }
                 } else {
                     LaunchScreen()
                 }
             }
+            .id(configManager.appLanguage)
+            .environment(\.locale, configManager.appLanguage.locale)
             .environmentObject(configManager)
             .environmentObject(vm)
             .preferredColorScheme(configManager.appTheme.colorScheme)

@@ -35,7 +35,7 @@ extension StagesScreen {
             Image(systemName: "\(stage).circle.fill")
                 .foregroundStyle(.primary)
 
-            Text("addhithan-stage-\(stage)")
+            Text("addhithan-stage-\(stage.description)")
                 .font(.footnote)
                 .fontWeight(.bold)
 

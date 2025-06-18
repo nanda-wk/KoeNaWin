@@ -31,13 +31,3 @@ extension View {
         )
     }
 }
-
-extension View {
-    var currentLanguage: String {
-        Bundle.main.preferredLocalizations.first ?? "en"
-    }
-
-    var displayLocaleName: String {
-        Locale.current.localizedString(forIdentifier: currentLanguage) ?? currentLanguage
-    }
-}

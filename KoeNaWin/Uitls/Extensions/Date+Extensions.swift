@@ -15,14 +15,13 @@ enum DateFormat: String {
 extension Date {
     func toStringWith(format: DateFormat) -> String {
         let dateFormatter = DateFormatter()
-//        dateFormatter.locale = Locale(identifier: "my_MM")
+        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
         dateFormatter.dateFormat = format.rawValue
         return dateFormatter.string(from: self)
     }
 
     static func from(string: String) -> Date? {
         let dateFormatter = DateFormatter()
-//        dateFormatter.locale = Locale(identifier: "my_MM")
         dateFormatter.dateFormat = "yyyy-MM-dd"
         return dateFormatter.date(from: string)
     }

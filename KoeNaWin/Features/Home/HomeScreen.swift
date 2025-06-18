@@ -65,7 +65,7 @@ extension HomeScreen {
                         .rotationEffect(.degrees(-90))
 
                     // Center text
-                    Text("\(vm.totalDay) / 81")
+                    Text("\(vm.totalDay.description) / 81")
                         .font(.headline)
                 }
                 .padding()
@@ -85,7 +85,7 @@ extension HomeScreen {
                         Image(systemName: "staroflife.fill")
                             .font(.caption2)
 
-                        Text("homeScreen-completionSection-day-left-\(81 - vm.totalDay)")
+                        Text("homeScreen-completionSection-day-left-\((81 - vm.totalDay).description)")
                             .lineLimit(1, reservesSpace: true)
                     }
                 }
@@ -97,7 +97,7 @@ extension HomeScreen {
 
     var currentStageCompletion: some View {
         VStack {
-            Text("addhithan-stage-\(vm.stage)")
+            Text("addhithan-stage-\(vm.stage.description)")
                 .font(.title2)
                 .fontWeight(.bold)
 
@@ -105,7 +105,7 @@ extension HomeScreen {
                 HStack {
                     Text("\(String(format: "%.1f", vm.currentProgressPercentage)) %")
                     Spacer()
-                    Text("homeScreen-currentStageCompletion-day-\(vm.day)")
+                    Text("homeScreen-currentStageCompletion-day-\(vm.day.description)")
                 }
                 .font(.subheadline)
             }
@@ -132,9 +132,9 @@ extension HomeScreen {
     var todayMantra: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("\(vm.currentPrayer?.day.localized(to: currentLanguage) ?? "")")
+                Text("\(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")")
                 Spacer()
-                Text("addhithan-stage-\(vm.stage)")
+                Text("addhithan-stage-\(vm.stage.description)")
             }
             .font(.subheadline)
             .fontWeight(.medium)
@@ -144,7 +144,7 @@ extension HomeScreen {
                 .font(.title)
                 .fontWeight(.bold)
 
-            Text("bead-count-\(vm.currentPrayer?.rounds ?? 0)")
+            Text("bead-count-\((vm.currentPrayer?.rounds ?? 0).description)")
                 .font(.body)
                 .foregroundStyle(.secondary)
         }
@@ -159,7 +159,7 @@ extension HomeScreen {
     @ViewBuilder
     var vegetarianSection: some View {
         let todayVegetarian = vm.dayUntilVegetarian == 0
-        let message: LocalizedStringKey = todayVegetarian ? "homeScreen-vegetarianSection-isVegetarian" : "homeScreen-vegetarianSection-vegetarian-in-\(vm.dayUntilVegetarian)"
+        let message: LocalizedStringKey = todayVegetarian ? "homeScreen-vegetarianSection-isVegetarian" : "homeScreen-vegetarianSection-vegetarian-in-\(vm.dayUntilVegetarian.description)"
 
         if vm.stage == 9, vm.day > 5 {
             EmptyView()

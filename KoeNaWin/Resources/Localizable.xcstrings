@@ -4,7 +4,8 @@
     "" : {
       "shouldTranslate" : false
     },
-    "(%lld)ပတ်" : {
+    "(%@)ပတ်" : {
+      "extractionState" : "manual",
       "shouldTranslate" : false
     },
     "%@" : {
@@ -18,28 +19,26 @@
       },
       "shouldTranslate" : false
     },
+    "%@ / 81" : {
+      "extractionState" : "manual",
+      "shouldTranslate" : false
+    },
     "%@ %%" : {
       "shouldTranslate" : false
     },
-    "%lld" : {
-      "shouldTranslate" : false
-    },
-    "%lld / 81" : {
-      "shouldTranslate" : false
-    },
-    "addhithan-stage-%lld" : {
+    "addhithan-stage-%@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Adhitthan Stage (%lld)"
+            "value" : "Adhitthan Stage (%@)"
           }
         },
         "my" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "အဓိဌာန်အဆင့် (%lld)"
+            "value" : "အဓိဌာန်အဆင့် (%@)"
           }
         }
       }
@@ -78,19 +77,19 @@
         }
       }
     },
-    "bead-count-%lld" : {
+    "bead-count-%@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Bead count (%lld)"
+            "value" : "Bead count (%@)"
           }
         },
         "my" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "%lld ပတ်"
+            "value" : "%@ ပတ်"
           }
         }
       }
@@ -129,32 +128,15 @@
         }
       }
     },
-    "chooseLanguage-next" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Next"
-          }
-        },
-        "my" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "ဆက်သွားပါ"
-          }
-        }
-      }
-    },
     "Count" : {
       "shouldTranslate" : false
     },
-    "Count: %lld /%lld" : {
+    "Count: %@ /%@" : {
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "new",
-            "value" : "Count: %1$lld /%2$lld"
+            "value" : "Count: %1$@ /%2$@"
           }
         }
       },
@@ -228,41 +210,6 @@
         }
       }
     },
-    "homeScreen-completionSection-day-left-%lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld day left."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld days left."
-                }
-              }
-            }
-          }
-        },
-        "my" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "%lld ရက်ကျန်"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
     "homeScreen-completionSection-progress" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -293,23 +240,6 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "%@ / 9 ရက်"
-          }
-        }
-      }
-    },
-    "homeScreen-currentStageCompletion-day-%lld" : {
-      "extractionState" : "manual",
-      "localizations" : {
-        "en" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / 9 Days"
-          }
-        },
-        "my" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%lld / 9 ရက်"
           }
         }
       }
@@ -348,43 +278,42 @@
         }
       }
     },
-    "homeScreen-vegetarianSection-vegetarian-in-%lld" : {
+    "homeScreen-vegetarianSection-vegetarian-in-%@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
-          "variations" : {
-            "plural" : {
-              "one" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Vegetarian day in %lld day."
-                }
-              },
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "Vegetarian day in %lld days."
-                }
-              }
-            }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Vegetarian day in %@ day."
           }
         },
         "my" : {
-          "variations" : {
-            "plural" : {
-              "other" : {
-                "stringUnit" : {
-                  "state" : "translated",
-                  "value" : "သတ်သတ်လွတ်စားရန် %lld ရက်အလို။"
-                }
-              }
-            }
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "သတ်သတ်လွတ်စားရန် %@ ရက်အလို။"
           }
         }
       }
     },
     "KoeNaWin(ကိုးနဝင်း)" : {
       "shouldTranslate" : false
+    },
+    "next" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Next"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဆက်သွားပါ"
+          }
+        }
+      }
     },
     "noticeCard-active-message" : {
       "extractionState" : "manual",
@@ -668,19 +597,36 @@
         }
       }
     },
-    "practiceScreen-total-beads-%lld /%lld" : {
+    "practiceScreen-todayCompleted-alertMessage" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Total beads: %1$lld /%2$lld"
+            "value" : "You have already completed today’s Adhitthan."
           }
         },
         "my" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "အပတ်ရေ : %1$lld /%2$lld"
+            "value" : "ဒီနေ့ အဓိဌာန် ပြီးဆုံးပါပြီ။"
+          }
+        }
+      }
+    },
+    "practiceScreen-total-beads-%@ /%@" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Total beads: %1$@ /%2$@"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အပတ်ရေ : %1$@ /%2$@"
           }
         }
       }
@@ -889,19 +835,19 @@
         }
       }
     },
-    "stageDetailsView-section-text-%lld" : {
+    "stageDetailsView-section-text-%@" : {
       "extractionState" : "manual",
       "localizations" : {
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "အဓိဌာန်အဆင့် (%lld) အောင်မြင်ပြီးပါက"
+            "value" : "အဓိဌာန်အဆင့် (%@) အောင်မြင်ပြီးပါက"
           }
         },
         "my" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "အဓိဌာန်အဆင့် (%lld) အောင်မြင်ပြီးပါက"
+            "value" : "အဓိဌာန်အဆင့် (%@) အောင်မြင်ပြီးပါက"
           }
         }
       }
