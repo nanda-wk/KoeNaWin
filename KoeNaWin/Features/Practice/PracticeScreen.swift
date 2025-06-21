@@ -111,7 +111,7 @@ struct PracticeScreen: View {
         }
         .alert("practiceScreen-alert", isPresented: $showComplete) {
             Button("finished", action: markTodayComplete)
-            Button("cancel", action: {})
+            Button("cancel", role: .cancel, action: {})
         }
         .alert("", isPresented: $showAlert, actions: {}) {
             Text(alertMessage)

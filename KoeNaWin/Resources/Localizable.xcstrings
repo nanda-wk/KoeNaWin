@@ -570,6 +570,57 @@
         }
       }
     },
+    "notification-daily-reminder-body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Don't forget today's Adhitthan."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ယနေ့ အဓိဌာန်ကို မမေ့ပါနဲ့"
+          }
+        }
+      }
+    },
+    "notification-day-before-start-body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Get ready! Your Adhitthan begins tomorrow."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဆင်သင့်ဖြစ်ထားပါ! သင်၏အဓိဌာန်သည် မနက်ဖြန်စတင်မည်ဖြစ်သည်။"
+          }
+        }
+      }
+    },
+    "notification-today-start-body" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Today is the day to start your Adhitthan."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဒီနေ့က သင်အဓိဌာန်စတင်ဖို့အရေးကြီးတဲ့ရက်ပါ။"
+          }
+        }
+      }
+    },
     "ok" : {
       "localizations" : {
         "my" : {
