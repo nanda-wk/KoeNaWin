@@ -2,6 +2,13 @@
 
 KoeNaWin is a digital companion app for practicing the traditional Koe Na Win (ကိုးနဝင်း) Buddhist discipline. The app guides users through a structured 81-day spiritual journey, providing daily mantras, progress tracking, and reminders, all based on authentic Koe Na Win practices.
 
+## Try It Out
+
+Download from the App Store:
+
+[![Download on the App Store](https://tools.applemediaservices.com/api/badges/download-on-the-app-store/black/en-us?size=250x83)](https://apps.apple.com/us/app/koenawin-practice/id6747106061)
+
+
 ## Screenshots
 
 <!-- Add your screenshots here -->
@@ -10,7 +17,7 @@ KoeNaWin is a digital companion app for practicing the traditional Koe Na Win (�
 ![](images/image3.png)
 ![](images/image4.png)
 
-<img src="https://s4.gifyu.com/images/bL6vt.gif" width="300" alt="App Demo">
+<img src="https://media0.giphy.com/media/v1.Y2lkPTc5MGI3NjExYThpNzkwcnRwYTV0ZjViZzBoZTEzeHVhbGE0Z2tpd2F3amo5enBzdSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/ewB68dfKADQgNQbhI9/giphy.gif" width="300" alt="App Demo">
 
 ## Features
 
@@ -56,10 +63,10 @@ KoeNaWin is a digital companion app for practicing the traditional Koe Na Win (�
 
 - **KoeNaWin/**  
   Main app source code, including:
-  - `Models/` – Data models for prayers, stages, and user progress.
-  - `Features/Practice/` – UI and logic for daily practice.
-  - `Resources/` – JSON files for mantras, stages, and Buddha’s attributes.
-  - `CoreData/` – Persistence for user progress and failure records.
+  - `Models/` – Defines the data structures for mantras, practice stages, and user progress.
+  - `Features/` – Contains all core features and UI logic that power the app's functionality.
+  - `Resources/` – Includes JSON files with static content like mantras, stages, and Buddha’s attributes.
+  - `CoreData/` – Handles local data persistence, including progress tracking and failure history.
   - `Utils/` – Utility files (e.g., app version).
 
 - **KoeNaWinTests/**  
@@ -69,9 +76,6 @@ KoeNaWin is a digital companion app for practicing the traditional Koe Na Win (�
 
 - **KoeNaWin.json:**  
   Contains the 9 stages, each with daily prayers, mantras, and vegetarian requirements.
-
-- **BuddhaNineAttributes.json:**  
-  Burmese explanations of the Buddha’s nine attributes.
 
 ## How It Works
 
@@ -86,10 +90,6 @@ KoeNaWin is a digital companion app for practicing the traditional Koe Na Win (�
 
 4. **Completion:**  
    Successfully complete all 81 days to finish the Koe Na Win cycle.
-
-## Contributing
-
-Contributions are welcome! Please open an issue or submit a pull request.
 
 ## License
 
