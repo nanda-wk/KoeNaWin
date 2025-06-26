@@ -63,6 +63,7 @@ struct SettingsScreen: View {
 
             privacyPolicy
         }
+        .scrollIndicators(.never)
         .navigationTitle("settingScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)
         .onAppear {

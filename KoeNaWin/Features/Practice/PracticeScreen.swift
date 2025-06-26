@@ -18,51 +18,77 @@ struct PracticeScreen: View {
     @State private var alertMessage: LocalizedStringKey = ""
     private let totalCount = 108
 
+    private var isLocked: Bool {
+        if vm.todayCompleted { return true }
+
+        switch vm.status {
+        case .active: return false
+        case .missedDay, .completed, .notStarted, .notMonday, .willStart:
+            return true
+        }
+    }
+
     var body: some View {
         ZStack {
             Color(UIColor.systemGroupedBackground)
                 .ignoresSafeArea()
 
             VStack {
-                Text(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")
-                    .font(.title3)
-                    .fontWeight(.medium)
-                    .foregroundStyle(.accent)
-                    .padding(.bottom, 4)
+                VStack {
+                    Text(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")
+                        .font(.title3)
+                        .fontWeight(.medium)
+                        .foregroundStyle(.accent)
+                        .padding(.bottom, 4)
 
-                Text(vm.currentPrayer?.mantra ?? "")
-                    .lineLimit(2, reservesSpace: true)
-                    .multilineTextAlignment(.center)
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    Text(vm.currentPrayer?.mantra ?? "")
+                        .lineLimit(2, reservesSpace: true)
+                        .multilineTextAlignment(.center)
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                }
 
                 Spacer()
 
-                Text("\(count.description)")
-                    .font(.system(size: 40, weight: .bold, design: .rounded))
-                    .monospaced()
-                    .foregroundStyle(.accent)
+                VStack {
+                    Text("\(count.description)")
+                        .font(.system(size: 40, weight: .bold, design: .rounded))
+                        .monospaced()
+                        .foregroundStyle(.accent)
 
-                Button {
-                    Haptic.impact(.soft).generate()
-                    addCount()
-                } label: {
-                    ZStack {
-                        Circle()
-                            .stroke(.accent, lineWidth: 10)
-                            .frame(width: 250, height: 250)
+                    Button {
+                        Haptic.impact(.soft).generate()
+                        addCount()
+                    } label: {
+                        ZStack {
+                            Circle()
+                                .stroke(.accent, lineWidth: 10)
+                                .frame(width: 250, height: 250)
 
-                        Circle()
-                            .fill(
-                                .accent.opacity(0.5)
-                            )
-                            .frame(width: 230, height: 230)
+                            Circle()
+                                .fill(
+                                    .accent.opacity(0.5)
+                                )
+                                .frame(width: 230, height: 230)
 
-                        Text("Count")
-                            .font(.system(size: 36, weight: .bold))
-                            .foregroundStyle(.accent)
+                            VStack {
+                                if isLocked {
+                                    Image(systemName: "lock")
+                                        .resizable()
+                                        .scaledToFit()
+                                        .frame(width: 50, height: 50)
+                                        .foregroundStyle(.accent)
+                                }
+
+                                Text("Count")
+                                    .font(.system(size: 36, weight: .bold))
+                                    .foregroundStyle(.accent)
+                                    .opacity(isLocked ? 0.2 : 1)
+                            }
+                        }
                     }
+                    .buttonStyle(PressableButtonStyle())
                 }
-                .buttonStyle(PressableButtonStyle())
+                .padding(.vertical, 15)
 
                 Spacer()
 

@@ -20,6 +20,7 @@ struct StagesScreen: View {
             }
             .padding()
         }
+        .scrollIndicators(.never)
         .background(Color(UIColor.systemGroupedBackground))
         .navigationTitle("stagesScreen-navTitle")
         .navigationBarTitleDisplayMode(.inline)

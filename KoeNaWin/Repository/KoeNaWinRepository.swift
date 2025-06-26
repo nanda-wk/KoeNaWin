@@ -276,7 +276,6 @@ extension KoeNaWinRepository {
 
         progress.reminder = date
         saveUserProgress(progress)
-        print("Current locale: \(appLanguage.locale.identifier)")
 
         scheduleNotification(from: progress.startDate, hour: newDateComponents.hour!, minute: newDateComponents.minute!, body: localizedString(forKey: "notification-daily-reminder-body", language: appLanguage.locale.identifier), repeats: true, identifier: dailyReminderNotificationIdentifier)
         checkProgress()
@@ -330,9 +329,9 @@ extension KoeNaWinRepository {
         identifier: String
     ) {
         var dateComponents: DateComponents
+        removeAllNotification()
 
         if repeats {
-            removeAllNotification()
             dateComponents = calendar.dateComponents([.hour, .minute], from: startDate)
         } else {
             dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: startDate)

@@ -21,7 +21,12 @@ final class ConfigManager: ObservableObject {
 
     func loadData() {
         koeNaWinStages = Bundle.main.decode(KoeNaWinStages.self, from: "KoeNaWin.json")
-        UserDefaults.standard.register(defaults: ["isEnableHaptic": true])
+        UserDefaults.standard.register(
+            defaults: [
+                "isEnableHaptic": true,
+                "appLanguage": AppLanguage.myanmar.rawValue,
+            ]
+        )
         hasLoaded = true
     }
 }

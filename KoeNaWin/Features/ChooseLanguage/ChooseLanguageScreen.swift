@@ -13,6 +13,7 @@ struct ChooseLanguageScreen: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
+                Spacer()
                 ForEach(AppLanguage.allCases) { language in
                     LanguageListCell(for: language)
                 }

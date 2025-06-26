@@ -33,6 +33,7 @@ struct HomeScreen: View {
                     }
                     .padding()
                 }
+                .scrollIndicators(.never)
             } else {
                 NoticeCard(status: vm.status)
             }
