@@ -20,6 +20,7 @@ struct SettingsScreen: View {
     @State private var showAlert = false
     @State private var showChooseLanguage = false
     @State private var alertMessage: LocalizedStringKey = ""
+    @State private var showConfirmResetData = false
 
     @State private var height: CGFloat = 500
 
@@ -62,6 +63,8 @@ struct SettingsScreen: View {
             }
 
             privacyPolicy
+
+            clearProgress
         }
         .scrollIndicators(.never)
         .navigationTitle("settingScreen-navTitle")
@@ -328,6 +331,25 @@ extension SettingsScreen {
                 }
             }
             .foregroundStyle(.primary)
+        }
+    }
+
+    var clearProgress: some View {
+        Section {
+            Button {
+                showConfirmResetData.toggle()
+            } label: {
+                Text("settingsScreen-resetProgress-button")
+                    .foregroundStyle(.red)
+                    .font(.body)
+            }
+            .foregroundStyle(.primary)
+        } footer: {
+            Text("settingsScreen-resetProgress-footer-section")
+        }
+        .alert("settingsScreen-resetProgress-alert-title", isPresented: $showConfirmResetData) {
+            Button("yes", role: .destructive, action: vm.resetProgress)
+            Button("no", role: .cancel, action: {})
         }
     }
 }

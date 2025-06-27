@@ -332,6 +332,23 @@
         }
       }
     },
+    "no" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "မလုပ်တော့ပါ"
+          }
+        }
+      }
+    },
     "noticeCard-active-message" : {
       "extractionState" : "manual",
       "localizations" : {
@@ -916,6 +933,57 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "အဓိဌာန်စတင်ရက်"
+          }
+        }
+      }
+    },
+    "settingsScreen-resetProgress-alert-title" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Are you sure you want to reset all the Adhitthan data?"
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်ဆိုင်ရာဒေတာအားလုံးကို ပြန်လည်စတင်ချင်သည်မှာ သေချာပါသလား။"
+          }
+        }
+      }
+    },
+    "settingsScreen-resetProgress-button" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reset User’s progress."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "အဓိဌာန်အဆင့်ကို မူလပုံစံပြန်ထားမယ်"
+          }
+        }
+      }
+    },
+    "settingsScreen-resetProgress-footer-section" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This action will rest all user progress."
+          }
+        },
+        "my" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "ဤလုပ်ဆောင်ချက်သည် အသုံးပြုသူ၏ အဓိဌာန်အဆင့်အားလုံးကို ပြန်လည်စတင်မည်ဖြစ်သည်။"
           }
         }
       }

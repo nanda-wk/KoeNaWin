@@ -369,4 +369,14 @@ extension KoeNaWinRepository {
 
         return String(localized: "notification-daily-reminder-body", bundle: bundle)
     }
+
+    func resetProgressData() {
+        do {
+            try stack.deleteAll(UserProgress.self)
+            try stack.deleteAll(UserRecord.self)
+        } catch {
+            print("Error resetting progress data: \(error)")
+        }
+        checkProgress()
+    }
 }

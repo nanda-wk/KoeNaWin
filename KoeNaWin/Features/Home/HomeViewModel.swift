@@ -45,10 +45,11 @@ final class HomeViewModel: ObservableObject {
                     self?.currentProgressPercentage = (Double(progress.dayOfStage) / 9) * 100
                     self?.startDate = progress.startDate
                     self?.reminderDate = progress.reminder
-                }
-
-                if case let .willStart(date) = status {
+                } else if case let .willStart(date) = status {
                     self?.startDate = date
+                    self?.resetState()
+                } else {
+                    self?.resetState()
                 }
             }
             .store(in: &cancellables)
@@ -76,5 +77,20 @@ final class HomeViewModel: ObservableObject {
 
     func checkNotificationValidity() {
         repository.checkNotificationValidity()
+    }
+
+    func resetProgress() {
+        repository.resetProgressData()
+    }
+
+    private func resetState() {
+        stage = 0
+        day = 0
+        totalDay = 0
+        currentPrayer = nil
+        todayCompleted = false
+        dayUntilVegetarian = 0
+        totalProgressPercentage = 0.0
+        currentProgressPercentage = 0.0
     }
 }
