@@ -161,7 +161,7 @@ extension KoeNaWinRepository {
     func markTodayAsCompleted() {
         guard let progress = loadUserProgress() else { return }
 
-        let today = Date.now
+        let today = Date.now.startOfDay(using: calendar)
 
         var completedDays = progress.completedDaysArray
         completedDays.append(today)
@@ -179,7 +179,7 @@ extension KoeNaWinRepository {
     }
 
     func startNewProgress(date: Date = .now) {
-        let today = date
+        let today = date.startOfDay(using: calendar)
         let weekday = calendar.component(.weekday, from: today)
 
         if weekday != 2 {
@@ -217,12 +217,13 @@ extension KoeNaWinRepository {
 
     func changeStartDate(_ date: Date) {
         let progress = loadUserProgress()
+        let date = date.startOfDay(using: calendar)
 
         if let progress, calendar.isDate(date, inSameDayAs: progress.startDate) {
             return
         }
-
-        let today = Date.now
+        
+        let today = Date.now.startOfDay(using: calendar)
         let newProgress = progress ?? UserProgress(context: context)
 
         if date < today {
@@ -236,7 +237,7 @@ extension KoeNaWinRepository {
             var completedDates: [Date] = []
             for i in 0 ..< daysSinceStart {
                 if let dayDate = calendar.date(byAdding: .day, value: i, to: date) {
-                    completedDates.append(dayDate)
+                    completedDates.append(dayDate.startOfDay(using: calendar))
                 }
             }
 
@@ -256,7 +257,7 @@ extension KoeNaWinRepository {
             let oneDayBefore = calendar.date(byAdding: .day, value: -1, to: date)!
             scheduleNotification(from: oneDayBefore, hour: 21, body: localizedString(forKey: "notification-day-before-start-body", language: appLanguage.locale.identifier), identifier: beforeStartNotificationIdentifier)
 
-            scheduleNotification(from: date, hour: 10, body: localizedString(forKey: "notification-today-start-body", language: appLanguage.locale.identifier), identifier: beforeStartNotificationIdentifier)
+            scheduleNotification(from: date, hour: 10, body: localizedString(forKey: "notification-today-start-body", language: appLanguage.locale.identifier), identifier: beforeStartNotificationIdentifier, removeNotifications: false)
             UserDefaults.standard.removeObject(forKey: dailyReminderKey)
         }
 
@@ -288,7 +289,7 @@ extension KoeNaWinRepository {
 
         let dailyReminder = UserDefaults.standard.object(forKey: dailyReminderKey) as? Bool ?? false
 
-        if Date.now > endDate {
+        if Date.now.startOfDay(using: calendar) > endDate.startOfDay(using: calendar) {
             removeAllNotification()
         }
 
@@ -296,7 +297,7 @@ extension KoeNaWinRepository {
             guard let progress = loadUserProgress() else {
                 return
             }
-            if progress.startDate == Date.now {
+            if progress.startDate == Date.now.startOfDay(using: calendar) {
                 scheduleNotification(from: progress.startDate, body: localizedString(forKey: "notification-daily-reminder-body", language: appLanguage.locale.identifier), repeats: true, identifier: dailyReminderNotificationIdentifier)
             }
         }
@@ -326,10 +327,14 @@ extension KoeNaWinRepository {
         title: String = "KoeNaWin(ကိုးနဝင်း)",
         body: String,
         repeats: Bool = false,
-        identifier: String
+        identifier: String,
+        removeNotifications: Bool = true
     ) {
         var dateComponents: DateComponents
-        removeAllNotification()
+        let startDate = startDate.startOfDay(using: calendar)
+        if removeNotifications {
+            removeAllNotification()
+        }
 
         if repeats {
             dateComponents = calendar.dateComponents([.hour, .minute], from: startDate)
@@ -351,7 +356,7 @@ extension KoeNaWinRepository {
         UNUserNotificationCenter.current().add(request)
 
         let endDate = calendar.date(byAdding: .day, value: 81, to: startDate)
-        UserDefaults.standard.set(endDate, forKey: notificationEndDateKey)
+        UserDefaults.standard.set(endDate?.startOfDay(using: calendar), forKey: notificationEndDateKey)
     }
 
     func removeAllNotification() {
@@ -378,5 +383,7 @@ extension KoeNaWinRepository {
             print("Error resetting progress data: \(error)")
         }
         checkProgress()
+        resetPracitceCount()
+        removeAllNotification()
     }
 }
