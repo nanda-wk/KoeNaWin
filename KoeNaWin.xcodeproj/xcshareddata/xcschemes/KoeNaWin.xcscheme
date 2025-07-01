@@ -74,6 +74,10 @@
             ReferencedContainer = "container:KoeNaWin.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
+      <LocationScenarioReference
+         identifier = "../../KoeNaWin/Resources/SimulateDate.gpx"
+         referenceType = "0">
+      </LocationScenarioReference>
    </LaunchAction>
    <ProfileAction
       buildConfiguration = "Release"

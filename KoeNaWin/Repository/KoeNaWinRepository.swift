@@ -27,6 +27,7 @@ final class KoeNaWinRepository {
     private let dailyReminderKey = "dailyReminder"
     private let dailyReminderNotificationIdentifier = "koenawin-daily-reminder"
     private let beforeStartNotificationIdentifier = "koenawin-before-start"
+    private let todayStartNotificationIdentifier = "koenawin-today-start"
 
     private var appLanguage: AppLanguage {
         let raw = UserDefaults.standard.string(forKey: "appLanguage") ?? AppLanguage.english.rawValue
@@ -127,6 +128,7 @@ extension KoeNaWinRepository {
                 )
                 progressPublisher.send(.missedDay(failureDate: checkDate))
                 resetPracitceCount()
+                removeAllNotification()
                 return
             }
         }
@@ -222,17 +224,17 @@ extension KoeNaWinRepository {
         if let progress, calendar.isDate(date, inSameDayAs: progress.startDate) {
             return
         }
-        
+
         let today = Date.now.startOfDay(using: calendar)
         let newProgress = progress ?? UserProgress(context: context)
+        var dateComponents = calendar.dateComponents([.year, .month, .day], from: today)
+        dateComponents.hour = 20
+        dateComponents.minute = 0
+
+        let reminder = calendar.date(from: dateComponents) ?? today
 
         if date < today {
             let daysSinceStart = calendar.dateComponents([.day], from: date, to: today).day ?? 0
-            var dateComponents = calendar.dateComponents([.year, .month, .day], from: today)
-            dateComponents.hour = 20
-            dateComponents.minute = 0
-
-            let reminder = calendar.date(from: dateComponents) ?? today
 
             var completedDates: [Date] = []
             for i in 0 ..< daysSinceStart {
@@ -250,14 +252,14 @@ extension KoeNaWinRepository {
             UserDefaults.standard.set(true, forKey: dailyReminderKey)
         } else {
             newProgress.startDate = date
-            newProgress.currentStage = 0
+            newProgress.currentStage = 1
             newProgress.dayOfStage = 0
             newProgress.completedDaysArray = []
-            newProgress.reminder = date
+            newProgress.reminder = reminder
             let oneDayBefore = calendar.date(byAdding: .day, value: -1, to: date)!
             scheduleNotification(from: oneDayBefore, hour: 21, body: localizedString(forKey: "notification-day-before-start-body", language: appLanguage.locale.identifier), identifier: beforeStartNotificationIdentifier)
 
-            scheduleNotification(from: date, hour: 10, body: localizedString(forKey: "notification-today-start-body", language: appLanguage.locale.identifier), identifier: beforeStartNotificationIdentifier, removeNotifications: false)
+            scheduleNotification(from: date, hour: 10, body: localizedString(forKey: "notification-today-start-body", language: appLanguage.locale.identifier), identifier: todayStartNotificationIdentifier, removeNotifications: false)
             UserDefaults.standard.removeObject(forKey: dailyReminderKey)
         }
 
@@ -283,15 +285,7 @@ extension KoeNaWinRepository {
     }
 
     func checkNotificationValidity() {
-        guard let endDate = UserDefaults.standard.object(forKey: notificationEndDateKey) as? Date else {
-            return
-        }
-
         let dailyReminder = UserDefaults.standard.object(forKey: dailyReminderKey) as? Bool ?? false
-
-        if Date.now.startOfDay(using: calendar) > endDate.startOfDay(using: calendar) {
-            removeAllNotification()
-        }
 
         if !dailyReminder {
             guard let progress = loadUserProgress() else {
@@ -300,6 +294,12 @@ extension KoeNaWinRepository {
             if progress.startDate == Date.now.startOfDay(using: calendar) {
                 scheduleNotification(from: progress.startDate, body: localizedString(forKey: "notification-daily-reminder-body", language: appLanguage.locale.identifier), repeats: true, identifier: dailyReminderNotificationIdentifier)
             }
+        }
+
+        let endDate = UserDefaults.standard.object(forKey: notificationEndDateKey) as? Date
+
+        if let endDate, Date.now.startOfDay(using: calendar) > endDate.startOfDay(using: calendar) {
+            removeAllNotification()
         }
     }
 
@@ -321,7 +321,7 @@ extension KoeNaWinRepository {
     }
 
     func scheduleNotification(
-        from startDate: Date,
+        from notificationDate: Date,
         hour: Int = 20,
         minute: Int = 0,
         title: String = "KoeNaWin(ကိုးနဝင်း)",
@@ -330,20 +330,28 @@ extension KoeNaWinRepository {
         identifier: String,
         removeNotifications: Bool = true
     ) {
-        var dateComponents: DateComponents
-        let startDate = startDate.startOfDay(using: calendar)
         if removeNotifications {
+            // When scheduling a new set of notifications, we often want to clear old ones.
             removeAllNotification()
         }
 
-        if repeats {
-            dateComponents = calendar.dateComponents([.hour, .minute], from: startDate)
-        } else {
-            dateComponents = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: startDate)
-        }
+        var dateComponents = DateComponents()
+        dateComponents.calendar = calendar
+        dateComponents.timeZone = TimeZone.current
 
-        dateComponents.hour = hour
-        dateComponents.minute = minute
+        if repeats {
+            // For a repeating notification, we only need to match the time components.
+            dateComponents.hour = hour
+            dateComponents.minute = minute
+        } else {
+            // For a one-time notification, we need the full date and time.
+            let specificDateComponents = calendar.dateComponents([.year, .month, .day], from: notificationDate)
+            dateComponents.year = specificDateComponents.year
+            dateComponents.month = specificDateComponents.month
+            dateComponents.day = specificDateComponents.day
+            dateComponents.hour = hour
+            dateComponents.minute = minute
+        }
 
         let content = UNMutableNotificationContent()
         content.title = title
@@ -353,15 +361,25 @@ extension KoeNaWinRepository {
         let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: repeats)
         let request = UNNotificationRequest(identifier: identifier, content: content, trigger: trigger)
 
-        UNUserNotificationCenter.current().add(request)
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error {
+                print("Error scheduling notification with id: \(identifier). Error: \(error.localizedDescription)")
+            } else {
+                print("Successfully scheduled notification for \(dateComponents) with id: \(identifier)")
+            }
+        }
 
-        let endDate = calendar.date(byAdding: .day, value: 81, to: startDate)
-        UserDefaults.standard.set(endDate?.startOfDay(using: calendar), forKey: notificationEndDateKey)
+        // This end date logic should only apply to the main repeating daily reminder.
+        if identifier == dailyReminderNotificationIdentifier {
+            let endDate = calendar.date(byAdding: .day, value: 81, to: notificationDate)
+            UserDefaults.standard.set(endDate?.startOfDay(using: calendar), forKey: notificationEndDateKey)
+        }
     }
 
     func removeAllNotification() {
-        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: [dailyReminderNotificationIdentifier, beforeStartNotificationIdentifier])
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [dailyReminderNotificationIdentifier, beforeStartNotificationIdentifier])
+        let identifiers = [dailyReminderNotificationIdentifier, beforeStartNotificationIdentifier, todayStartNotificationIdentifier]
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: identifiers)
+        UNUserNotificationCenter.current().removeDeliveredNotifications(withIdentifiers: identifiers)
         UserDefaults.standard.removeObject(forKey: notificationEndDateKey)
     }
 
@@ -372,7 +390,7 @@ extension KoeNaWinRepository {
             return key // fallback to key if bundle not found
         }
 
-        return String(localized: "notification-daily-reminder-body", bundle: bundle)
+        return String(localized: .init(key), bundle: bundle)
     }
 
     func resetProgressData() {

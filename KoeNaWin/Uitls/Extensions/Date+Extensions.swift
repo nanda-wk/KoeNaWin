@@ -27,6 +27,6 @@ extension Date {
     }
 
     func startOfDay(using calendar: Calendar = .current) -> Date {
-        return calendar.startOfDay(for: self)
+        calendar.startOfDay(for: self)
     }
 }
