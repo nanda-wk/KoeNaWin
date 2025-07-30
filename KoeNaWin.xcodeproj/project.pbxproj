@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		530E9A212DC2706A00A663C3 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = 530E9A202DC2706A00A663C3 /* README.md */; };
+		53A6EA5C2E38F7FF00217BE6 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53A6EA5B2E38F7FF00217BE6 /* WidgetKit.framework */; };
+		53A6EA5E2E38F7FF00217BE6 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53A6EA5D2E38F7FF00217BE6 /* SwiftUI.framework */; };
+		53A6EA692E38F80000217BE6 /* KoeNaWin-WidgetExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 53A6EA592E38F7FF00217BE6 /* KoeNaWin-WidgetExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -25,18 +28,66 @@
 			remoteGlobalIDString = 53886F222D980204001840B3;
 			remoteInfo = KoeNaWin;
 		};
+		53A6EA672E38F80000217BE6 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 53886F1B2D980204001840B3 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 53A6EA582E38F7FF00217BE6;
+			remoteInfo = "KoeNaWin-WidgetExtension";
+		};
 /* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		53A6EA6A2E38F80000217BE6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				53A6EA692E38F80000217BE6 /* KoeNaWin-WidgetExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
 		530E9A202DC2706A00A663C3 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		53886F232D980204001840B3 /* KoeNaWin.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = KoeNaWin.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		53886F332D980206001840B3 /* KoeNaWinTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KoeNaWinTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		53886F3D2D980206001840B3 /* KoeNaWinUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KoeNaWinUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		53A6EA592E38F7FF00217BE6 /* KoeNaWin-WidgetExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "KoeNaWin-WidgetExtension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
+		53A6EA5B2E38F7FF00217BE6 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		53A6EA5D2E38F7FF00217BE6 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
+		53A6EA6F2E38FAFC00217BE6 /* KoeNaWin-WidgetExtension.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = "KoeNaWin-WidgetExtension.entitlements"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
+
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		53A6EA6D2E38F80000217BE6 /* Exceptions for "KoeNaWin-Widget" folder in "KoeNaWin-WidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */;
+		};
+		53A6EA792E390AE000217BE6 /* Exceptions for "KoeNaWin" folder in "KoeNaWin-WidgetExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				CoreData/CoreDataStack.swift,
+				CoreData/KoeNaWin.xcdatamodeld,
+				CoreData/UserProgress.swift,
+				Resources/KoeNaWin.json,
+			);
+			target = 53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		53886F252D980204001840B3 /* KoeNaWin */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				53A6EA792E390AE000217BE6 /* Exceptions for "KoeNaWin" folder in "KoeNaWin-WidgetExtension" target */,
+			);
 			path = KoeNaWin;
 			sourceTree = "<group>";
 		};
@@ -48,6 +99,14 @@
 		53886F402D980206001840B3 /* KoeNaWinUITests */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = KoeNaWinUITests;
+			sourceTree = "<group>";
+		};
+		53A6EA5F2E38F7FF00217BE6 /* KoeNaWin-Widget */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				53A6EA6D2E38F80000217BE6 /* Exceptions for "KoeNaWin-Widget" folder in "KoeNaWin-WidgetExtension" target */,
+			);
+			path = "KoeNaWin-Widget";
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -74,16 +133,28 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		53A6EA562E38F7FF00217BE6 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53A6EA5E2E38F7FF00217BE6 /* SwiftUI.framework in Frameworks */,
+				53A6EA5C2E38F7FF00217BE6 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
 		53886F1A2D980204001840B3 = {
 			isa = PBXGroup;
 			children = (
+				53A6EA6F2E38FAFC00217BE6 /* KoeNaWin-WidgetExtension.entitlements */,
 				530E9A202DC2706A00A663C3 /* README.md */,
 				53886F252D980204001840B3 /* KoeNaWin */,
 				53886F362D980206001840B3 /* KoeNaWinTests */,
 				53886F402D980206001840B3 /* KoeNaWinUITests */,
+				53A6EA5F2E38F7FF00217BE6 /* KoeNaWin-Widget */,
+				53A6EA5A2E38F7FF00217BE6 /* Frameworks */,
 				53886F242D980204001840B3 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -94,8 +165,18 @@
 				53886F232D980204001840B3 /* KoeNaWin.app */,
 				53886F332D980206001840B3 /* KoeNaWinTests.xctest */,
 				53886F3D2D980206001840B3 /* KoeNaWinUITests.xctest */,
+				53A6EA592E38F7FF00217BE6 /* KoeNaWin-WidgetExtension.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		53A6EA5A2E38F7FF00217BE6 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				53A6EA5B2E38F7FF00217BE6 /* WidgetKit.framework */,
+				53A6EA5D2E38F7FF00217BE6 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -108,10 +189,12 @@
 				53886F1F2D980204001840B3 /* Sources */,
 				53886F202D980204001840B3 /* Frameworks */,
 				53886F212D980204001840B3 /* Resources */,
+				53A6EA6A2E38F80000217BE6 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				53A6EA682E38F80000217BE6 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				53886F252D980204001840B3 /* KoeNaWin */,
@@ -169,6 +252,28 @@
 			productReference = 53886F3D2D980206001840B3 /* KoeNaWinUITests.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
+		53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 53A6EA6E2E38F80000217BE6 /* Build configuration list for PBXNativeTarget "KoeNaWin-WidgetExtension" */;
+			buildPhases = (
+				53A6EA552E38F7FF00217BE6 /* Sources */,
+				53A6EA562E38F7FF00217BE6 /* Frameworks */,
+				53A6EA572E38F7FF00217BE6 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				53A6EA5F2E38F7FF00217BE6 /* KoeNaWin-Widget */,
+			);
+			name = "KoeNaWin-WidgetExtension";
+			packageProductDependencies = (
+			);
+			productName = "KoeNaWin-WidgetExtension";
+			productReference = 53A6EA592E38F7FF00217BE6 /* KoeNaWin-WidgetExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -176,7 +281,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
-				LastSwiftUpdateCheck = 1620;
+				LastSwiftUpdateCheck = 1640;
 				LastUpgradeCheck = 1620;
 				TargetAttributes = {
 					53886F222D980204001840B3 = {
@@ -189,6 +294,9 @@
 					53886F3C2D980206001840B3 = {
 						CreatedOnToolsVersion = 16.2;
 						TestTargetID = 53886F222D980204001840B3;
+					};
+					53A6EA582E38F7FF00217BE6 = {
+						CreatedOnToolsVersion = 16.4;
 					};
 				};
 			};
@@ -212,6 +320,7 @@
 				53886F222D980204001840B3 /* KoeNaWin */,
 				53886F322D980206001840B3 /* KoeNaWinTests */,
 				53886F3C2D980206001840B3 /* KoeNaWinUITests */,
+				53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */,
 			);
 		};
 /* End PBXProject section */
@@ -233,6 +342,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		53886F3B2D980206001840B3 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		53A6EA572E38F7FF00217BE6 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -263,6 +379,13 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		53A6EA552E38F7FF00217BE6 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -275,6 +398,11 @@
 			isa = PBXTargetDependency;
 			target = 53886F222D980204001840B3 /* KoeNaWin */;
 			targetProxy = 53886F3E2D980206001840B3 /* PBXContainerItemProxy */;
+		};
+		53A6EA682E38F80000217BE6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */;
+			targetProxy = 53A6EA672E38F80000217BE6 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -405,6 +533,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KoeNaWin/KoeNaWin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"KoeNaWin/Resources/Preview Content\"";
@@ -431,7 +560,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -440,6 +569,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = KoeNaWin/KoeNaWin.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
 				DEVELOPMENT_ASSET_PATHS = "\"KoeNaWin/Resources/Preview Content\"";
@@ -466,7 +596,7 @@
 				SUPPORTS_XR_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
@@ -540,6 +670,64 @@
 			};
 			name = Release;
 		};
+		53A6EA6B2E38F80000217BE6 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "KoeNaWin-WidgetExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2G3ZY4K567;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KoeNaWin-Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "KoeNaWin-Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nanda.KoeNaWin.KoeNaWin-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		53A6EA6C2E38F80000217BE6 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_ENTITLEMENTS = "KoeNaWin-WidgetExtension.entitlements";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 2G3ZY4K567;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "KoeNaWin-Widget/Info.plist";
+				INFOPLIST_KEY_CFBundleDisplayName = "KoeNaWin-Widget";
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.nanda.KoeNaWin.KoeNaWin-Widget";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -575,6 +763,15 @@
 			buildConfigurations = (
 				53886F4E2D980206001840B3 /* Debug */,
 				53886F4F2D980206001840B3 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		53A6EA6E2E38F80000217BE6 /* Build configuration list for PBXNativeTarget "KoeNaWin-WidgetExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				53A6EA6B2E38F80000217BE6 /* Debug */,
+				53A6EA6C2E38F80000217BE6 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

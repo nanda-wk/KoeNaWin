@@ -4,6 +4,11 @@
 <dict>
 	<key>SchemeUserState</key>
 	<dict>
+		<key>KoeNaWin-WidgetExtension.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
 		<key>KoeNaWin.xcscheme_^#shared#^_</key>
 		<dict>
 			<key>orderHint</key>
@@ -23,6 +28,11 @@
 			<true/>
 		</dict>
 		<key>53886F3C2D980206001840B3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>53A6EA582E38F7FF00217BE6</key>
 		<dict>
 			<key>primary</key>
 			<true/>

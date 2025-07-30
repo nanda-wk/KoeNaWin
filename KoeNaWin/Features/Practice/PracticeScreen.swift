@@ -116,6 +116,9 @@ struct PracticeScreen: View {
                                     .fill()
                             )
                     }
+                    .confirmationDialog("practiceScreen-confirmDialog", isPresented: $showDialog, titleVisibility: .visible) {
+                        Button("yes", action: resetCount)
+                    }
 
                     Text("Count: \(count.description) /\(totalCount.description)")
                         .font(.footnote)
@@ -131,9 +134,6 @@ struct PracticeScreen: View {
             }
             .padding()
             .padding(.bottom)
-        }
-        .confirmationDialog("practiceScreen-confirmDialog", isPresented: $showDialog, titleVisibility: .visible) {
-            Button("yes", action: resetCount)
         }
         .alert("practiceScreen-alert", isPresented: $showComplete) {
             Button("finished", action: markTodayComplete)

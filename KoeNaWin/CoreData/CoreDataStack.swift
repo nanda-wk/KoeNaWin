@@ -9,6 +9,9 @@ import CoreData
 import SwiftUI
 
 final class CoreDataStack {
+    private static let appGroupId = "group.com.nandawk.KoeNaWin"
+    private static let migrationCompletedKey = "didMigrateToAppGroupStore"
+
     static let shared = CoreDataStack()
 
     private let persistentContainer: NSPersistentContainer
@@ -25,6 +28,17 @@ final class CoreDataStack {
         persistentContainer = NSPersistentContainer(name: "KoeNaWin")
         if EnvironmentValues.isPreview || Thread.current.isRunningXCTest {
             persistentContainer.persistentStoreDescriptions.first?.url = .init(fileURLWithPath: "/dev/null")
+        } else {
+            guard let groupContainerUrl = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: Self.appGroupId) else {
+                fatalError("Failed to get App Group container URL. Make sure the App Group ID '\(Self.appGroupId)' is correct and enabled in your project capabilities.")
+            }
+
+            let storeUrl = groupContainerUrl.appendingPathComponent("KoeNaWin.sqlite")
+
+            migrateStoreIfNeeded(to: storeUrl)
+
+            let description = NSPersistentStoreDescription(url: storeUrl)
+            persistentContainer.persistentStoreDescriptions = [description]
         }
         persistentContainer.viewContext.automaticallyMergesChangesFromParent = true
         persistentContainer.loadPersistentStores { _, error in
@@ -58,6 +72,49 @@ final class CoreDataStack {
     func persist(in context: NSManagedObjectContext) throws {
         if context.hasChanges {
             try context.save()
+        }
+    }
+}
+
+extension CoreDataStack {
+    private func migrateStoreIfNeeded(to newStoreUrl: URL) {
+        let userDefault = UserDefaults.standard
+
+        if userDefault.bool(forKey: Self.migrationCompletedKey) {
+            print("Migration to App Group already completed. Skipping...")
+            return
+        }
+
+        let fileManager = FileManager.default
+        let oldDefaultUrl = NSPersistentContainer.defaultDirectoryURL()
+        let oldStoreUrl = oldDefaultUrl.appendingPathComponent("KoeNaWin.sqlite")
+
+        if fileManager.fileExists(atPath: oldStoreUrl.path(percentEncoded: false)) {
+            print("Old store found at default location. starting migration to App Group...")
+
+            let supportFileExtensions = ["sqlite", "sqlite-shm", "sqlite-wal"]
+            let oldStoreDirectory = oldStoreUrl.deletingLastPathComponent()
+            let newStoreDirectory = newStoreUrl.deletingLastPathComponent()
+
+            do {
+                for ext in supportFileExtensions {
+                    let sourceUrl = oldStoreDirectory.appendingPathComponent("KoeNaWin.\(ext)")
+                    let destUrl = newStoreDirectory.appendingPathComponent("KoeNaWin.\(ext)")
+
+                    if fileManager.fileExists(atPath: sourceUrl.path(percentEncoded: false)) {
+                        try fileManager.moveItem(at: sourceUrl, to: destUrl)
+                        print("Successfully moved \(sourceUrl.lastPathComponent)")
+                    }
+                }
+
+                print("Migration successful!")
+                userDefault.set(true, forKey: Self.migrationCompletedKey)
+            } catch {
+                fatalError("FATAL: Failed to migrate persistent store to App Group: \(error)")
+            }
+        } else {
+            print("No old store found. Skipping migration (likely a new install).")
+            userDefault.set(true, forKey: Self.migrationCompletedKey)
         }
     }
 }

@@ -10,6 +10,7 @@ import CoreData
 import Foundation
 import SwiftUI
 import UserNotifications
+import WidgetKit
 
 enum ProgressStatus: Equatable {
     case active(progress: UserProgress, prayer: Prayer, dayUntilVegetarian: Int, todayCompleted: Bool)
@@ -100,6 +101,9 @@ final class KoeNaWinRepository {
 
 extension KoeNaWinRepository {
     func checkProgress() {
+        defer {
+            WidgetCenter.shared.reloadAllTimelines()
+        }
         guard let progress = loadUserProgress() else {
             progressPublisher.send(.notStarted)
             return

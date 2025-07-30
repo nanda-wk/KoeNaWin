@@ -1,0 +1,7 @@
+# Xcode
+.DS_Store
+
+
+# Gemini
+.gemini/
+GEMINI.md
