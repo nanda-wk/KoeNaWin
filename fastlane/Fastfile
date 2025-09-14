@@ -1,0 +1,38 @@
+default_platform(:ios)
+
+platform :ios do
+  desc "Run unit tests"
+  lane :tests do
+    scan(scheme: "KoeNaWin")
+  end
+
+  desc "Lint code using SwiftFormat"
+  lane :lint do
+    sh "swiftformat --swiftversion 5.10 ."
+  end
+
+  desc "Sync development certificates and profiles"
+  lane :sync_development_signing do
+    match(type: "development", readonly: true)
+  end
+
+  desc "Build and upload to TestFlight for UAT"
+  lane :build_and_upload_to_testflight do
+    match(type: "appstore", readonly: is_ci)
+    build_app(scheme: "KoeNaWin")
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true
+    )
+  end
+
+  desc "Deploy to the App Store"
+  lane :deploy_to_app_store do
+    match(type: "appstore", readonly: is_ci)
+    build_app(scheme: "KoeNaWin")
+    upload_to_app_store(
+      force: true, # Set to true to skip asking for confirmation
+      submit_for_review: true,
+      automatic_release: false # Set to true to automatically release the app after approval
+    )
+  end
+end

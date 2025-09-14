@@ -1,0 +1,3 @@
+app_identifier("com.nanda.KoeNaWin") # The bundle identifier of your app
+apple_id("nandawinkyu.ix@gmail.com") # Your Apple ID
+team_id("2G3ZY4K567") # Your Apple Developer Team ID
