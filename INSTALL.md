@@ -41,7 +41,7 @@ gem install bundler
 
 ## 3. Code Signing Setup (`match`)
 
-We use Fastlane's `match` tool to manage code signing certificates and provisioning profiles. This ensures everyone on the team uses the same signing identity. The assets are stored in a separate, private Git repository.
+We use Fastlane's `match` tool to manage code signing certificates and provisioning profiles.
 
 ### A. Get Access Credentials
 
@@ -51,14 +51,11 @@ To access the signing assets, you will need two pieces of information from your 
 
 ### B. Sync Certificates to Your Machine
 
-Run the following command in your terminal. This will clone the private `match` repository, decrypt the certificates and profiles using the password you provide, and install them on your machine.
+Run the following command in your terminal to download and install the signing assets on your machine.
 
 ```bash
 bundle exec fastlane match development --readonly
 ```
-
-- You will be prompted to enter the `match` password.
-- The `--readonly` flag is important because it ensures you only download existing certificates and do not accidentally create new ones.
 
 ## 4. Xcode Project Configuration
 
@@ -68,7 +65,7 @@ The final step is to tell Xcode to use the profiles managed by `match`.
 2.  Select the `KoeNaWin` project in the Project Navigator.
 3.  Go to the **"Signing & Capabilities"** tab for the `KoeNaWin` target.
 4.  **Turn off "Automatically manage signing"**.
-5.  From the **"Provisioning Profile"** dropdown menu, select the profile that starts with `match Development...`. Do this for both `Debug` and `Release` configurations if necessary.
+5.  From the **"Provisioning Profile"** dropdown menu, select the profile that starts with `match Development...`.
 
 ## 5. You're Ready!
 
@@ -83,6 +80,18 @@ Your local environment is now fully configured. You can run the app on a device 
     bundle exec fastlane lint
     ```
 
+## 6. Project Automation Details
+
+This project uses CI/CD to automate several processes. Here's what you should know:
+
+### Automatic Versioning
+
+The **build number** for this project is set automatically by the CI/CD pipeline every time a build is deployed to TestFlight or the App Store. You do not need to increment the build number in Xcode manually.
+
+### Metadata as Code
+
+All App Store information (e.g., descriptions, keywords, release notes) is managed as text files in the `fastlane/metadata` directory. If you are preparing a new release, you may be asked to edit the `release_notes.txt` file for the appropriate language (e.g., `fastlane/metadata/en-US/release_notes.txt`).
+
 ---
 
 ## For Admins: Initial `match` Setup or Certificate Renewal
@@ -91,7 +100,6 @@ Your local environment is now fully configured. You can run the app on a device 
 
 -   **Create/Renew Development Assets:**
     ```bash
-s
     bundle exec fastlane match development
     ```
 -   **Create/Renew App Store Distribution Assets:**
