@@ -1,2 +1,2 @@
--fix date not sync with the current stage
--add clear data for all the progress to start from the beginning
+-fix bug
+-optimize app performance

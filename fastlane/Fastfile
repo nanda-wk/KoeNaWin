@@ -16,14 +16,27 @@ platform :ios do
     match(type: "development", readonly: true)
   end
 
-  desc "Build and upload to TestFlight for UAT"
-  lane :build_and_upload_to_testflight do
+  desc "Deploy to internal testers only"
+  lane :deploy_internal do
     _app_store_authenticate
     match(type: "appstore", readonly: is_ci)
     _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_testflight(
-      skip_waiting_for_build_processing: true
+      skip_waiting_for_build_processing: true,
+      groups: ["KoeNaWin"]
+    )
+  end
+
+  desc "Deploy to internal and external testers"
+  lane :deploy_external do
+    _app_store_authenticate
+    match(type: "appstore", readonly: is_ci)
+    _ensure_build_number
+    build_app(scheme: "KoeNaWin")
+    upload_to_testflight(
+      skip_waiting_for_build_processing: true,
+      groups: ["KoeNaWin", "KoeNaWin Tester"]
     )
   end
 
@@ -36,7 +49,7 @@ platform :ios do
     upload_to_app_store(
       force: true, # Set to true to skip asking for confirmation
       submit_for_review: true,
-      automatic_release: false # Set to true to automatically release the app after approval
+      automatic_release: true # Set to true to automatically release the app after approval
     )
   end
 
