@@ -34,7 +34,7 @@ gem install bundler
     ```
 
 2.  **Install Dependencies:**
-    Install the specific versions of Fastlane and other tools required by the project.
+    This command uses the `Gemfile` and `Gemfile.lock` in the project to install the correct versions of Fastlane and other Ruby tools. This ensures your environment matches the CI server and other developers.
     ```bash
     bundle install
     ```

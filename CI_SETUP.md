@@ -4,18 +4,36 @@ This document outlines the one-time setup steps required to configure the Contin
 
 ---
 
-## Step 1: Create the Private `match` Repository
+## Step 1: Initialize Ruby Dependencies
+
+Before any other setup, you must define the project's Ruby dependencies. This is done using a `Gemfile`.
+
+1.  **Create the `Gemfile`**: Create a file named `Gemfile` in the root of the project with the following content:
+    ```ruby
+    source "https://rubygems.org"
+
+    gem "fastlane"
+    ```
+
+2.  **Install Gems and Generate Lock File**: Run the `bundle install` command. This reads the `Gemfile`, installs the `fastlane` gem, and creates a `Gemfile.lock` file. This lock file is critical as it ensures all developers and the CI server use the exact same gem versions.
+    ```bash
+    bundle install
+    ```
+
+3.  **Commit the Files**: Commit both `Gemfile` and `Gemfile.lock` to the repository. This is a required first step before proceeding.
+
+## Step 2: Create the Private `match` Repository
 
 Our CI/CD process uses Fastlane `match` to manage code signing. You must create a separate, **private** Git repository to store the encrypted certificates and provisioning profiles.
 
 1.  On GitHub (or your preferred Git provider), create a new **private** repository. For example, `KoeNaWin-certificates`.
-2.  Copy the SSH or HTTPS URL for this new repository. You will need it in the next steps.
+2.  Copy the SSH or HTTPS URL for this new repository. You will need it in later steps.
 
-## Step 2: Generate and Upload Initial Signing Assets
+## Step 3: Generate and Upload Initial Signing Assets
 
 This step must be performed by a user with **Admin access** to the company's Apple Developer Portal account.
 
-1.  On your local machine (which should already be set up per `INSTALL.md`), ensure the `fastlane/Matchfile` has the correct `git_url` pointing to the repository you just created.
+1.  On your local machine, ensure the `fastlane/Matchfile` has the correct `git_url` pointing to the repository you just created.
 2.  Run the following commands to generate the development and distribution certificates. `match` will automatically create them in the Developer Portal and upload the encrypted files to your private repository.
 
     ```bash
@@ -27,7 +45,7 @@ This step must be performed by a user with **Admin access** to the company's App
     bundle exec fastlane match appstore
     ```
 
-## Step 3: Set GitHub Actions Secrets
+## Step 4: Set GitHub Actions Secrets
 
 The CI/CD workflows need credentials to communicate with App Store Connect and decrypt the `match` repository. You must add these as secrets to this GitHub repository.
 
@@ -39,9 +57,9 @@ The CI/CD workflows need credentials to communicate with App Store Connect and d
 | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `FASTLANE_USER`                              | The Apple ID of the dedicated service account used for CI/CD (e.g., `cicd@yourcompany.com`).                                                      |
 | `FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD` | The [app-specific password](https://support.apple.com/en-us/HT204397) generated for the `FASTLANE_USER` account.                                  |
-| `MATCH_PASSWORD`                             | The password you created in Step 2 to encrypt and decrypt the `match` repository.                                                                |
+| `MATCH_PASSWORD`                             | The password you created in Step 3 to encrypt and decrypt the `match` repository.                                                                |
 
-## Step 4: Create Project Branches
+## Step 5: Create Project Branches
 
 Our CI/CD pipeline is configured to run on specific branches. Ensure these branches exist in your repository:
 
