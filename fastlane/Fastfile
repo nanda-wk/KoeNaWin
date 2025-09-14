@@ -19,6 +19,7 @@ platform :ios do
   desc "Build and upload to TestFlight for UAT"
   lane :build_and_upload_to_testflight do
     match(type: "appstore", readonly: is_ci)
+    _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_testflight(
       skip_waiting_for_build_processing: true
@@ -28,11 +29,24 @@ platform :ios do
   desc "Deploy to the App Store"
   lane :deploy_to_app_store do
     match(type: "appstore", readonly: is_ci)
+    _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_app_store(
       force: true, # Set to true to skip asking for confirmation
       submit_for_review: true,
       automatic_release: false # Set to true to automatically release the app after approval
     )
+  end
+
+  # Private lane to handle build number increment
+  private_lane :_ensure_build_number do
+    # Get the latest build number from TestFlight
+    latest_build = latest_testflight_build_number(app_identifier: "com.nanda.KoeNaWin")
+    
+    # Set the new build number
+    new_build_number = latest_build + 1
+    increment_build_number(build_number: new_build_number)
+    
+    UI.message("Set build number to #{new_build_number}")
   end
 end
