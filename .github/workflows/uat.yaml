@@ -38,6 +38,10 @@ jobs:
           token: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
           path: fastlane-match-repo
           ref: master
+      - name: Configure Git for Match
+        run: |
+          git config --global credential.helper store
+          echo "https://x-oauth-basic:${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}@github.com" > ~/.git-credentials
       - name: Build and Upload to External Testers
         run: bundle exec fastlane deploy_external
         env:
@@ -45,4 +49,3 @@ jobs:
           APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
           APP_STORE_KEY_CONTENT: ${{ secrets.APP_STORE_KEY_CONTENT }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
