@@ -46,6 +46,12 @@ jobs:
         with:
           ruby-version: '3.3'
           bundler-cache: true
+      - name: Checkout Fastlane Match Repository
+        uses: actions/checkout@v3
+        with:
+          repository: nanda-wk/KoeNaWin-fastlane
+          token: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
+          path: fastlane-match-repo
       - name: Build and Upload to Internal Testers
         run: bundle exec fastlane deploy_internal
         env:
@@ -53,3 +59,4 @@ jobs:
           APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
           APP_STORE_KEY_CONTENT: ${{ secrets.APP_STORE_KEY_CONTENT }}
           MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+          MATCH_GIT_BASIC_AUTHORIZATION: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}

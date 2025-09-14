@@ -1,4 +1,4 @@
-git_url("git@github.com:nanda-wk/KoeNaWin-fastlane.git")
+git_url("https://github.com/nanda-wk/KoeNaWin-fastlane.git")
 
 storage_mode("git")
 
