@@ -14,7 +14,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Run Unit Tests
         run: bundle exec fastlane tests
@@ -28,7 +28,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Build and Upload to TestFlight
         run: bundle exec fastlane build_and_upload_to_testflight
