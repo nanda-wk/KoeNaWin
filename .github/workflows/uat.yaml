@@ -37,6 +37,7 @@ jobs:
           repository: nanda-wk/KoeNaWin-fastlane
           token: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
           path: fastlane-match-repo
+          ref: master
       - name: Build and Upload to External Testers
         run: bundle exec fastlane deploy_external
         env:
