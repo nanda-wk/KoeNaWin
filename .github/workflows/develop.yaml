@@ -16,7 +16,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Run SwiftFormat
         run: bundle exec fastlane lint
@@ -29,7 +29,7 @@ jobs:
       - name: Setup Fastlane
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '3.4'
+          ruby-version: '3.3'
           bundler-cache: true
       - name: Run Unit Tests
         run: bundle exec fastlane tests
