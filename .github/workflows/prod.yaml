@@ -36,6 +36,7 @@ jobs:
           repository: nanda-wk/KoeNaWin-fastlane
           token: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
           path: fastlane-match-repo
+          ref: master
       - name: Deploy to App Store
         run: bundle exec fastlane deploy_to_app_store
         env:
