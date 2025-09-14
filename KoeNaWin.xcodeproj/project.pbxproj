@@ -77,6 +77,7 @@
 				CoreData/KoeNaWin.xcdatamodeld,
 				CoreData/UserProgress.swift,
 				Resources/KoeNaWin.json,
+				"Uitls/Extensions/Bundle+Extensions.swift",
 			);
 			target = 53A6EA582E38F7FF00217BE6 /* KoeNaWin-WidgetExtension */;
 		};

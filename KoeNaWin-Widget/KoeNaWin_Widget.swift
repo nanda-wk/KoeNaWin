@@ -57,7 +57,8 @@ struct Provider: TimelineProvider {
 
     func getTimeline(in _: Context, completion: @escaping (Timeline<Entry>) -> Void) {
         // This is where you'll determine the current state and create the timeline.
-        let allStages = loadPrayerData()
+//        let allStages = loadPrayerData()
+        let allStages = Bundle.main.decode([WidgetStage].self, from: "KoeNaWin.json")
         let currentStatus = getCurrentState(from: allStages)
 
         let entry = WidgetEntry(date: .now, status: currentStatus)
@@ -158,6 +159,7 @@ struct SystemSmallView: View {
             case .todayCompleted:
                 Text("Today Completed!")
                     .font(.headline)
+                    .multilineTextAlignment(.center)
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
                     .font(.largeTitle)
@@ -230,7 +232,7 @@ struct KoeNaWin_Widget: Widget {
     WidgetEntry(date: .now, status: .todayCompleted)
 }
 
-#Preview(as: .accessoryRectangular) {
+#Preview(as: .accessoryCircular) {
     KoeNaWin_Widget()
 } timeline: {
     WidgetEntry(date: .now, status: .inProgress(.init(day: "Monday", mantra: "သတ္ထာဒေဝမနုဿာနံ", rounds: 4)))
