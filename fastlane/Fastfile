@@ -18,8 +18,14 @@ platform :ios do
 
   desc "Deploy to internal testers only"
   lane :deploy_internal do
+    setup_ci
     _app_store_authenticate
-    match(type: "appstore", readonly: is_ci)
+    match(
+      type: "appstore", 
+      readonly: is_ci, 
+      keychain_name: "fastlane_tmp.keychain", 
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_testflight(
@@ -30,8 +36,14 @@ platform :ios do
 
   desc "Deploy to internal and external testers"
   lane :deploy_external do
+    setup_ci
     _app_store_authenticate
-    match(type: "appstore", readonly: is_ci)
+    match(
+      type: "appstore", 
+      readonly: is_ci, 
+      keychain_name: "fastlane_tmp.keychain", 
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_testflight(
@@ -42,8 +54,14 @@ platform :ios do
 
   desc "Deploy to the App Store"
   lane :deploy_to_app_store do
+    setup_ci
     _app_store_authenticate
-    match(type: "appstore", readonly: is_ci)
+    match(
+      type: "appstore", 
+      readonly: is_ci, 
+      keychain_name: "fastlane_tmp.keychain", 
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _ensure_build_number
     build_app(scheme: "KoeNaWin")
     upload_to_app_store(
