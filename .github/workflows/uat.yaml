@@ -43,7 +43,6 @@ jobs:
               git config --global credential.helper store
               echo "https://x-oauth-basic:${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}@github.com" > ~/.git-credentials
          - name: Build and Upload to External Testers
-           run: bundle exec fastlane deploy_external
            env:
               APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
               APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
