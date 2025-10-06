@@ -18,7 +18,10 @@ platform :ios do
 
   desc "Deploy to internal testers only"
   lane :deploy_internal do
-    setup_ci
+    setup_ci(
+      keychain_name: "fastlane_tmp.keychain",
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _app_store_authenticate
     match(
       type: "appstore", 
@@ -36,7 +39,10 @@ platform :ios do
 
   desc "Deploy to internal and external testers"
   lane :deploy_external do
-    setup_ci
+    setup_ci(
+      keychain_name: "fastlane_tmp.keychain",
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _app_store_authenticate
     match(
       type: "appstore", 
@@ -54,7 +60,10 @@ platform :ios do
 
   desc "Deploy to the App Store"
   lane :deploy_to_app_store do
-    setup_ci
+    setup_ci(
+      keychain_name: "fastlane_tmp.keychain",
+      keychain_password: ENV["MATCH_KEYCHAIN_PASSWORD"]
+    )
     _app_store_authenticate
     match(
       type: "appstore", 
