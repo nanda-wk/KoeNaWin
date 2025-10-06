@@ -50,3 +50,15 @@ jobs:
               APP_STORE_KEY_CONTENT: ${{ secrets.APP_STORE_KEY_CONTENT }}
               MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
               MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
+              FASTLANE_KEYCHAIN_NAME: fastlane_tmp.keychain
+              FASTLANE_KEYCHAIN_PATH: ~/Library/Keychains/fastlane_tmp.keychain-db
+              FASTLANE_USER: nandawinkyu.ix@gmail.com
+           run: |
+              echo "🔑 Creating temporary keychain..."
+              security create-keychain -p "$MATCH_KEYCHAIN_PASSWORD" fastlane_tmp.keychain
+              security default-keychain -s fastlane_tmp.keychain
+              security unlock-keychain -p "$MATCH_KEYCHAIN_PASSWORD" fastlane_tmp.keychain
+              security set-keychain-settings -lut 21600 fastlane_tmp.keychain
+
+              echo "🚀 Running Fastlane lane: deploy_external"
+              bundle exec fastlane deploy_external

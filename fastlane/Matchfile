@@ -5,3 +5,4 @@ storage_mode("git")
 type("development") # The default type, can be: appstore, adhoc, development, enterprise
 
 app_identifier(["com.nanda.KoeNaWin"])
+keychain_name("fastlane_tmp.keychain")

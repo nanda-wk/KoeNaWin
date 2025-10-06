@@ -132,8 +132,9 @@ struct PracticeScreen: View {
             .padding()
             .padding(.bottom)
         }
-        .confirmationDialog("practiceScreen-confirmDialog", isPresented: $showDialog, titleVisibility: .visible) {
+        .alert("practiceScreen-confirmDialog", isPresented: $showDialog) {
             Button("yes", action: resetCount)
+            Button("cancel", role: .cancel, action: {})
         }
         .alert("practiceScreen-alert", isPresented: $showComplete) {
             Button("finished", action: markTodayComplete)
