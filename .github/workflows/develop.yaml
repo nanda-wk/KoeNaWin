@@ -1,0 +1,67 @@
+name: Develop Branch CI
+
+on:
+   push:
+      branches:
+         - develop
+
+jobs:
+   lint:
+      runs-on: macos-latest
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v3
+         - name: Install SwiftFormat
+           run: brew install swiftformat
+         - name: Setup Fastlane
+           uses: ruby/setup-ruby@v1
+           with:
+              ruby-version: "3.3"
+              bundler-cache: true
+         - name: Run SwiftFormat
+           run: bundle exec fastlane lint
+
+   test:
+      runs-on: macos-latest
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v3
+         - name: Setup Fastlane
+           uses: ruby/setup-ruby@v1
+           with:
+              ruby-version: "3.3"
+              bundler-cache: true
+         - name: Run Unit Tests
+           run: bundle exec fastlane tests
+
+   deploy_internal:
+      name: Deploy to Internal Testers
+      needs: test
+      runs-on: macos-latest
+      steps:
+         - name: Checkout repository
+           uses: actions/checkout@v3
+         - name: Setup Fastlane
+           uses: ruby/setup-ruby@v1
+           with:
+              ruby-version: "3.3"
+              bundler-cache: true
+         - name: Checkout Fastlane Match Repository
+           uses: actions/checkout@v3
+           with:
+              repository: nanda-wk/KoeNaWin-fastlane
+              token: ${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}
+              path: fastlane-match-repo
+              ref: master
+         - name: Configure Git for Match
+           run: |
+              git config --global credential.helper store
+              echo "https://x-oauth-basic:${{ secrets.FASTLANE_MATCH_REPO_TOKEN }}@github.com" > ~/.git-credentials
+         - name: Build and Upload to Internal Testers
+           run: bundle exec fastlane deploy_internal
+           env:
+              APP_STORE_KEY_ID: ${{ secrets.APP_STORE_KEY_ID }}
+              APP_STORE_ISSUER_ID: ${{ secrets.APP_STORE_ISSUER_ID }}
+              APP_STORE_KEY_CONTENT: ${{ secrets.APP_STORE_KEY_CONTENT }}
+              MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
+              MATCH_KEYCHAIN_PASSWORD: ${{ secrets.MATCH_KEYCHAIN_PASSWORD }}
