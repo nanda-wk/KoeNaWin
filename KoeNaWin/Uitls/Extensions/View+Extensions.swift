@@ -26,8 +26,15 @@ extension View {
 extension View {
     var listSectionBackground: some View {
         background(
-            RoundedRectangle(cornerRadius: 10)
-                .fill(Color(UIColor.tertiarySystemBackground))
+            Group {
+                if #available(iOS 25, *) {
+                    RoundedRectangle(cornerRadius: 26)
+                        .fill(Color(UIColor.tertiarySystemBackground))
+                } else {
+                    RoundedRectangle(cornerRadius: 10)
+                        .fill(Color(UIColor.tertiarySystemBackground))
+                }
+            }
         )
     }
 }
