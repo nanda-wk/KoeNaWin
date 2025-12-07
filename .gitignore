@@ -1,0 +1,20 @@
+# Xcode
+.DS_Store
+*.xcuserdata/
+*.xcodeproj/project.xcworkspace/xcuserdata/
+DerivedData/
+build/
+*.xcworkspace
+!default.xcworkspace
+*.xcuserstate
+
+# Gemini
+.gemini/
+GEMINI.md
+
+# Fastlane
+fastlane/test_output/
+fastlane/logs/
+fastlane/report.xml
+*.ipa
+*.dSYM.zip

@@ -476,8 +476,8 @@ final class KoeNaWinRepositoryTests: XCTestCase {
         // Given
         let calendar = Calendar.current
         let today = Date()
-        let originalStartDate = calendar.date(byAdding: .day, value: -5, to: today)!
-        let newStartDate = calendar.date(byAdding: .day, value: 10, to: today)!
+        let originalStartDate = calendar.date(byAdding: .day, value: -5, to: today)!.startOfDay()
+        let newStartDate = calendar.date(byAdding: .day, value: 10, to: today)!.startOfDay()
 
         createMockUserProgress(
             startDate: originalStartDate,
@@ -492,12 +492,13 @@ final class KoeNaWinRepositoryTests: XCTestCase {
         let progress = repository.loadUserProgress()
 
         // Then
-        XCTAssertEqual(progress?.startDate, newStartDate)
+        XCTAssertTrue(calendar.isDate(progress!.startDate, inSameDayAs: newStartDate))
 
-        // Should be day 4 (3 days since start)
-        XCTAssertEqual(progress?.dayOfStage, 3)
+        // If the start date is in the future, progress should be reset.
+        // dayOfStage should be 0 as no days have passed.
+        XCTAssertEqual(progress?.dayOfStage, 0)
 
-        // Should have 3 completed days (days 1-3)
-        XCTAssertEqual(progress?.completedDaysArray.count, 3)
+        // No days should be marked as completed.
+        XCTAssertEqual(progress?.completedDaysArray.count, 0)
     }
 }
