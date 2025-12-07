@@ -165,8 +165,8 @@ extension PracticeScreen {
         }
 
         count += 1
-        if count > totalCount {
-            count = 1
+        if count == totalCount {
+            count = 0
             round += 1
         }
 
