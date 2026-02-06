@@ -17,6 +17,7 @@ final class ConfigManager: ObservableObject {
     @AppStorage("appTheme") var appTheme: AppTheme = .system
     @AppStorage("appLanguage") var appLanguage: AppLanguage = .myanmar
     @AppStorage("isFirstLaunch") var isFirstLaunch = true
+    @AppStorage("beads-count") var totalBeadsCount: Int = 108
     @Published private(set) var hasLoaded = false
 
     func loadData() {
@@ -25,6 +26,7 @@ final class ConfigManager: ObservableObject {
             defaults: [
                 "isEnableHaptic": true,
                 "appLanguage": AppLanguage.myanmar.rawValue,
+                "beads-count": 108,
             ]
         )
         hasLoaded = true

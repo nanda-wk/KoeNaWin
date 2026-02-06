@@ -13,7 +13,7 @@ struct LaunchScreen: View {
             Image(.logo)
                 .resizable()
                 .frame(width: 90, height: 90)
-                .clipShape(.rect(cornerRadius: 12))
+                .clipShape(.rect(cornerRadius: 26))
 
             Text("KoeNaWin(ကိုးနဝင်း)")
                 .font(.title)

@@ -32,7 +32,7 @@ struct SettingsScreen: View {
                         .resizable()
                         .aspectRatio(contentMode: .fit)
                         .frame(width: 60, height: 60)
-                        .clipShape(.rect(cornerRadius: 12))
+                        .clipShape(.rect(cornerRadius: 18))
 
                     VStack(alignment: .leading, spacing: 5) {
                         Text("KoeNaWin(ကိုးနဝင်း)")
@@ -54,6 +54,7 @@ struct SettingsScreen: View {
                 appTheme
             }
 
+            beadsCount
             adhitthanStartDate
 
             Section {
@@ -172,7 +173,7 @@ extension SettingsScreen {
                     DatePicker("", selection: $reminderDate, displayedComponents: .hourAndMinute)
                         .datePickerStyle(.wheel)
                         .labelsHidden()
-                        .environment(\.locale, .init(identifier: "en_US_POSIX"))
+                        .environment(\.locale, Locale(identifier: "en"))
                 }
                 .frame(maxWidth: .infinity)
                 .padding()
@@ -230,6 +231,19 @@ extension SettingsScreen {
             .foregroundStyle(.primary)
         } footer: {
             Text("settingsScreen-adhitthan-change-start-date")
+        }
+    }
+
+    var beadsCount: some View {
+        Section {
+            Picker("Total Beads", selection: $configManager.totalBeadsCount) {
+                ForEach([108, 9], id: \.self) { count in
+                    Text(count.description)
+                        .tag(count)
+                }
+            }
+        } footer: {
+            Text("Change your total beads count.")
         }
     }
 

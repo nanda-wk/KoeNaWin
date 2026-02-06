@@ -11,6 +11,7 @@ build/
 # Gemini
 .gemini/
 GEMINI.md
+.agent/
 
 # Fastlane
 fastlane/test_output/
