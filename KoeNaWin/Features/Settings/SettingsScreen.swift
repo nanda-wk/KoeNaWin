@@ -236,14 +236,14 @@ extension SettingsScreen {
 
     var beadsCount: some View {
         Section {
-            Picker("Total Beads", selection: $configManager.totalBeadsCount) {
+            Picker("settingsScreen-beadsCount-label", selection: $configManager.totalBeadsCount) {
                 ForEach([108, 9], id: \.self) { count in
                     Text(count.description)
                         .tag(count)
                 }
             }
         } footer: {
-            Text("Change your total beads count.")
+            Text("settingsScreen-beadsCount-footer")
         }
     }
 
