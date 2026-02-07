@@ -16,7 +16,6 @@ struct PracticeScreen: View {
     @State private var showComplete = false
     @State private var showAlert = false
     @State private var alertMessage: LocalizedStringKey = ""
-    private let totalCount = 108
 
     private var isLocked: Bool {
         if vm.todayCompleted { return true }
@@ -54,6 +53,7 @@ struct PracticeScreen: View {
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                         .monospaced()
                         .foregroundStyle(.accent)
+                        .contentTransition(.numericText())
 
                     Button {
                         Haptic.impact(.soft).generate()
@@ -86,7 +86,6 @@ struct PracticeScreen: View {
                             }
                         }
                     }
-                    .buttonStyle(PressableButtonStyle())
                 }
                 .padding(.vertical, 15)
 
@@ -113,11 +112,12 @@ struct PracticeScreen: View {
                             .padding(12)
                             .background(
                                 Circle()
-                                    .fill()
+                                    .fill(.accent)
                             )
                     }
+                    .buttonStyle(.plain)
 
-                    Text("Count: \(count.description) /\(totalCount.description)")
+                    Text("Count: \(count.description) /\(configManager.totalBeadsCount.description)")
                         .font(.footnote)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 10)
@@ -165,7 +165,7 @@ extension PracticeScreen {
         }
 
         count += 1
-        if count == totalCount {
+        if count == configManager.totalBeadsCount {
             count = 0
             round += 1
         }

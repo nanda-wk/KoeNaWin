@@ -71,24 +71,41 @@ struct NoticeCard: View {
 
             if case .notMonday = vm.status {
             } else if !vm.todayCompleted {
-                Button {
-                    if case .willStart = vm.status {
-                        configManager.selectedTab = .settings
-                    } else {
-                        vm.startNewProgress()
+                if #available(iOS 26.0, *) {
+                    Button {
+                        if case .willStart = vm.status {
+                            configManager.selectedTab = .settings
+                        } else {
+                            vm.startNewProgress()
+                        }
+                    } label: {
+                        Text(button)
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
                     }
-                } label: {
-                    Text(button)
-                        .font(.headline)
-                        .foregroundColor(.white)
-                        .padding()
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10)
-                                .fill(.accent)
-                        )
+                    .buttonStyle(.glassProminent)
+                    .tint(.accent)
+                } else {
+                    Button {
+                        if case .willStart = vm.status {
+                            configManager.selectedTab = .settings
+                        } else {
+                            vm.startNewProgress()
+                        }
+                    } label: {
+                        Text(button)
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .frame(maxWidth: .infinity)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10)
+                                    .fill(.accent)
+                            )
+                    }
                 }
-                .padding(.horizontal)
             }
         }
         .padding()

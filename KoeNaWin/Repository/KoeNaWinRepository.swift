@@ -127,7 +127,7 @@ extension KoeNaWinRepository {
                     status: .fail
                 )
                 progressPublisher.send(.missedDay(failureDate: checkDate))
-                resetPracitceCount()
+                resetPracticeCount()
                 removeAllNotification()
                 return
             }
@@ -144,7 +144,7 @@ extension KoeNaWinRepository {
             let dayUntilVegetarian = calculateDaysUntilVegetarian(dayInStage: dayInStage + 1)
             progressPublisher.send(.active(progress: progress, prayer: currentPrayer, dayUntilVegetarian: dayUntilVegetarian, todayCompleted: todayCompleted))
             if todayCompleted {
-                resetPracitceCount()
+                resetPracticeCount()
             }
         } else {
             saveUserRecord(
@@ -156,7 +156,7 @@ extension KoeNaWinRepository {
             )
             progressPublisher.send(.completed)
             removeAllNotification()
-            resetPracitceCount()
+            resetPracticeCount()
         }
     }
 
@@ -176,7 +176,7 @@ extension KoeNaWinRepository {
             progress.dayOfStage = 1
         }
         saveUserProgress(progress)
-        resetPracitceCount()
+        resetPracticeCount()
         checkProgress()
     }
 
@@ -187,7 +187,7 @@ extension KoeNaWinRepository {
         if weekday != 2 {
             let nextMonday = calendar.nextDate(after: today, matching: DateComponents(weekday: 2), matchingPolicy: .nextTime)!
             progressPublisher.send(.notMonday(nextMonday: nextMonday))
-            resetPracitceCount()
+            resetPracticeCount()
             return
         }
 
@@ -210,7 +210,7 @@ extension KoeNaWinRepository {
         userProgress.completedDaysArray = []
         userProgress.reminder = reminder
 
-        resetPracitceCount()
+        resetPracticeCount()
         saveUserProgress(userProgress)
         scheduleNotification(from: today, body: localizedString(forKey: "notification-daily-reminder-body", language: appLanguage.locale.identifier), repeats: true, identifier: dailyReminderNotificationIdentifier)
         UserDefaults.standard.set(true, forKey: dailyReminderKey)
@@ -264,7 +264,7 @@ extension KoeNaWinRepository {
         }
 
         saveUserProgress(newProgress)
-        resetPracitceCount()
+        resetPracticeCount()
         checkProgress()
     }
 
@@ -315,7 +315,7 @@ extension KoeNaWinRepository {
         return day
     }
 
-    func resetPracitceCount() {
+    func resetPracticeCount() {
         UserDefaults.standard.set(0, forKey: "count")
         UserDefaults.standard.set(0, forKey: "round")
     }
@@ -401,7 +401,7 @@ extension KoeNaWinRepository {
             print("Error resetting progress data: \(error)")
         }
         checkProgress()
-        resetPracitceCount()
+        resetPracticeCount()
         removeAllNotification()
     }
 }
