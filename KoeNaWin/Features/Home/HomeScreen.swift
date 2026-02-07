@@ -13,7 +13,6 @@ struct HomeScreen: View {
     @Binding var path: NavigationPath
     @EnvironmentObject private var configManager: ConfigManager
     @EnvironmentObject private var vm: HomeViewModel
-    @State private var showAlert = false
 
     var body: some View {
         ZStack {
@@ -178,6 +177,6 @@ extension HomeScreen {
 #Preview {
     NavigationStack {
         HomeScreen(path: .constant(NavigationPath()))
-            .previewEnvironment()
+            .previewEnvironment(state: .active(stage: 9, day: 9))
     }
 }
