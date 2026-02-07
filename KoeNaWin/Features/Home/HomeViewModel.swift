@@ -82,6 +82,10 @@ final class HomeViewModel: ObservableObject {
     func resetProgress() {
         repository.resetProgressData()
     }
+    
+    func resetPracticeCount() {
+        repository.resetPracticeCount()
+    }
 
     private func resetState() {
         stage = 0

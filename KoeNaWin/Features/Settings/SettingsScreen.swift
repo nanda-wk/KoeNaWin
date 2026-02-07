@@ -104,7 +104,7 @@ struct SettingsScreen: View {
                 showDatePicker.toggle()
             }
         }
-        .popover(isPresented: $showPrivacy) {
+        .sheet(isPresented: $showPrivacy) {
             NavigationStack {
                 WebView(url: "https://sites.google.com/view/koenawin/privacy")
                     .ignoresSafeArea(edges: .bottom)
@@ -244,6 +244,11 @@ extension SettingsScreen {
             }
         } footer: {
             Text("settingsScreen-beadsCount-footer")
+        }
+        .onChange(of: configManager.totalBeadsCount) { [oldValue = configManager.totalBeadsCount] newValue in
+            if newValue != oldValue {
+                vm.resetPracticeCount()
+            }
         }
     }
 
