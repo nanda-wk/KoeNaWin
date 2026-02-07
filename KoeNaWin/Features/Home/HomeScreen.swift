@@ -10,44 +10,36 @@ import Combine
 import SwiftUI
 
 struct HomeScreen: View {
-    @Binding var path: NavigationPath
-    @EnvironmentObject private var configManager: ConfigManager
-    @EnvironmentObject private var vm: HomeViewModel
+    @EnvironmentObject var store: KoeNaWinStore
 
     var body: some View {
-        ZStack {
-            Color(UIColor.systemGroupedBackground)
-                .ignoresSafeArea()
-
-            if case .active = vm.status {
-                ScrollView {
-                    VStack(spacing: 25) {
-                        vegetarianSection
-
-                        todayMantra
-
-                        currentStageCompletion
-
-                        completionSection
-                    }
-                    .padding()
-                }
-                .scrollIndicators(.never)
-            } else {
-                NoticeCard(status: vm.status)
-            }
-        }
-        .navigationTitle("homeScreen-navTitle")
-        .navigationBarTitleDisplayMode(.inline)
+        content
+            .navigationTitle("KoeNaWin")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
 extension HomeScreen {
-    var completionSection: some View {
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 25) {
+                vegetarianSection
+                todayMantra
+                currentStageCompletion
+                completionSection
+            }
+            .padding()
+        }
+        .scrollIndicators(.never)
+        .background(.appBackground)
+    }
+
+    private var completionSection: some View {
         VStack {
-            Text("homeScreen-completionSection-progress")
+            Text("Adhitthan Progress")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundStyle(.textPrimary)
 
             HStack {
                 ZStack {
@@ -59,19 +51,20 @@ extension HomeScreen {
 
                     // Progress circle (completed days)
                     Circle()
-                        .trim(from: 0, to: max(0.02, CGFloat(vm.totalDay) / 81.0 - 0.08))
+                        .trim(from: 0, to: max(0.02, CGFloat(70) / 81.0 - 0.08))
                         .stroke(.accent, style: StrokeStyle(lineWidth: 24, lineCap: .round))
                         .frame(width: 120, height: 120)
                         .rotationEffect(.degrees(-90))
 
                     // Center text
-                    Text("\(vm.totalDay.description) / 81")
+                    Text("70 / 81")
                         .font(.headline)
+                        .foregroundStyle(.textPrimary)
                 }
                 .padding()
 
                 VStack(spacing: 20) {
-                    Text("\(String(format: "%.1f", vm.totalProgressPercentage)) %")
+                    Text("\(String(format: "%.1f", 44.4)) %")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal)
@@ -85,8 +78,9 @@ extension HomeScreen {
                         Image(systemName: "staroflife.fill")
                             .font(.caption2)
 
-                        Text("homeScreen-completionSection-day-left-\((81 - vm.totalDay).description)")
+                        Text("11 days left.")
                             .lineLimit(1, reservesSpace: true)
+                            .foregroundStyle(.textPrimary)
                     }
                 }
             }
@@ -95,88 +89,68 @@ extension HomeScreen {
         .listSectionBackground
     }
 
-    var currentStageCompletion: some View {
+    private var currentStageCompletion: some View {
         VStack {
-            Text("addhithan-stage-\(vm.stage.description)")
+            Text("Adhitthan Stage (1)")
                 .font(.title2)
                 .fontWeight(.bold)
+                .foregroundStyle(.textPrimary)
 
-            ProgressView(value: Double(vm.day), total: 9) {} currentValueLabel: {
+            ProgressView(value: Double(7), total: 9) {} currentValueLabel: {
                 HStack {
-                    Text("\(String(format: "%.1f", vm.currentProgressPercentage)) %")
+                    Text("\(String(format: "%.1f", 22)) %")
                     Spacer()
-                    Text("homeScreen-currentStageCompletion-day-\(vm.day.description)")
+                    Text("7 / 9 Days")
                 }
                 .font(.subheadline)
+                .foregroundStyle(.textPrimary)
             }
             .progressViewStyle(CustomProgressViewStyle(height: 20))
         }
         .padding()
         .listSectionBackground
         .contentShape(Rectangle())
-        .onTapGesture {
-            if let currentStage = koeNaWinStages.first(where: { $0.stage == vm.stage }) {
-                configManager.selectedTab = .stages
-                // Add the current stage to the navigation path
-                if path.count > 0 {
-                    path.removeLast(path.count)
-                }
-
-                DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                    path.append(currentStage)
-                }
-            }
-        }
     }
 
-    var todayMantra: some View {
+    private var todayMantra: some View {
         VStack(spacing: 10) {
             HStack {
-                Text("\(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")")
+                Text("Monday")
                 Spacer()
-                Text("addhithan-stage-\(vm.stage.description)")
+                Text("Adhitthan Stage (8)")
             }
             .font(.subheadline)
             .fontWeight(.medium)
             .foregroundStyle(.accent)
 
-            Text("\(vm.currentPrayer?.mantra ?? "")")
+            Text("ဘဂဝါ")
                 .font(.title)
                 .fontWeight(.bold)
+                .foregroundStyle(.textPrimary)
 
-            Text("bead-count-\((vm.currentPrayer?.rounds ?? 0).description)")
+            Text("Bead count (2)")
                 .font(.body)
-                .foregroundStyle(.secondary)
+                .foregroundStyle(.textSecondary)
         }
         .padding()
         .listSectionBackground
         .contentShape(Rectangle())
-        .onTapGesture {
-            configManager.selectedTab = .practice
-        }
     }
 
     @ViewBuilder
-    var vegetarianSection: some View {
-        let todayVegetarian = vm.dayUntilVegetarian == 0
-        let message: LocalizedStringKey = todayVegetarian ? "homeScreen-vegetarianSection-isVegetarian" : "homeScreen-vegetarianSection-vegetarian-in-\(vm.dayUntilVegetarian.description)"
-
-        if vm.stage == 9, vm.day > 5 {
-            EmptyView()
-        } else {
-            Text(message)
-                .font(.headline)
-                .foregroundStyle(.red)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding(.vertical, 10)
-                .listSectionBackground
-        }
+    private var vegetarianSection: some View {
+        Text("Today is vegetarian day.")
+            .font(.headline)
+            .foregroundStyle(.red)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding(.vertical, 10)
+            .listSectionBackground
     }
 }
 
 #Preview {
     NavigationStack {
-        HomeScreen(path: .constant(NavigationPath()))
-            .previewEnvironment(state: .active(stage: 9, day: 9))
+        HomeScreen()
+            .previewEnviroments()
     }
 }

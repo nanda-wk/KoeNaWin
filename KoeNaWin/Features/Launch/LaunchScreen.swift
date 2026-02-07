@@ -18,6 +18,7 @@ struct LaunchScreen: View {
             Text("KoeNaWin(ကိုးနဝင်း)")
                 .font(.title)
                 .fontWeight(.bold)
+                .foregroundStyle(.textPrimary)
 
             ProgressView()
                 .scaleEffect(1.5)

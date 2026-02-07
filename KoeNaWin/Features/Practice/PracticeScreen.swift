@@ -8,23 +8,10 @@
 import SwiftUI
 
 struct PracticeScreen: View {
-    @EnvironmentObject private var configManager: ConfigManager
-    @EnvironmentObject private var vm: HomeViewModel
-    @AppStorage("count") private var count = 0
-    @AppStorage("round") private var round = 0
-    @State private var showDialog = false
-    @State private var showComplete = false
-    @State private var showAlert = false
-    @State private var alertMessage: LocalizedStringKey = ""
+    @EnvironmentObject var store: KoeNaWinStore
 
     private var isLocked: Bool {
-        if vm.todayCompleted { return true }
-
-        switch vm.status {
-        case .active: return false
-        case .missedDay, .completed, .notStarted, .notMonday, .willStart:
-            return true
-        }
+        true
     }
 
     var body: some View {
@@ -34,13 +21,13 @@ struct PracticeScreen: View {
 
             VStack {
                 VStack {
-                    Text(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")
+                    Text("Tuesday")
                         .font(.title3)
                         .fontWeight(.medium)
                         .foregroundStyle(.accent)
                         .padding(.bottom, 4)
 
-                    Text(vm.currentPrayer?.mantra ?? "")
+                    Text("ဘဂဝါ")
                         .lineLimit(2, reservesSpace: true)
                         .multilineTextAlignment(.center)
                         .font(.system(size: 40, weight: .bold, design: .rounded))
@@ -49,7 +36,7 @@ struct PracticeScreen: View {
                 Spacer()
 
                 VStack {
-                    Text("\(count.description)")
+                    Text("8")
                         .font(.system(size: 40, weight: .bold, design: .rounded))
                         .monospaced()
                         .foregroundStyle(.accent)
@@ -57,7 +44,6 @@ struct PracticeScreen: View {
 
                     Button {
                         Haptic.impact(.soft).generate()
-                        addCount()
                     } label: {
                         ZStack {
                             Circle()
@@ -92,7 +78,7 @@ struct PracticeScreen: View {
                 Spacer()
 
                 HStack(spacing: 20) {
-                    Text("practiceScreen-total-beads-\(round.description) /\((vm.currentPrayer?.rounds ?? 0).description)")
+                    Text("Total beads: 1 /8")
                         .font(.footnote)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 10)
@@ -103,9 +89,7 @@ struct PracticeScreen: View {
                                 .fill(.accent)
                         )
 
-                    Button {
-                        showDialog.toggle()
-                    } label: {
+                    Button {} label: {
                         Image(systemName: "arrow.clockwise")
                             .font(.footnote)
                             .foregroundStyle(.white)
@@ -117,7 +101,7 @@ struct PracticeScreen: View {
                     }
                     .buttonStyle(.plain)
 
-                    Text("Count: \(count.description) /\(configManager.totalBeadsCount.description)")
+                    Text("Count: 0 /108")
                         .font(.footnote)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 10)
@@ -132,90 +116,24 @@ struct PracticeScreen: View {
             .padding()
             .padding(.bottom)
         }
-        .alert("practiceScreen-confirmDialog", isPresented: $showDialog) {
-            Button("yes", role: .destructive, action: resetCount)
-            Button("cancel", role: .cancel, action: {})
+        .alert("Do you want to reset beads count?", isPresented: .constant(false)) {
+            Button("Yes", role: .destructive, action: {})
+            Button("Cancel", role: .cancel, action: {})
         }
-        .alert("practiceScreen-alert", isPresented: $showComplete) {
-            Button("cancel", action: {})
-            Button("finished", action: markTodayComplete)
+        .alert("Today’s Adhitthan finished.", isPresented: .constant(false)) {
+            Button("Cancel", action: {})
+            Button("Finished", action: {})
         }
-        .alert("", isPresented: $showAlert, actions: {}) {
-            Text(alertMessage)
+        .alert("", isPresented: .constant(false), actions: {}) {
+            Text("alertMessage")
         }
-        .navigationTitle("practiceScreen-navTitle")
+        .navigationTitle("Today's Adhitthan")
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {
-            if case .active = vm.status, !vm.todayCompleted {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("finished") {
-                        showComplete.toggle()
-                    }
-                }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button("Finished") {}
             }
         }
-    }
-}
-
-extension PracticeScreen {
-    private func addCount() {
-        if checkStatus() {
-            showAlert.toggle()
-            return
-        }
-
-        count += 1
-        if count == configManager.totalBeadsCount {
-            count = 0
-            round += 1
-        }
-
-        let prayerRound = vm.currentPrayer?.rounds ?? 0
-        if round == prayerRound {
-            markTodayComplete()
-        }
-    }
-
-    private func resetCount() {
-        count = 0
-        round = 0
-        Haptic.notification(.warning).generate()
-    }
-
-    private func markTodayComplete() {
-        Haptic.notification(.success).generate()
-        vm.markTodayComplete()
-    }
-
-    private func checkStatus() -> Bool {
-        var result = false
-
-        if vm.todayCompleted {
-            alertMessage = "practiceScreen-todayCompleted-alertMessage"
-            return true
-        }
-
-        switch vm.status {
-        case .active:
-            result = false
-        case let .missedDay(failureDate):
-            alertMessage = "noticeCard-missedDay-title-\(failureDate.toStringWith(format: .yyyy_MMMM_d))"
-            result = true
-        case .completed:
-            alertMessage = "noticeCard-completed-message"
-            result = true
-        case .notStarted:
-            alertMessage = "noticeCard-notStarted-title"
-            result = true
-        case let .notMonday(nextMonday):
-            alertMessage = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
-            result = true
-        case .willStart:
-            alertMessage = "noticeCard-willStart-title"
-            result = true
-        }
-
-        return result
     }
 }
 
@@ -230,6 +148,5 @@ struct PressableButtonStyle: ButtonStyle {
 #Preview {
     NavigationStack {
         PracticeScreen()
-            .previewEnvironment()
     }
 }

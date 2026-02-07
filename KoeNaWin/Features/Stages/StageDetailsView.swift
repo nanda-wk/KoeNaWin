@@ -8,47 +8,43 @@
 import SwiftUI
 
 struct StageDetailsView: View {
-    @EnvironmentObject private var vm: HomeViewModel
     let stage: KoeNaWinStage
 
     var body: some View {
+        content
+            .navigationTitle("Adhitthan Stage (\(stage.stage))")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension StageDetailsView {
+    private var content: some View {
         ScrollView {
             VStack(spacing: 25) {
-                Section {
-                    VStack(alignment: .leading) {
-                        Text("stageDetailsView-section-text-\(stage.stage.description)")
-                            .font(.headline)
+                VStack(alignment: .leading) {
+                    Text("အဓိဌာန်အဆင့် (\(stage.stage)) အောင်မြင်ပြီးပါက")
+                        .font(.headline)
 
-                        Divider()
+                    Divider()
+                        .foregroundStyle(.appDivider)
 
-                        Text(stage.benefits)
-                            .font(.body)
-                    }
+                    Text(stage.benefits)
+                        .font(.body)
+                        .kerning(1)
                 }
+                .foregroundStyle(.textPrimary)
                 .padding()
                 .listSectionBackground
 
                 VStack(spacing: 12) {
-                    ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
-                        var completed: Bool {
-                            if vm.stage <= stage.stage {
-                                vm.stage >= stage.stage && vm.day >= index + 1
-                            } else {
-                                true
-                            }
-                        }
-                        ListCell(prayer: prayer, completed: completed)
+                    ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { _, prayer in
+                        ListCell(prayer: prayer, completed: false)
                     }
                 }
             }
             .padding()
         }
-        .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("addhithan-stage-\(stage.stage.description)")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            vm.checkProgress()
-        }
+        .background(.appBackground)
     }
 }
 
@@ -61,12 +57,15 @@ struct ListCell: View {
         DisclosureGroup(isExpanded: $isExpanded) {
             Text(buddhaAttributes[prayer.mantra] ?? "")
                 .font(.body)
+                .foregroundStyle(.textPrimary)
+                .kerning(1)
         } label: {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) {
                     Text(prayer.day.desc)
                         .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundStyle(.textPrimary)
 
                     if completed {
                         Image(systemName: "checkmark.seal.fill")
@@ -75,7 +74,7 @@ struct ListCell: View {
                     }
 
                     if prayer.isVegetarian {
-                        Text("stagesScreen-listCell-isVegetarian")
+                        Text("သတ်သတ်လွတ်စားရန်။")
                             .font(.callout)
                             .foregroundStyle(.red)
                             .padding(.leading, 15)
@@ -114,6 +113,7 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
             if configuration.isExpanded {
                 Divider()
                     .padding(.vertical, 5)
+                    .foregroundStyle(.appDivider)
 
                 configuration.content
                     .disclosureGroupStyle(self)
@@ -131,6 +131,5 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
 #Preview {
     NavigationStack {
         StageDetailsView(stage: .preview)
-            .previewEnvironment()
     }
 }

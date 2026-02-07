@@ -10,41 +10,13 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @Environment(\.requestReview) private var requestReview
-    @EnvironmentObject private var vm: HomeViewModel
-    @EnvironmentObject private var configManager: ConfigManager
-    @State private var startDate: Date = .now
-    @State private var reminderDate: Date = .now
-    @State private var showPrivacy = false
-    @State private var showDatePicker = false
-    @State private var showTimePicker = false
-    @State private var showAlert = false
-    @State private var showChooseLanguage = false
-    @State private var alertMessage: LocalizedStringKey = ""
-    @State private var showConfirmResetData = false
 
     @State private var height: CGFloat = 500
 
     var body: some View {
         List {
             Section {
-                HStack(spacing: 14) {
-                    Image(.logo)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 60, height: 60)
-                        .clipShape(.rect(cornerRadius: 18))
-
-                    VStack(alignment: .leading, spacing: 5) {
-                        Text("KoeNaWin(ကိုးနဝင်း)")
-                            .font(.title3)
-                            .fontWeight(.bold)
-
-                        Text("V\(appVersion)")
-                            .font(.headline)
-                            .fontWeight(.medium)
-                            .foregroundStyle(.accent)
-                    }
-                }
+                appInfo
             }
 
             Section {
@@ -64,27 +36,21 @@ struct SettingsScreen: View {
             }
 
             privacyPolicy
-
-            clearProgress
         }
         .scrollIndicators(.never)
-        .navigationTitle("settingScreen-navTitle")
+        .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            startDate = vm.startDate
-        }
-        .sheet(isPresented: $showChooseLanguage) {
+        .onAppear {}
+        .sheet(isPresented: .constant(false)) {
             ChooseLanguageScreen()
                 .presentationDetents([.fraction(0.4)])
         }
-        .sheet(isPresented: $showDatePicker) {
+        .sheet(isPresented: .constant(false)) {
             VStack(alignment: .trailing) {
-                Button("save") {
-                    checkDate()
-                }
-                .padding()
+                Button("Save") {}
+                    .padding()
 
-                DatePicker("", selection: $startDate, displayedComponents: .date)
+                DatePicker("", selection: .constant(.now), displayedComponents: .date)
                     .datePickerStyle(.graphical)
                     .environment(\.locale, .init(identifier: "en_US_POSIX"))
             }
@@ -99,22 +65,18 @@ struct SettingsScreen: View {
             .id(height)
             .presentationDetents([.height(height)])
         }
-        .alert(alertMessage, isPresented: $showAlert) {
-            Button("ok", role: .cancel) {
-                showDatePicker.toggle()
-            }
+        .alert("alertMessage", isPresented: .constant(false)) {
+            Button("OK", role: .cancel) {}
         }
-        .sheet(isPresented: $showPrivacy) {
+        .sheet(isPresented: .constant(false)) {
             NavigationStack {
                 WebView(url: "https://sites.google.com/view/koenawin/privacy")
                     .ignoresSafeArea(edges: .bottom)
-                    .navigationTitle("privacy-policy")
+                    .navigationTitle("Privacy Policy")
                     .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
-                            Button("", systemImage: "xmark.circle") {
-                                showPrivacy.toggle()
-                            }
+                            Button("", systemImage: "xmark.circle") {}
                         }
                     }
             }
@@ -123,92 +85,100 @@ struct SettingsScreen: View {
 }
 
 extension SettingsScreen {
-    var appLanguage: some View {
-        Button {
-            showChooseLanguage.toggle()
-        } label: {
+    private var appInfo: some View {
+        HStack(spacing: 14) {
+            Image(.logo)
+                .resizable()
+                .aspectRatio(contentMode: .fit)
+                .frame(width: 60, height: 60)
+                .clipShape(.rect(cornerRadius: 18))
+
+            VStack(alignment: .leading, spacing: 5) {
+                Text("KoeNaWin(ကိုးနဝင်း)")
+                    .font(.title3)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.textPrimary)
+
+                Text("V\(appVersion)")
+                    .font(.headline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.accent)
+            }
+        }
+    }
+
+    private var appLanguage: some View {
+        Button {} label: {
             HStack {
-                Text("appLanguage")
+                Text("App Language")
                 Spacer()
-                Text(configManager.appLanguage.title)
+                Text("English")
                     .font(.headline)
                     .foregroundStyle(.accent)
             }
         }
-        .foregroundStyle(.primary)
+        .foregroundStyle(.textPrimary)
     }
 
-    var hapticToggle: some View {
-        Toggle("haptic-toggle", isOn: $configManager.isEnableHaptic)
+    private var hapticToggle: some View {
+        Toggle("Haptic on", isOn: .constant(true))
             .tint(.accent)
+            .foregroundStyle(.textPrimary)
     }
 
     @ViewBuilder
-    var reminderTime: some View {
-        if case .active = vm.status {
-            Button {
-                showTimePicker.toggle()
-            } label: {
-                HStack {
-                    Text("reminder-time")
-                        .font(.body)
+    private var reminderTime: some View {
+        Button {} label: {
+            HStack {
+                Text("Reminder Time")
+                    .font(.body)
 
-                    Spacer()
+                Spacer()
 
-                    Text(vm.reminderDate.toStringWith(format: .hMMa))
-                        .font(.footnote)
+                Text("08:00 PM")
+                    .font(.footnote)
+            }
+        }
+        .foregroundStyle(.textPrimary)
+        .onAppear {}
+        .sheet(isPresented: .constant(false)) {
+            VStack(alignment: .trailing) {
+                Button("Save") {}
+
+                DatePicker("", selection: .constant(.now), displayedComponents: .hourAndMinute)
+                    .datePickerStyle(.wheel)
+                    .labelsHidden()
+                    .environment(\.locale, Locale(identifier: "en"))
+            }
+            .frame(maxWidth: .infinity)
+            .padding()
+            .background(
+                GeometryReader { proxy in
+                    Color.clear
+                        .task {
+                            height = proxy.size.height
+                        }
                 }
-            }
-            .foregroundStyle(.primary)
-            .onAppear {
-                reminderDate = vm.reminderDate
-            }
-            .sheet(isPresented: $showTimePicker) {
-                VStack(alignment: .trailing) {
-                    Button("save") {
-                        vm.changeReminder(reminderDate)
-                        showTimePicker.toggle()
-                    }
-
-                    DatePicker("", selection: $reminderDate, displayedComponents: .hourAndMinute)
-                        .datePickerStyle(.wheel)
-                        .labelsHidden()
-                        .environment(\.locale, Locale(identifier: "en"))
-                }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .task {
-                                height = proxy.size.height
-                            }
-                    }
-                )
-                .id(height)
-                .presentationDetents([.height(height)])
-                .interactiveDismissDisabled(true)
-            }
-            .onChange(of: vm.reminderDate) { _ in
-                reminderDate = vm.reminderDate
-            }
+            )
+            .id(height)
+            .presentationDetents([.height(height)])
+            .interactiveDismissDisabled(true)
         }
     }
 
-    var appTheme: some View {
-        Picker("appearance", selection: $configManager.appTheme) {
+    private var appTheme: some View {
+        Picker("Appearance", selection: .constant(AppTheme.system)) {
             ForEach(AppTheme.allCases) { theme in
                 Text(theme.rawValue)
                     .tag(theme)
             }
         }
+        .foregroundStyle(.textPrimary)
     }
 
-    var adhitthanStartDate: some View {
+    private var adhitthanStartDate: some View {
         Section {
-            Button {
-                showDatePicker.toggle()
-            } label: {
+            Button {} label: {
                 HStack {
                     Image(systemName: "calendar")
                         .foregroundColor(.white)
@@ -219,40 +189,36 @@ extension SettingsScreen {
                                 .fill(.orange)
                         )
 
-                    Text("settingsScreen-adhitthan-start-date")
+                    Text("Adhitthan Start Date")
                         .font(.body)
 
                     Spacer()
 
-                    Text(startDate.toStringWith(format: .yyyy_MMMM_d))
+                    Text(Date.now.toStringWith(format: .yyyy_MMMM_d))
                         .font(.footnote)
                 }
             }
-            .foregroundStyle(.primary)
+            .foregroundStyle(.textPrimary)
         } footer: {
-            Text("settingsScreen-adhitthan-change-start-date")
+            Text("Change Adhitthan start date.")
         }
     }
 
-    var beadsCount: some View {
+    private var beadsCount: some View {
         Section {
-            Picker("settingsScreen-beadsCount-label", selection: $configManager.totalBeadsCount) {
+            Picker("Total Beads", selection: .constant(108)) {
                 ForEach([108, 9], id: \.self) { count in
-                    Text(count.description)
+                    Text("\(count)")
                         .tag(count)
                 }
             }
         } footer: {
-            Text("settingsScreen-beadsCount-footer")
+            Text("Change prefer beads count.")
         }
-        .onChange(of: configManager.totalBeadsCount) { [oldValue = configManager.totalBeadsCount] newValue in
-            if newValue != oldValue {
-                vm.resetPracticeCount()
-            }
-        }
+        .foregroundStyle(.textPrimary)
     }
 
-    var rateStars: some View {
+    private var rateStars: some View {
         Button {
             requestReview()
         } label: {
@@ -266,19 +232,19 @@ extension SettingsScreen {
                             .fill(.yellow)
                     )
 
-                Text("rate-app")
+                Text("Rate app")
                     .font(.body)
+                    .foregroundStyle(.textPrimary)
 
                 Spacer()
 
                 Image(systemName: "arrow.up.right")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.textSecondary)
             }
         }
-        .foregroundStyle(.primary)
     }
 
-    var shareWithFriend: some View {
+    private var shareWithFriend: some View {
         ShareLink(item: URL(string: "https://apps.apple.com/us/app/koenawin-practice/id6747106061")!) {
             HStack {
                 Image(systemName: "square.and.arrow.up.fill")
@@ -289,19 +255,19 @@ extension SettingsScreen {
                         RoundedRectangle(cornerRadius: 4)
                             .fill(.blue)
                     )
-                Text("share-with-friends")
+                Text("Share with friends")
                     .font(.body)
+                    .foregroundStyle(.textPrimary)
 
                 Spacer()
 
                 Image(systemName: "arrow.up.right")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.textSecondary)
             }
         }
-        .foregroundStyle(.primary)
     }
 
-    var suggestionFeedback: some View {
+    private var suggestionFeedback: some View {
         Button(action: sendFeedback) {
             HStack {
                 Image(systemName: "paperplane.fill")
@@ -313,23 +279,21 @@ extension SettingsScreen {
                             .fill(.pink)
                     )
 
-                Text("send-feedback")
+                Text("Send Feedback")
                     .font(.body)
+                    .foregroundStyle(.textPrimary)
 
                 Spacer()
 
                 Image(systemName: "arrow.up.right")
-                    .foregroundStyle(.secondary)
+                    .foregroundStyle(.textSecondary)
             }
         }
-        .foregroundStyle(.primary)
     }
 
-    var privacyPolicy: some View {
+    private var privacyPolicy: some View {
         Section {
-            Button {
-                showPrivacy.toggle()
-            } label: {
+            Button {} label: {
                 HStack {
                     Image(systemName: "lock.shield.fill")
                         .foregroundColor(.white)
@@ -340,67 +304,21 @@ extension SettingsScreen {
                                 .fill(.blue)
                         )
 
-                    Text("privacy-policy")
+                    Text("Privacy Policy")
                         .font(.body)
+                        .foregroundStyle(.textPrimary)
 
                     Spacer()
 
                     Image(systemName: "link")
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(.textSecondary)
                 }
             }
-            .foregroundStyle(.primary)
-        }
-    }
-
-    var clearProgress: some View {
-        Section {
-            Button {
-                showConfirmResetData.toggle()
-            } label: {
-                Text("settingsScreen-resetProgress-button")
-                    .foregroundStyle(.red)
-                    .font(.body)
-            }
-            .foregroundStyle(.primary)
-        } footer: {
-            Text("settingsScreen-resetProgress-footer-section")
-        }
-        .alert("settingsScreen-resetProgress-alert-title", isPresented: $showConfirmResetData) {
-            Button("yes", role: .destructive, action: vm.resetProgress)
-            Button("no", role: .cancel, action: {})
         }
     }
 }
 
 extension SettingsScreen {
-    private func checkDate() {
-        var calendar = Calendar.current
-        calendar.timeZone = .current
-        let today = Date.now
-
-        // Check if startDate is within 81 days from today
-        let minDate = calendar.date(byAdding: .day, value: -81, to: today)!
-        if startDate < minDate {
-            startDate = vm.startDate
-            alertMessage = "settingScreen-alert-isPast-date"
-            showAlert.toggle()
-            return
-        }
-
-        // Check if startDate is Monday
-        if calendar.component(.weekday, from: startDate) != 2 {
-            startDate = vm.startDate
-            alertMessage = "settingScreen-alert-not-monday"
-            showAlert.toggle()
-        } else {
-            vm.changeStartDate(startDate)
-            showDatePicker = false
-            showTimePicker = false
-        }
-        Haptic.selection.generate()
-    }
-
     private func sendFeedback() {
         let mailtoString = "mailto:nandawinkyu.ix@gmail.com?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let mailToUrl = URL(string: mailtoString!)!
@@ -414,6 +332,5 @@ extension SettingsScreen {
 #Preview {
     NavigationStack {
         SettingsScreen()
-            .previewEnvironment()
     }
 }

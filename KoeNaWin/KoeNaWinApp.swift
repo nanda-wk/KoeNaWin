@@ -9,42 +9,15 @@ import SwiftUI
 
 @main
 struct KoeNaWinApp: App {
-    @StateObject private var configManager = ConfigManager()
-    @StateObject private var vm = HomeViewModel()
-    @Environment(\.scenePhase) private var scenePhase
+    @StateObject private var koeNaWinStore = KoeNaWinStore()
 
     var body: some Scene {
         WindowGroup {
-            Group {
-                if configManager.hasLoaded {
-                    if configManager.isFirstLaunch {
-                        ChooseLanguageScreen()
-                    } else {
-                        TabScreen()
-                    }
-                } else {
-                    LaunchScreen()
+            TabScreen()
+                .environmentObject(koeNaWinStore)
+                .onAppear {
+                    koeNaWinStore.loadData()
                 }
-            }
-            .id(configManager.appLanguage)
-            .environment(\.locale, configManager.appLanguage.locale)
-            .environmentObject(configManager)
-            .environmentObject(vm)
-            .preferredColorScheme(configManager.appTheme.colorScheme)
-        }
-        .onChange(of: scenePhase) { phase in
-            if case .active = phase {
-                UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { success, error in
-                    if success {
-                        print("Permission approved!")
-                    } else if let error {
-                        print(error.localizedDescription)
-                    }
-                }
-                configManager.loadData()
-                vm.checkProgress()
-                vm.checkNotificationValidity()
-            }
         }
     }
 }

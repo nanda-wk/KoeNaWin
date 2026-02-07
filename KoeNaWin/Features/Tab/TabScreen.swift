@@ -8,50 +8,41 @@
 import SwiftUI
 
 struct TabScreen: View {
-    @EnvironmentObject private var configManager: ConfigManager
-    @State private var path = NavigationPath()
+    @State private var selectedTab: TabItem = .home
 
-    init() {
-        let tabBarAppearance = UITabBarAppearance()
-        tabBarAppearance.configureWithDefaultBackground()
-        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-    }
+    //    init() {
+    //        let tabBarAppearance = UITabBarAppearance()
+    //        tabBarAppearance.configureWithDefaultBackground()
+    //        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+    //    }
 
     var body: some View {
-        TabView(selection: $configManager.selectedTab) {
-            NavigationStack {
-                HomeScreen(path: $path)
-            }
-            .tabItem {
-                Label("home-tab", systemImage: "house.fill")
-            }
-            .tag(TabItem.home)
+        TabView(selection: $selectedTab) {
+            HomeScreen()
+                .tabItem {
+                    Label("Home", systemImage: "house.fill")
+                }
+                .tag(TabItem.home)
 
-            NavigationStack {
-                PracticeScreen()
-            }
-            .tabItem {
-                Label("practice-tab", systemImage: "leaf.fill")
-            }
-            .tag(TabItem.practice)
+            PracticeScreen()
+                .tabItem {
+                    Label("Practice", systemImage: "leaf.fill")
+                }
+                .tag(TabItem.practice)
 
-            NavigationStack(path: $path) {
-                StagesScreen()
-            }
-            .tabItem {
-                Label("stagesScreen-navTitle", systemImage: "squares.leading.rectangle.fill")
-            }
-            .tag(TabItem.stages)
+            StagesScreen()
+                .tabItem {
+                    Label("Stages", systemImage: "squares.leading.rectangle.fill")
+                }
+                .tag(TabItem.stages)
 
-            NavigationStack {
-                SettingsScreen()
-            }
-            .tabItem {
-                Label("settingScreen-navTitle", systemImage: "gearshape.2.fill")
-            }
-            .tag(TabItem.settings)
+            SettingsScreen()
+                .tabItem {
+                    Label("Settings", systemImage: "gearshape.2.fill")
+                }
+                .tag(TabItem.settings)
         }
-        .onChange(of: configManager.selectedTab) { _ in
+        .onChange(of: selectedTab) { _ in
             Haptic.selection.generate()
         }
     }
@@ -64,5 +55,5 @@ enum TabItem: Int, Identifiable {
 
 #Preview {
     TabScreen()
-        .previewEnvironment()
+        .previewEnviroments()
 }

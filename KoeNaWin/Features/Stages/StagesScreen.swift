@@ -8,42 +8,52 @@
 import SwiftUI
 
 struct StagesScreen: View {
+    @EnvironmentObject private var store: KoeNaWinStore
+    @StateObject private var router = Router()
+
     var body: some View {
+        NavigationStack(path: $router.path) {
+            content
+                .navigationTitle("Stages")
+                .navigationBarTitleDisplayMode(.inline)
+                .withRouterDestination()
+        }
+        .environmentObject(router)
+    }
+}
+
+extension StagesScreen {
+    private var content: some View {
         ScrollView {
             VStack(spacing: 12) {
-                ForEach(koeNaWinStages) { stage in
-                    NavigationLink(value: stage) {
+                ForEach(store.stages) { stage in
+                    Button {
+                        router.navigate(to: .stageDetails(stage))
+                    } label: {
                         StageCell(stage: stage.stage)
                     }
-                    .buttonStyle(.plain)
                 }
             }
             .padding()
         }
         .scrollIndicators(.never)
-        .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("stagesScreen-navTitle")
-        .navigationBarTitleDisplayMode(.inline)
-        .navigationDestination(for: KoeNaWinStage.self) { stage in
-            StageDetailsView(stage: stage)
-        }
+        .background(.appBackground)
     }
-}
 
-extension StagesScreen {
     private func StageCell(stage: Int) -> some View {
         HStack(spacing: 6) {
             Image(systemName: "\(stage).circle.fill")
-                .foregroundStyle(.primary)
+                .foregroundStyle(.textPrimary)
 
-            Text("addhithan-stage-\(stage.description)")
+            Text("Adhitthan Stage (\(stage.description))")
                 .font(.footnote)
                 .fontWeight(.bold)
+                .foregroundStyle(.textPrimary)
 
             Spacer()
 
             Image(systemName: "chevron.right")
-                .foregroundStyle(.gray)
+                .foregroundStyle(.textSecondary)
         }
         .padding()
         .listSectionBackground
@@ -51,8 +61,6 @@ extension StagesScreen {
 }
 
 #Preview {
-    NavigationStack {
-        StagesScreen()
-            .previewEnvironment()
-    }
+    StagesScreen()
+        .previewEnviroments()
 }

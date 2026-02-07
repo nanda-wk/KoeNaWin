@@ -8,8 +8,6 @@
 import Foundation
 import SwiftUI
 
-var koeNaWinStages = KoeNaWinStages()
-
 @MainActor
 final class ConfigManager: ObservableObject {
     @AppStorage("selectedTab") var selectedTab: TabItem = .home
@@ -21,7 +19,6 @@ final class ConfigManager: ObservableObject {
     @Published private(set) var hasLoaded = false
 
     func loadData() {
-        koeNaWinStages = Bundle.main.decode(KoeNaWinStages.self, from: "KoeNaWin.json")
         UserDefaults.standard.register(
             defaults: [
                 "isEnableHaptic": true,
