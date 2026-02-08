@@ -26,6 +26,12 @@ struct OnboardingScreen: View {
 
     @Namespace private var namespace
 
+    private let calendar = {
+        var calendar = Calendar.current
+        calendar.timeZone = .current
+        return calendar
+    }()
+
     var body: some View {
         content
             .sheet(isPresented: $showDatePickerSheet) {
@@ -46,6 +52,9 @@ struct OnboardingScreen: View {
                 }
             } message: {
                 Text(alertMessage)
+            }
+            .onAppear {
+                NotificationService.shared.requestAuthorization()
             }
     }
 }
@@ -336,6 +345,12 @@ extension OnboardingScreen {
         userPreferences.appLanguage = selectedLanguage
         userPreferences.isFirstLaunch = false
 
+        if isSchedule(selectedDate) {
+            progressService.setDailyReminder(reminderTime)
+        } else {
+            progressService.setNewCommitmentReminder(selectedDate)
+        }
+
         do {
             try progressService.startNewCommitment(startDate: selectedDate)
         } catch {
@@ -348,6 +363,10 @@ extension OnboardingScreen {
         let calendar = Calendar.current
         let components = calendar.dateComponents([.weekday], from: date)
         return components.weekday == 2
+    }
+
+    private func isSchedule(_ date: Date) -> Bool {
+        calendar.isDateInToday(date) && calendar.startOfDay(for: date) < calendar.startOfDay(for: .now)
     }
 }
 

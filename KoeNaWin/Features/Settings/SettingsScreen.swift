@@ -10,7 +10,8 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @Environment(\.requestReview) private var requestReview
-    @EnvironmentObject var userPreferences: UserPreferences
+    @EnvironmentObject private var userPreferences: UserPreferences
+    @EnvironmentObject private var progressService: UserProgressService
 
     @State private var height: CGFloat = 500
     @State private var sheet: SheetType?
@@ -67,7 +68,7 @@ extension SettingsScreen {
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
 
-                Text("V\(appVersion)")
+                Text("V\(Constants.appVersion)")
                     .font(.headline)
                     .fontWeight(.medium)
                     .foregroundStyle(.accent)
@@ -113,7 +114,7 @@ extension SettingsScreen {
     }
 
     private var languagePicker: some View {
-        LanguagePicker(selection: .constant(.myanmar))
+        LanguagePicker(selection: $userPreferences.appLanguage)
             .padding()
             .navigationTitle("Choose Your Language")
             .navigationBarTitleDisplayMode(.inline)
@@ -142,11 +143,23 @@ extension SettingsScreen {
     }
 
     private var reminderPicker: some View {
-        DatePicker("", selection: .constant(.now), displayedComponents: .hourAndMinute)
-            .datePickerStyle(.wheel)
-            .padding(.horizontal)
-            .environment(\.locale, Locale(identifier: "en"))
-            .presentationDetents([.medium])
+        DatePicker(
+            "",
+            selection: Binding(
+                get: { Date(timeIntervalSince1970: userPreferences.reminderTime)
+                },
+                set: { userPreferences.reminderTime = $0.timeIntervalSince1970 }
+            ),
+            displayedComponents: .hourAndMinute
+        )
+        .datePickerStyle(.wheel)
+        .labelsHidden()
+        .padding()
+        .environment(\.locale, Locale(identifier: "en"))
+        .presentationDetents([.fraction(0.4)])
+        .onDisappear {
+            progressService.setDailyReminder(Date(timeIntervalSince1970: userPreferences.reminderTime))
+        }
     }
 
     private var appTheme: some View {
@@ -227,6 +240,7 @@ extension SettingsScreen {
     private var startDatePicker: some View {
         DatePicker("", selection: .constant(.now), displayedComponents: .date)
             .datePickerStyle(.graphical)
+            .labelsHidden()
             .padding(.horizontal)
             .environment(\.locale, Locale(identifier: "en_US_POSIX"))
             .toolbar {
@@ -280,7 +294,7 @@ extension SettingsScreen {
     }
 
     private var shareWithFriend: some View {
-        ShareLink(item: URL(string: "https://apps.apple.com/us/app/koenawin-practice/id6747106061")!) {
+        ShareLink(item: URL(string: Constants.appStoreLink)!) {
             HStack {
                 Image(systemName: "square.and.arrow.up.fill")
                     .font(.caption)
@@ -354,7 +368,7 @@ extension SettingsScreen {
     }
 
     private var privacyPolicyWebView: some View {
-        WebView(url: "https://sites.google.com/view/koenawin/privacy")
+        WebView(url: Constants.privacyPolicy)
             .ignoresSafeArea(edges: .bottom)
             .navigationTitle("Privacy Policy")
             .navigationBarTitleDisplayMode(.inline)
@@ -375,7 +389,7 @@ extension SettingsScreen {
 
 extension SettingsScreen {
     private func sendFeedback() {
-        let mailtoString = "mailto:nandawinkyu.ix@gmail.com?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
+        let mailtoString = "mailto:\(Constants.email)?subject=KoeNaWin App feedback".addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
         let mailToUrl = URL(string: mailtoString!)!
 
         if UIApplication.shared.canOpenURL(mailToUrl) {
