@@ -8,10 +8,11 @@
 import CoreData
 import Foundation
 
+@objc(PracticeJourney)
 final class PracticeJourney: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
     @NSManaged var startDate: Date
-    @NSManaged var endDate: Date
+    @NSManaged var endDate: Date?
     @NSManaged var outcomeRaw: Int16
     @NSManaged var completedDays: Int16
     @NSManaged var missedDays: Int64
@@ -32,5 +33,32 @@ extension PracticeJourney {
     var endReason: JourneyEndReason {
         get { JourneyEndReason(rawValue: endReasonRaw) ?? .completed }
         set { endReasonRaw = newValue.rawValue }
+    }
+}
+
+extension PracticeJourney {
+    static func create(
+        startDate: Date,
+        endDate: Date? = nil,
+        outcome: PracticeOutcome = .none,
+        completedDays: Int16 = 0,
+        missedDays: Int64 = 0,
+        longestStreak: Int16 = 0,
+        endReason: JourneyEndReason = .none,
+        reflectionNote: String? = nil,
+        context: NSManagedObjectContext
+    ) -> PracticeJourney {
+        let journey = PracticeJourney(context: context)
+        journey.id = UUID()
+        journey.startDate = startDate
+        journey.endDate = endDate
+        journey.outcome = outcome
+        journey.completedDays = completedDays
+        journey.missedDays = missedDays
+        journey.longestStreak = longestStreak
+        journey.endReason = endReason
+        journey.reflectionNote = reflectionNote
+        journey.createdAt = .now
+        return journey
     }
 }

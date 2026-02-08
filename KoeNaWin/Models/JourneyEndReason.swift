@@ -9,4 +9,5 @@ enum JourneyEndReason: Int16 {
     case completed = 0
     case missed = 1
     case userStopped = 2
+    case none = 3
 }

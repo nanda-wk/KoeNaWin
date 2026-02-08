@@ -13,82 +13,46 @@ struct SettingsScreen: View {
     @EnvironmentObject var userPreferences: UserPreferences
 
     @State private var height: CGFloat = 500
-    @State private var showLanguageSheet = false
-    @State private var showReminderSheet = false
-    @State private var showStartDateSheet = false
+    @State private var sheet: SheetType?
 
     var body: some View {
-        List {
-            Section {
-                appInfo
-            }
-
-            Section {
-                appLanguage
-                hapticToggle
-                reminderTime
-                appTheme
-            }
-
-            beadsCount
-            adhitthanStartDate
-
-            Section {
-                rateStars
-                shareWithFriend
-                suggestionFeedback
-            }
-
-            privacyPolicy
-        }
-        .scrollIndicators(.never)
-        .navigationTitle("Settings")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {}
-        .sheet(isPresented: .constant(false)) {
-            ChooseLanguageScreen()
-                .presentationDetents([.fraction(0.4)])
-        }
-        .sheet(isPresented: .constant(false)) {
-            VStack(alignment: .trailing) {
-                Button("Save") {}
-                    .padding()
-
-                DatePicker("", selection: .constant(.now), displayedComponents: .date)
-                    .datePickerStyle(.graphical)
-                    .environment(\.locale, .init(identifier: "en_US_POSIX"))
-            }
-            .background(
-                GeometryReader { proxy in
-                    Color.clear
-                        .task {
-                            height = proxy.size.height
-                        }
-                }
-            )
-            .id(height)
-            .presentationDetents([.height(height)])
-        }
-        .alert("alertMessage", isPresented: .constant(false)) {
-            Button("OK", role: .cancel) {}
-        }
-        .sheet(isPresented: .constant(false)) {
-            NavigationStack {
-                WebView(url: "https://sites.google.com/view/koenawin/privacy")
-                    .ignoresSafeArea(edges: .bottom)
-                    .navigationTitle("Privacy Policy")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button("", systemImage: "xmark.circle") {}
-                        }
+        content
+            .navigationTitle("Settings")
+            .navigationBarTitleDisplayMode(.inline)
+            .sheet(item: $sheet) { sheet in
+                NavigationStack {
+                    switch sheet {
+                    case .language:
+                        languagePicker
+                    case .reminder:
+                        reminderPicker
+                    case .startDate:
+                        startDatePicker
+                    case .privacyPolicy:
+                        privacyPolicyWebView
                     }
+                }
             }
-        }
     }
 }
 
 extension SettingsScreen {
+    private var content: some View {
+        ScrollView {
+            VStack(spacing: 25) {
+                appInfo
+                appPreferences
+                beadsCount
+                adhitthanStartDate
+                socialSection
+                privacyPolicy
+            }
+            .padding()
+        }
+        .scrollIndicators(.never)
+        .background(.appBackground)
+    }
+
     private var appInfo: some View {
         HStack(spacing: 14) {
             Image(.logo)
@@ -108,11 +72,33 @@ extension SettingsScreen {
                     .fontWeight(.medium)
                     .foregroundStyle(.accent)
             }
+            Spacer()
         }
+        .padding()
+        .listSectionBackground
+    }
+
+    private var appPreferences: some View {
+        VStack(spacing: 18) {
+            appLanguage
+            Divider()
+                .foregroundStyle(.appDivider)
+            hapticToggle
+            Divider()
+                .foregroundStyle(.appDivider)
+            reminderTime
+            Divider()
+                .foregroundStyle(.appDivider)
+            appTheme
+        }
+        .padding()
+        .listSectionBackground
     }
 
     private var appLanguage: some View {
-        Button {} label: {
+        Button {
+            sheet = .language
+        } label: {
             HStack {
                 Text("App Language")
                 Spacer()
@@ -120,8 +106,18 @@ extension SettingsScreen {
                     .font(.headline)
                     .foregroundStyle(.accent)
             }
+            .contentShape(.rect)
         }
         .foregroundStyle(.textPrimary)
+        .buttonStyle(.plain)
+    }
+
+    private var languagePicker: some View {
+        LanguagePicker(selection: .constant(.myanmar))
+            .padding()
+            .navigationTitle("Choose Your Language")
+            .navigationBarTitleDisplayMode(.inline)
+            .presentationDetents([.fraction(0.4)])
     }
 
     private var hapticToggle: some View {
@@ -130,70 +126,77 @@ extension SettingsScreen {
             .foregroundStyle(.textPrimary)
     }
 
-    @ViewBuilder
     private var reminderTime: some View {
         Button {
-            showReminderSheet = true
+            sheet = .reminder
         } label: {
             HStack {
                 Text("Reminder Time")
-                    .font(.body)
-
                 Spacer()
-
                 Text(Date(timeIntervalSince1970: userPreferences.reminderTime), style: .time)
-                    .font(.footnote)
-            }
-        }
-        .foregroundStyle(.textPrimary)
-        .sheet(isPresented: $showReminderSheet) {
-            VStack(alignment: .trailing) {
-                Button("Done") {
-                    showReminderSheet = false
-                }
-                .padding()
-
-                DatePicker("", selection: Binding(
-                    get: { Date(timeIntervalSince1970: userPreferences.reminderTime) },
-                    set: { userPreferences.reminderTime = $0.timeIntervalSince1970 }
-                ), displayedComponents: .hourAndMinute)
-                    .datePickerStyle(.wheel)
-                    .labelsHidden()
                     .environment(\.locale, Locale(identifier: "en"))
             }
-            .frame(maxWidth: .infinity)
-            .padding()
-            .background(
-                GeometryReader { proxy in
-                    Color.clear
-                        .task {
-                            height = proxy.size.height
-                        }
-                }
-            )
-            .id(height)
-            .presentationDetents([.height(height)])
+            .contentShape(.rect)
         }
+        .foregroundStyle(.textPrimary)
+    }
+
+    private var reminderPicker: some View {
+        DatePicker("", selection: .constant(.now), displayedComponents: .hourAndMinute)
+            .datePickerStyle(.wheel)
+            .padding(.horizontal)
+            .environment(\.locale, Locale(identifier: "en"))
+            .presentationDetents([.medium])
     }
 
     private var appTheme: some View {
-        Picker("Appearance", selection: $userPreferences.appTheme) {
-            ForEach(AppTheme.allCases) { theme in
-                Text(theme.rawValue)
-                    .tag(theme)
+        HStack {
+            Text("Appearance")
+            Spacer()
+            Picker("", selection: $userPreferences.appTheme) {
+                ForEach(AppTheme.allCases) { theme in
+                    Text(theme.rawValue)
+                        .tag(theme)
+                }
             }
+            .tint(.textSecondary)
+        }
+        .foregroundStyle(.textPrimary)
+    }
+
+    private var beadsCount: some View {
+        VStack {
+            HStack {
+                Text("Total Beads")
+                Spacer()
+                Picker("", selection: $userPreferences.beadsType) {
+                    ForEach([108, 9], id: \.self) { count in
+                        Text("\(count)")
+                            .tag(count)
+                    }
+                }
+                .tint(.textSecondary)
+            }
+            .padding(.horizontal)
+            .padding(.vertical, 10)
+            .listSectionBackground
+
+            Text("Change prefer beads count.")
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
         }
         .foregroundStyle(.textPrimary)
     }
 
     private var adhitthanStartDate: some View {
-        Section {
+        VStack {
             Button {
-                showStartDateSheet = true
+                sheet = .startDate
             } label: {
                 HStack {
                     Image(systemName: "calendar")
-                        .foregroundColor(.white)
+                        .foregroundStyle(.white)
                         .font(.caption)
                         .padding(5)
                         .background(
@@ -202,58 +205,53 @@ extension SettingsScreen {
                         )
 
                     Text("Adhitthan Start Date")
-                        .font(.body)
 
                     Spacer()
 
                     Text(Date.now.toStringWith(format: .yyyy_MMMM_d))
                         .font(.footnote)
                 }
-            }
-            .foregroundStyle(.textPrimary)
-            .sheet(isPresented: $showStartDateSheet) {
-                VStack(alignment: .trailing) {
-                    Button("Done") {
-                        showStartDateSheet = false
-                    }
-                    .padding()
-
-//                    DatePicker("", selection: Binding(
-//                        get: { Date(timeIntervalSince1970: preferences.startDate) },
-//                        set: { preferences.startDate = $0.timeIntervalSince1970 }
-//                    ), displayedComponents: .date)
-//                        .datePickerStyle(.graphical)
-//                        .environment(\.locale, .init(identifier: "en_US_POSIX"))
-                }
                 .padding()
-                .background(
-                    GeometryReader { proxy in
-                        Color.clear
-                            .task {
-                                height = proxy.size.height
-                            }
-                    }
-                )
-                .id(height)
-                .presentationDetents([.height(height)])
+                .listSectionBackground
             }
-        } footer: {
-            Text("Change Adhitthan start date.")
-        }
-    }
+            .buttonStyle(.plain)
 
-    private var beadsCount: some View {
-        Section {
-            Picker("Total Beads", selection: $userPreferences.beadsType) {
-                ForEach([108, 9], id: \.self) { count in
-                    Text("\(count)")
-                        .tag(count)
-                }
-            }
-        } footer: {
-            Text("Change prefer beads count.")
+            Text("Change Adhitthan start date.")
+                .font(.footnote)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.horizontal)
         }
         .foregroundStyle(.textPrimary)
+    }
+
+    private var startDatePicker: some View {
+        DatePicker("", selection: .constant(.now), displayedComponents: .date)
+            .datePickerStyle(.graphical)
+            .padding(.horizontal)
+            .environment(\.locale, Locale(identifier: "en_US_POSIX"))
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") {
+                        sheet = nil
+                    }
+                    .tint(.accent)
+                }
+            }
+            .presentationDetents([.medium])
+    }
+
+    private var socialSection: some View {
+        VStack(spacing: 18) {
+            rateStars
+            Divider()
+                .foregroundStyle(.appDivider)
+            shareWithFriend
+            Divider()
+                .foregroundStyle(.appDivider)
+            suggestionFeedback
+        }
+        .padding()
+        .listSectionBackground
     }
 
     private var rateStars: some View {
@@ -262,8 +260,8 @@ extension SettingsScreen {
         } label: {
             HStack {
                 Image(systemName: "star.fill")
-                    .foregroundColor(.white)
                     .font(.caption)
+                    .foregroundStyle(.white)
                     .padding(5)
                     .background(
                         RoundedRectangle(cornerRadius: 4)
@@ -271,7 +269,6 @@ extension SettingsScreen {
                     )
 
                 Text("Rate app")
-                    .font(.body)
                     .foregroundStyle(.textPrimary)
 
                 Spacer()
@@ -286,15 +283,15 @@ extension SettingsScreen {
         ShareLink(item: URL(string: "https://apps.apple.com/us/app/koenawin-practice/id6747106061")!) {
             HStack {
                 Image(systemName: "square.and.arrow.up.fill")
-                    .foregroundStyle(.white)
                     .font(.caption)
+                    .foregroundStyle(.white)
                     .padding(5)
                     .background(
                         RoundedRectangle(cornerRadius: 4)
                             .fill(.blue)
                     )
+
                 Text("Share with friends")
-                    .font(.body)
                     .foregroundStyle(.textPrimary)
 
                 Spacer()
@@ -309,8 +306,8 @@ extension SettingsScreen {
         Button(action: sendFeedback) {
             HStack {
                 Image(systemName: "paperplane.fill")
-                    .foregroundStyle(.white)
                     .font(.caption)
+                    .foregroundStyle(.white)
                     .padding(5)
                     .background(
                         RoundedRectangle(cornerRadius: 4)
@@ -318,7 +315,6 @@ extension SettingsScreen {
                     )
 
                 Text("Send Feedback")
-                    .font(.body)
                     .foregroundStyle(.textPrimary)
 
                 Spacer()
@@ -330,27 +326,48 @@ extension SettingsScreen {
     }
 
     private var privacyPolicy: some View {
-        Section {
-            Button {} label: {
-                HStack {
-                    Image(systemName: "lock.shield.fill")
-                        .foregroundColor(.white)
-                        .font(.caption)
-                        .padding(5)
-                        .background(
-                            RoundedRectangle(cornerRadius: 4)
-                                .fill(.blue)
-                        )
+        Button {
+            sheet = .privacyPolicy
+        } label: {
+            HStack {
+                Image(systemName: "lock.shield.fill")
+                    .font(.caption)
+                    .foregroundStyle(.white)
+                    .padding(5)
+                    .background(
+                        RoundedRectangle(cornerRadius: 4)
+                            .fill(.blue)
+                    )
 
-                    Text("Privacy Policy")
-                        .font(.body)
-                        .foregroundStyle(.textPrimary)
+                Text("Privacy Policy")
+                    .foregroundStyle(.textPrimary)
 
-                    Spacer()
+                Spacer()
 
-                    Image(systemName: "link")
-                        .foregroundStyle(.textSecondary)
-                }
+                Image(systemName: "link")
+                    .foregroundStyle(.textSecondary)
+            }
+            .padding()
+            .listSectionBackground
+        }
+        .buttonStyle(.plain)
+    }
+
+    private var privacyPolicyWebView: some View {
+        WebView(url: "https://sites.google.com/view/koenawin/privacy")
+            .ignoresSafeArea(edges: .bottom)
+            .navigationTitle("Privacy Policy")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                toolbarClose
+            }
+    }
+
+    @ToolbarContentBuilder
+    private var toolbarClose: some ToolbarContent {
+        ToolbarItem(placement: .topBarTrailing) {
+            Button("", systemImage: "xmark.circle") {
+                self.sheet = nil
             }
         }
     }
@@ -367,8 +384,16 @@ extension SettingsScreen {
     }
 }
 
+extension SettingsScreen {
+    enum SheetType: Int, Identifiable {
+        var id: Int { rawValue }
+        case language, reminder, startDate, privacyPolicy
+    }
+}
+
 #Preview {
     NavigationStack {
         SettingsScreen()
+            .previewEnviroments()
     }
 }

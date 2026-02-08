@@ -9,4 +9,5 @@ enum PracticeOutcome: Int16 {
     case succeeded = 0
     case failed = 1
     case abandoned = 2
+    case none = 3
 }

@@ -8,6 +8,7 @@
 import CoreData
 import Foundation
 
+@objc(DailyProgress)
 final class DailyProgress: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
     @NSManaged var date: Date

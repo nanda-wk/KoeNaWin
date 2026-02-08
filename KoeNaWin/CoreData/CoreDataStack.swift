@@ -74,6 +74,10 @@ final class CoreDataStack {
     }
 }
 
+enum CoreDataError: Error, LocalizedError {
+    case failedToSave
+}
+
 extension EnvironmentValues {
     static var isPreview: Bool {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1"

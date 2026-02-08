@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24512" systemVersion="25C56" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="Commitment" representedClassName="Commitment" syncable="YES">
+        <attribute name="commitmentReflection" optional="YES" attributeType="String"/>
         <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="isActive" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
-        <attribute name="mantraText" optional="YES" attributeType="String"/>
         <attribute name="startDate" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="totalDays" optional="YES" attributeType="Integer 16" defaultValueString="86" usesScalarValueType="YES"/>
         <relationship name="dailyProgresses" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="DailyProgress" inverseName="commitment" inverseEntity="DailyProgress"/>
@@ -20,8 +20,8 @@
     </entity>
     <entity name="PracticeJourney" representedClassName="PracticeJourney" syncable="YES">
         <attribute name="completedDays" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
-        <attribute name="createdAt" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
-        <attribute name="endDate" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="createdAt" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="endDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="endReasonRaw" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="id" attributeType="UUID" usesScalarValueType="NO"/>
         <attribute name="longestStreak" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>

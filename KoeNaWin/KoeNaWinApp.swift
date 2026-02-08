@@ -22,9 +22,12 @@ struct KoeNaWinApp: App {
                     TabScreen()
                 }
             }
+            .id(preferences.appLanguage)
             .environmentObject(koeNaWinStore)
             .environmentObject(preferences)
             .environmentObject(userProgressService)
+            .preferredColorScheme(preferences.appTheme.colorScheme)
+            .environment(\.locale, preferences.appLanguage.locale)
             .onAppear {
                 koeNaWinStore.loadData()
             }

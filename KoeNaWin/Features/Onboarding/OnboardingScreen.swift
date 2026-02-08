@@ -8,9 +8,12 @@
 import SwiftUI
 
 struct OnboardingScreen: View {
-    @EnvironmentObject var userPreferences: UserPreferences
+    @EnvironmentObject private var userPreferences: UserPreferences
+    @EnvironmentObject private var progressService: UserProgressService
+
     @State private var currentStep: Int = 0
 
+    @State private var selectedLanguage: AppLanguage = .myanmar
     @State private var selectedDate = Date.now
     @State private var selectedBeadsType = "108"
     @State private var reminderTime = Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date()) ?? Date()
@@ -19,12 +22,39 @@ struct OnboardingScreen: View {
     @State private var showAlert = false
     @State private var alertMessage = ""
 
+    @State private var error: CoreDataError?
+
     @Namespace private var namespace
 
     var body: some View {
+        content
+            .sheet(isPresented: $showDatePickerSheet) {
+                datePickerSheet
+            }
+            .alert(
+                isPresented: Binding(
+                    get: { error != nil },
+                    set: { _ in error = nil }
+                ),
+                error: error
+            ) {
+                Button("OK") {}
+            }
+            .alert("Invalid Date", isPresented: $showAlert) {
+                Button("OK", role: .cancel) {
+                    showDatePickerSheet = true
+                }
+            } message: {
+                Text(alertMessage)
+            }
+    }
+}
+
+extension OnboardingScreen {
+    private var content: some View {
         VStack {
             HStack(spacing: 8) {
-                ForEach(0 ..< 3) { index in
+                ForEach(0 ..< 4) { index in
                     Capsule()
                         .fill(index <= currentStep ? Color.accentColor : Color.appDivider)
                         .frame(width: index == currentStep ? 24 : 8, height: 8)
@@ -36,7 +66,7 @@ struct OnboardingScreen: View {
             TabView(selection: Binding(
                 get: { currentStep },
                 set: { newValue in
-                    if currentStep == 0, newValue > currentStep {
+                    if currentStep == 1, newValue > currentStep {
                         if isMonday(selectedDate) {
                             currentStep = newValue
                         }
@@ -45,13 +75,14 @@ struct OnboardingScreen: View {
                     }
                 }
             )) {
-                dateStep.tag(0)
-                beadsStep.tag(1)
-                reminderStep.tag(2)
+                languageStep.tag(0)
+                dateStep.tag(1)
+                beadsStep.tag(2)
+                reminderStep.tag(3)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .highPriorityGesture(
-                currentStep == 0 && !isMonday(selectedDate) ? DragGesture() : nil
+                currentStep == 1 && !isMonday(selectedDate) ? DragGesture() : nil
             )
 
             navigationButtons
@@ -59,19 +90,36 @@ struct OnboardingScreen: View {
                 .padding(.horizontal, 24)
         }
         .background(.appBackground)
-        .sheet(isPresented: $showDatePickerSheet) {
-            datePickerSheet
-        }
-        .alert("Invalid Date", isPresented: $showAlert) {
-            Button("OK", role: .cancel) {
-                showDatePickerSheet = true
-            }
-        } message: {
-            Text(alertMessage)
-        }
     }
 
     // MARK: - Steps
+
+    private var languageStep: some View {
+        VStack(spacing: 30) {
+            Image(systemName: "character.bubble.fill")
+                .font(.system(size: 80))
+                .foregroundStyle(.accent)
+
+            VStack(spacing: 12) {
+                Text("Select Language")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.textPrimary)
+
+                Text("Choose your preferred language for the application.")
+                    .font(.body)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.textSecondary)
+                    .padding(.horizontal, 40)
+            }
+
+            LanguagePicker(selection: $selectedLanguage)
+                .padding(.horizontal, 24)
+
+            Spacer()
+        }
+        .padding(.top, 60)
+    }
 
     private var dateStep: some View {
         VStack(spacing: 30) {
@@ -103,6 +151,8 @@ struct OnboardingScreen: View {
                 HStack {
                     Text(selectedDate, style: .date)
                         .font(.headline)
+                        .environment(\.locale, Locale(identifier: "en"))
+
                     Image(systemName: "chevron.right")
                 }
                 .padding()
@@ -230,7 +280,10 @@ struct OnboardingScreen: View {
             Spacer()
 
             Button {
-                if currentStep < 2 {
+                if currentStep < 3 {
+                    if userPreferences.appLanguage != selectedLanguage {
+                        userPreferences.appLanguage = selectedLanguage
+                    }
                     withAnimation {
                         currentStep += 1
                     }
@@ -238,44 +291,57 @@ struct OnboardingScreen: View {
                     completeOnboarding()
                 }
             } label: {
-                Text(currentStep == 2 ? "Get Started" : "Next")
+                Text(currentStep == 3 ? "Get Started" : "Next")
                     .font(.headline)
                     .foregroundStyle(.white)
                     .padding()
                     .frame(width: 140)
-                    .background((currentStep == 0 && !isMonday(selectedDate)) ? Color.gray : Color.accentColor)
+                    .background((currentStep == 1 && !isMonday(selectedDate)) ? Color.gray : Color.accentColor)
                     .cornerRadius(26)
             }
-            .disabled(currentStep == 0 && !isMonday(selectedDate))
+            .disabled(currentStep == 1 && !isMonday(selectedDate))
             .buttonStyle(.plain)
         }
     }
 
     private var datePickerSheet: some View {
-        VStack {
-            Button("Done") {
-                if isMonday(selectedDate) {
-                    showDatePickerSheet = false
-                } else {
-                    alertMessage = "Please select a Monday to start your practice."
-                    showAlert = true
-                }
-            }
-            .font(.headline)
-            .frame(maxWidth: .infinity, alignment: .trailing)
-            .padding(.horizontal)
-
-            DatePicker("Select Start Date", selection: $selectedDate, displayedComponents: .date)
+        NavigationStack {
+            DatePicker("", selection: $selectedDate, displayedComponents: .date)
                 .datePickerStyle(.graphical)
-                .padding()
+                .padding(.horizontal)
+                .environment(\.locale, Locale(identifier: "en_US_POSIX"))
+                .toolbar {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Done") {
+                            if isMonday(selectedDate) {
+                                showDatePickerSheet = false
+                            } else {
+                                alertMessage = "Please select a Monday to start your practice."
+                                showAlert = true
+                            }
+                        }
+                        .tint(.accent)
+                    }
+                }
         }
         .presentationDetents([.fraction(0.65)])
     }
 
     private func completeOnboarding() {
-        userPreferences.reminderTime = reminderTime.timeIntervalSince1970
-        userPreferences.beadsType = Int(selectedBeadsType) ?? 108
+        let beads = Int(selectedBeadsType) ?? 108
+        let time = reminderTime.timeIntervalSince1970
+
+        userPreferences.reminderTime = time
+        userPreferences.beadsType = beads
+        userPreferences.appLanguage = selectedLanguage
         userPreferences.isFirstLaunch = false
+
+        do {
+            try progressService.startNewCommitment(startDate: selectedDate)
+        } catch {
+            self.error = .failedToSave
+            print(error.localizedDescription)
+        }
     }
 
     private func isMonday(_ date: Date) -> Bool {
