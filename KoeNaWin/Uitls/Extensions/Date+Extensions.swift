@@ -26,7 +26,22 @@ extension Date {
         return dateFormatter.date(from: string)
     }
 
-    func startOfDay(using calendar: Calendar = .current) -> Date {
-        calendar.startOfDay(for: self)
+    func isMonday(using calendar: Calendar = .current) -> Bool {
+        var calendar = calendar
+        calendar.timeZone = .current
+        let components = calendar.dateComponents([.weekday], from: self)
+        return components.weekday == 2
+    }
+
+    func startOfDay(using: Calendar = .current) -> Date {
+        var calendar = using
+        calendar.timeZone = .current
+        return calendar.startOfDay(for: self)
+    }
+
+    static func today(using: Calendar = .current) -> Date {
+        var calendar = using
+        calendar.timeZone = .current
+        return calendar.startOfDay(for: .now)
     }
 }

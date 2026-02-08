@@ -62,3 +62,9 @@ extension PracticeJourney {
         return journey
     }
 }
+
+extension PracticeJourney {
+    static var practiceJourneyFetchRequest: NSFetchRequest<PracticeJourney> {
+        NSFetchRequest(entityName: String(describing: self))
+    }
+}

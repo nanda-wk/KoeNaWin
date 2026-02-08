@@ -25,3 +25,9 @@ extension DailyProgress {
         set { statusRaw = newValue.rawValue }
     }
 }
+
+extension DailyProgress {
+    static var dailyProgressFetchRequest: NSFetchRequest<DailyProgress> {
+        NSFetchRequest(entityName: String(describing: self))
+    }
+}

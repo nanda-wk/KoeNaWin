@@ -40,3 +40,9 @@ extension Commitment {
         return commitment
     }
 }
+
+extension Commitment {
+    static var commitmentFetchRequest: NSFetchRequest<Commitment> {
+        NSFetchRequest(entityName: String(describing: self))
+    }
+}

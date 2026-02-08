@@ -14,17 +14,15 @@ struct OnboardingScreen: View {
     @State private var currentStep: Int = 0
 
     @State private var selectedLanguage: AppLanguage = .myanmar
-    @State private var selectedDate = Date.now
-    @State private var selectedBeadsType = "108"
-    @State private var reminderTime = Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: Date()) ?? Date()
+    @State private var selectedDate = Date.today()
+    @State private var selectedBeadsType = 108
+    @State private var reminderTime = Calendar.current.date(bySettingHour: 20, minute: 0, second: 0, of: .today()) ?? .today()
 
     @State private var showDatePickerSheet = false
     @State private var showAlert = false
     @State private var alertMessage = ""
 
     @State private var error: CoreDataError?
-
-    @Namespace private var namespace
 
     private let calendar = {
         var calendar = Calendar.current
@@ -76,7 +74,7 @@ extension OnboardingScreen {
                 get: { currentStep },
                 set: { newValue in
                     if currentStep == 1, newValue > currentStep {
-                        if isMonday(selectedDate) {
+                        if selectedDate.isMonday() {
                             currentStep = newValue
                         }
                     } else {
@@ -91,7 +89,7 @@ extension OnboardingScreen {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .highPriorityGesture(
-                currentStep == 1 && !isMonday(selectedDate) ? DragGesture() : nil
+                currentStep == 1 && !selectedDate.isMonday() ? DragGesture() : nil
             )
 
             navigationButtons
@@ -198,8 +196,8 @@ extension OnboardingScreen {
             }
 
             VStack(spacing: 16) {
-                beadOptionTile(title: "108 Beads", description: "Traditional long mala", type: "108")
-                beadOptionTile(title: "9 Beads", description: "Portable wrist mala", type: "9")
+                beadOptionTile(title: "108 Beads", description: "Traditional long mala", type: 108)
+                beadOptionTile(title: "9 Beads", description: "Portable wrist mala", type: 9)
             }
             .padding(.horizontal, 24)
 
@@ -243,7 +241,7 @@ extension OnboardingScreen {
 
     // MARK: - Components
 
-    private func beadOptionTile(title: String, description: String, type: String) -> some View {
+    private func beadOptionTile(title: String, description: String, type: Int) -> some View {
         Button {
             selectedBeadsType = type
         } label: {
@@ -305,10 +303,10 @@ extension OnboardingScreen {
                     .foregroundStyle(.white)
                     .padding()
                     .frame(width: 140)
-                    .background((currentStep == 1 && !isMonday(selectedDate)) ? Color.gray : Color.accentColor)
+                    .background((currentStep == 1 && !selectedDate.isMonday()) ? .gray : .accent)
                     .cornerRadius(26)
             }
-            .disabled(currentStep == 1 && !isMonday(selectedDate))
+            .disabled(currentStep == 1 && !selectedDate.isMonday())
             .buttonStyle(.plain)
         }
     }
@@ -322,7 +320,7 @@ extension OnboardingScreen {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
-                            if isMonday(selectedDate) {
+                            if selectedDate.isMonday() {
                                 showDatePickerSheet = false
                             } else {
                                 alertMessage = "Please select a Monday to start your practice."
@@ -337,11 +335,8 @@ extension OnboardingScreen {
     }
 
     private func completeOnboarding() {
-        let beads = Int(selectedBeadsType) ?? 108
-        let time = reminderTime.timeIntervalSince1970
-
-        userPreferences.reminderTime = time
-        userPreferences.beadsType = beads
+        userPreferences.reminderTime = reminderTime.timeIntervalSince1970
+        userPreferences.beadsType = selectedBeadsType
         userPreferences.appLanguage = selectedLanguage
         userPreferences.isFirstLaunch = false
 
@@ -359,14 +354,8 @@ extension OnboardingScreen {
         }
     }
 
-    private func isMonday(_ date: Date) -> Bool {
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.weekday], from: date)
-        return components.weekday == 2
-    }
-
     private func isSchedule(_ date: Date) -> Bool {
-        calendar.isDateInToday(date) && calendar.startOfDay(for: date) < calendar.startOfDay(for: .now)
+        calendar.isDateInToday(date) && calendar.startOfDay(for: date) < Date.today()
     }
 }
 

@@ -25,3 +25,12 @@ enum NotiMessage {
     static let oneDayBeforeNotificationTitle = "KoeNaWin"
     static let oneDayBeforeNotificationBody = "One day until our practice day!"
 }
+
+enum PracticeState: Equatable {
+    case notStarted
+    case scheduled(startDate: Date)
+    case inProgressToday
+    case completedToday
+    case missedDay(Date)
+    case completedAll
+}
