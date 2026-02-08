@@ -9,22 +9,20 @@ import SwiftUI
 
 struct ChooseLanguageScreen: View {
     var body: some View {
-        NavigationStack {
-            VStack(spacing: 12) {
-                Spacer()
-                ForEach(AppLanguage.allCases) { language in
-                    LanguageListCell(for: language)
-                }
+        VStack(spacing: 12) {
+            Spacer()
+            ForEach(AppLanguage.allCases) { language in
+                LanguageListCell(for: language)
+            }
 
-                Spacer()
-            }
-            .padding()
-            .background(.appBackground)
-            .navigationTitle("Choose Language")
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                Button("Next") {}
-            }
+            Spacer()
+        }
+        .padding()
+        .background(.appBackground)
+        .navigationTitle("Choose Language")
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            Button("Next") {}
         }
     }
 }

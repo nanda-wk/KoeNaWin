@@ -10,7 +10,7 @@ import Combine
 import SwiftUI
 
 struct HomeScreen: View {
-    @EnvironmentObject var store: KoeNaWinStore
+    @EnvironmentObject private var store: KoeNaWinStore
 
     var body: some View {
         content
@@ -43,18 +43,7 @@ extension HomeScreen {
 
             HStack {
                 ZStack {
-                    // Background circle (remaining days)
-                    Circle()
-                        .trim(from: 0, to: 1)
-                        .stroke(Color.gray.opacity(0.2), lineWidth: 24)
-                        .frame(width: 120, height: 120)
-
-                    // Progress circle (completed days)
-                    Circle()
-                        .trim(from: 0, to: max(0.02, CGFloat(70) / 81.0 - 0.08))
-                        .stroke(.accent, style: StrokeStyle(lineWidth: 24, lineCap: .round))
-                        .frame(width: 120, height: 120)
-                        .rotationEffect(.degrees(-90))
+                    CircularProgressView(progress: 0.75)
 
                     // Center text
                     Text("70 / 81")
@@ -64,7 +53,7 @@ extension HomeScreen {
                 .padding()
 
                 VStack(spacing: 20) {
-                    Text("\(String(format: "%.1f", 44.4)) %")
+                    Text("44.4 %")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal)
@@ -98,7 +87,7 @@ extension HomeScreen {
 
             ProgressView(value: Double(7), total: 9) {} currentValueLabel: {
                 HStack {
-                    Text("\(String(format: "%.1f", 22)) %")
+                    Text("22%")
                     Spacer()
                     Text("7 / 9 Days")
                 }

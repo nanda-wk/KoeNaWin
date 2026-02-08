@@ -26,7 +26,7 @@ extension View {
             case .stages:
                 StagesScreen()
             case let .stageDetails(stage):
-                StageDetailsView(stage: stage)
+                StageDetailsScreen(stage: stage)
             case .settings:
                 SettingsScreen()
             }

@@ -11,6 +11,8 @@ extension View {
     func previewEnviroments() -> some View {
         environmentObject(KoeNaWinStore())
             .environmentObject(Router())
+            .environmentObject(UserPreferences())
+            .environmentObject(UserProgressService())
     }
 }
 

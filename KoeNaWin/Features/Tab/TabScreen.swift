@@ -8,13 +8,8 @@
 import SwiftUI
 
 struct TabScreen: View {
+    @EnvironmentObject var preferences: UserPreferences
     @State private var selectedTab: TabItem = .home
-
-    //    init() {
-    //        let tabBarAppearance = UITabBarAppearance()
-    //        tabBarAppearance.configureWithDefaultBackground()
-    //        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
-    //    }
 
     var body: some View {
         TabView(selection: $selectedTab) {
@@ -44,6 +39,9 @@ struct TabScreen: View {
         }
         .onChange(of: selectedTab) { _ in
             Haptic.selection.generate()
+        }
+        .fullScreenCover(isPresented: $preferences.isFirstLaunch) {
+            OnboardingScreen()
         }
     }
 }

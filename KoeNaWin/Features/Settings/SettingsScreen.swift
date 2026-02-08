@@ -10,8 +10,12 @@ import SwiftUI
 
 struct SettingsScreen: View {
     @Environment(\.requestReview) private var requestReview
+    @EnvironmentObject var userPreferences: UserPreferences
 
     @State private var height: CGFloat = 500
+    @State private var showLanguageSheet = false
+    @State private var showReminderSheet = false
+    @State private var showStartDateSheet = false
 
     var body: some View {
         List {
@@ -121,31 +125,38 @@ extension SettingsScreen {
     }
 
     private var hapticToggle: some View {
-        Toggle("Haptic on", isOn: .constant(true))
+        Toggle("Haptic on", isOn: $userPreferences.isEnableHaptic)
             .tint(.accent)
             .foregroundStyle(.textPrimary)
     }
 
     @ViewBuilder
     private var reminderTime: some View {
-        Button {} label: {
+        Button {
+            showReminderSheet = true
+        } label: {
             HStack {
                 Text("Reminder Time")
                     .font(.body)
 
                 Spacer()
 
-                Text("08:00 PM")
+                Text(Date(timeIntervalSince1970: userPreferences.reminderTime), style: .time)
                     .font(.footnote)
             }
         }
         .foregroundStyle(.textPrimary)
-        .onAppear {}
-        .sheet(isPresented: .constant(false)) {
+        .sheet(isPresented: $showReminderSheet) {
             VStack(alignment: .trailing) {
-                Button("Save") {}
+                Button("Done") {
+                    showReminderSheet = false
+                }
+                .padding()
 
-                DatePicker("", selection: .constant(.now), displayedComponents: .hourAndMinute)
+                DatePicker("", selection: Binding(
+                    get: { Date(timeIntervalSince1970: userPreferences.reminderTime) },
+                    set: { userPreferences.reminderTime = $0.timeIntervalSince1970 }
+                ), displayedComponents: .hourAndMinute)
                     .datePickerStyle(.wheel)
                     .labelsHidden()
                     .environment(\.locale, Locale(identifier: "en"))
@@ -162,12 +173,11 @@ extension SettingsScreen {
             )
             .id(height)
             .presentationDetents([.height(height)])
-            .interactiveDismissDisabled(true)
         }
     }
 
     private var appTheme: some View {
-        Picker("Appearance", selection: .constant(AppTheme.system)) {
+        Picker("Appearance", selection: $userPreferences.appTheme) {
             ForEach(AppTheme.allCases) { theme in
                 Text(theme.rawValue)
                     .tag(theme)
@@ -178,7 +188,9 @@ extension SettingsScreen {
 
     private var adhitthanStartDate: some View {
         Section {
-            Button {} label: {
+            Button {
+                showStartDateSheet = true
+            } label: {
                 HStack {
                     Image(systemName: "calendar")
                         .foregroundColor(.white)
@@ -199,6 +211,32 @@ extension SettingsScreen {
                 }
             }
             .foregroundStyle(.textPrimary)
+            .sheet(isPresented: $showStartDateSheet) {
+                VStack(alignment: .trailing) {
+                    Button("Done") {
+                        showStartDateSheet = false
+                    }
+                    .padding()
+
+//                    DatePicker("", selection: Binding(
+//                        get: { Date(timeIntervalSince1970: preferences.startDate) },
+//                        set: { preferences.startDate = $0.timeIntervalSince1970 }
+//                    ), displayedComponents: .date)
+//                        .datePickerStyle(.graphical)
+//                        .environment(\.locale, .init(identifier: "en_US_POSIX"))
+                }
+                .padding()
+                .background(
+                    GeometryReader { proxy in
+                        Color.clear
+                            .task {
+                                height = proxy.size.height
+                            }
+                    }
+                )
+                .id(height)
+                .presentationDetents([.height(height)])
+            }
         } footer: {
             Text("Change Adhitthan start date.")
         }
@@ -206,7 +244,7 @@ extension SettingsScreen {
 
     private var beadsCount: some View {
         Section {
-            Picker("Total Beads", selection: .constant(108)) {
+            Picker("Total Beads", selection: $userPreferences.beadsType) {
                 ForEach([108, 9], id: \.self) { count in
                     Text("\(count)")
                         .tag(count)

@@ -1,5 +1,5 @@
 //
-//  StageDetailsView.swift
+//  StageDetailsScreen.swift
 //  KoeNaWin
 //
 //  Created by Nanda WK on 2025-03-29.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct StageDetailsView: View {
+struct StageDetailsScreen: View {
     let stage: KoeNaWinStage
 
     var body: some View {
@@ -17,7 +17,7 @@ struct StageDetailsView: View {
     }
 }
 
-extension StageDetailsView {
+extension StageDetailsScreen {
     private var content: some View {
         ScrollView {
             VStack(spacing: 25) {
@@ -49,13 +49,15 @@ extension StageDetailsView {
 }
 
 struct ListCell: View {
+    @EnvironmentObject private var userPreferences: UserPreferences
+
     @State private var isExpanded = false
     let prayer: Prayer
     let completed: Bool
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
-            Text(buddhaAttributes[prayer.mantra] ?? "")
+            Text(userPreferences.buddhaAttributes[prayer.mantra] ?? "")
                 .font(.body)
                 .foregroundStyle(.textPrimary)
                 .kerning(1)
@@ -130,6 +132,7 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
 
 #Preview {
     NavigationStack {
-        StageDetailsView(stage: .preview)
+        StageDetailsScreen(stage: .preview)
+            .previewEnviroments()
     }
 }
