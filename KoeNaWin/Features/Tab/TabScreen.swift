@@ -41,7 +41,7 @@ struct TabScreen: View {
             Haptic.selection.generate()
         }
         .fullScreenCover(isPresented: $preferences.isFirstLaunch) {
-            OnboardingScreen()
+            JourneyScreen()
         }
     }
 }

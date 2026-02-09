@@ -8,11 +8,11 @@
 import SwiftUI
 
 extension View {
-    func previewEnviroments() -> some View {
-        environmentObject(KoeNaWinStore())
+    func previewEnviroments(state: PracticeState = .notStarted) -> some View {
+        environmentObject(KoeNaWinStore.shared)
             .environmentObject(Router())
             .environmentObject(UserPreferences())
-            .environmentObject(UserProgressService())
+            .environmentObject(UserProgressService(initialState: state))
     }
 }
 

@@ -27,10 +27,9 @@ enum NotiMessage {
 }
 
 enum PracticeState: Equatable {
+    case started
     case notStarted
     case scheduled(startDate: Date)
-    case inProgressToday
-    case completedToday
-    case missedDay(Date)
+    case missedDay(date: Date)
     case completedAll
 }

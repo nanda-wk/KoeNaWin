@@ -1,5 +1,5 @@
 //
-//  OnboardingScreen.swift
+//  JourneyScreen.swift
 //  KoeNaWin
 //
 //  Created by Antigravity on 2026-02-08.
@@ -7,11 +7,19 @@
 
 import SwiftUI
 
-struct OnboardingScreen: View {
+struct JourneyScreen: View {
+    enum JourneyMode {
+        case onboarding
+        case newCommitment
+    }
+
     @EnvironmentObject private var userPreferences: UserPreferences
     @EnvironmentObject private var progressService: UserProgressService
 
-    @State private var currentStep: Int = 0
+    let mode: JourneyMode
+    var onComplete: (() -> Void)?
+
+    @State private var currentStep: Int
 
     @State private var selectedLanguage: AppLanguage = .myanmar
     @State private var selectedDate = Date.today()
@@ -23,6 +31,12 @@ struct OnboardingScreen: View {
     @State private var alertMessage = ""
 
     @State private var error: CoreDataError?
+
+    init(mode: JourneyMode = .onboarding, onComplete: (() -> Void)? = nil) {
+        self.mode = mode
+        self.onComplete = onComplete
+        _currentStep = State(initialValue: mode == .newCommitment ? 1 : 0)
+    }
 
     private let calendar = {
         var calendar = Calendar.current
@@ -53,22 +67,17 @@ struct OnboardingScreen: View {
             }
             .onAppear {
                 NotificationService.shared.requestAuthorization()
+                if mode == .newCommitment {
+                    selectedLanguage = userPreferences.appLanguage
+                }
             }
     }
 }
 
-extension OnboardingScreen {
+extension JourneyScreen {
     private var content: some View {
         VStack {
-            HStack(spacing: 8) {
-                ForEach(0 ..< 4) { index in
-                    Capsule()
-                        .fill(index <= currentStep ? Color.accentColor : Color.appDivider)
-                        .frame(width: index == currentStep ? 24 : 8, height: 8)
-                }
-                .animation(.spring, value: currentStep)
-            }
-            .padding(.top, 20)
+            stepIndicator
 
             TabView(selection: Binding(
                 get: { currentStep },
@@ -82,10 +91,16 @@ extension OnboardingScreen {
                     }
                 }
             )) {
-                languageStep.tag(0)
-                dateStep.tag(1)
-                beadsStep.tag(2)
-                reminderStep.tag(3)
+                Group {
+                    if mode == .onboarding {
+                        languageStep.tag(0)
+                    }
+                    dateStep.tag(1)
+                    beadsStep.tag(2)
+                    reminderStep.tag(3)
+                }
+                .padding(.top, 44)
+                .padding(.horizontal, 24)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .highPriorityGesture(
@@ -97,6 +112,19 @@ extension OnboardingScreen {
                 .padding(.horizontal, 24)
         }
         .background(.appBackground)
+    }
+
+    private var stepIndicator: some View {
+        HStack(spacing: 8) {
+            let range = mode == .newCommitment ? 1 ..< 4 : 0 ..< 4
+            ForEach(Array(range), id: \.self) { index in
+                Capsule()
+                    .fill(index <= currentStep ? .accent : .appDivider)
+                    .frame(width: index == currentStep ? 24 : 8, height: 8)
+            }
+        }
+        .animation(.spring, value: currentStep)
+        .padding(.top, 20)
     }
 
     // MARK: - Steps
@@ -117,15 +145,12 @@ extension OnboardingScreen {
                     .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.textSecondary)
-                    .padding(.horizontal, 40)
             }
 
             LanguagePicker(selection: $selectedLanguage)
-                .padding(.horizontal, 24)
 
             Spacer()
         }
-        .padding(.top, 60)
     }
 
     private var dateStep: some View {
@@ -140,11 +165,10 @@ extension OnboardingScreen {
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
 
-                Text("When would you like to start your KoeNaWin - Practice?")
+                Text("When would you like to start your \nKoeNaWin - Practice?")
                     .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.textSecondary)
-                    .padding(.horizontal, 40)
 
                 Text("Rule: This Buddhist practice must start on a Monday.")
                     .font(.caption)
@@ -169,11 +193,9 @@ extension OnboardingScreen {
                 .foregroundStyle(.textPrimary)
             }
             .buttonStyle(.plain)
-            .padding(.horizontal, 40)
 
             Spacer()
         }
-        .padding(.top, 60)
     }
 
     private var beadsStep: some View {
@@ -188,22 +210,19 @@ extension OnboardingScreen {
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
 
-                Text("Choose the number of beads you will use for your practice.")
+                Text("Choose the number of beads you \nwill use for your practice.")
                     .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.textSecondary)
-                    .padding(.horizontal, 40)
             }
 
             VStack(spacing: 16) {
                 beadOptionTile(title: "108 Beads", description: "Traditional long mala", type: 108)
                 beadOptionTile(title: "9 Beads", description: "Portable wrist mala", type: 9)
             }
-            .padding(.horizontal, 24)
 
             Spacer()
         }
-        .padding(.top, 60)
     }
 
     private var reminderStep: some View {
@@ -218,11 +237,10 @@ extension OnboardingScreen {
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
 
-                Text("Set a time to remind you of your daily practice.")
+                Text("Set a time to remind you of your \ndaily practice.")
                     .font(.body)
                     .multilineTextAlignment(.center)
                     .foregroundStyle(.textSecondary)
-                    .padding(.horizontal, 40)
             }
 
             DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
@@ -231,12 +249,11 @@ extension OnboardingScreen {
                 .padding()
                 .background(.appContent)
                 .cornerRadius(26)
-                .padding(.horizontal, 40)
+//                .padding(.horizontal, 40)
                 .environment(\.locale, Locale(identifier: "en"))
 
             Spacer()
         }
-        .padding(.top, 60)
     }
 
     // MARK: - Components
@@ -266,7 +283,7 @@ extension OnboardingScreen {
             .cornerRadius(26)
             .overlay(
                 RoundedRectangle(cornerRadius: 26)
-                    .stroke(selectedBeadsType == type ? Color.accentColor : Color.clear, lineWidth: 2)
+                    .stroke(selectedBeadsType == type ? .accent : .clear, lineWidth: 2)
             )
         }
         .buttonStyle(.plain)
@@ -274,7 +291,8 @@ extension OnboardingScreen {
 
     private var navigationButtons: some View {
         HStack {
-            if currentStep > 0 {
+            let canGoBack = mode == .newCommitment ? currentStep > 1 : currentStep > 0
+            if canGoBack {
                 Button("Back") {
                     withAnimation {
                         currentStep -= 1
@@ -348,6 +366,7 @@ extension OnboardingScreen {
 
         do {
             try progressService.startNewCommitment(startDate: selectedDate)
+            onComplete?()
         } catch {
             self.error = .failedToSave
             print(error.localizedDescription)
@@ -360,6 +379,11 @@ extension OnboardingScreen {
 }
 
 #Preview {
-    OnboardingScreen()
+    JourneyScreen()
+        .previewEnviroments()
+}
+
+#Preview("Add New") {
+    JourneyScreen(mode: .newCommitment)
         .previewEnviroments()
 }

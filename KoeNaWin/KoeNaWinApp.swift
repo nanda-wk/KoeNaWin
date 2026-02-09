@@ -9,7 +9,7 @@ import SwiftUI
 
 @main
 struct KoeNaWinApp: App {
-    @StateObject private var koeNaWinStore = KoeNaWinStore()
+    @StateObject private var koeNaWinStore = KoeNaWinStore.shared
     @StateObject private var preferences = UserPreferences()
     @StateObject private var userProgressService = UserProgressService()
 

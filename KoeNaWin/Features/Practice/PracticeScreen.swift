@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct PracticeScreen: View {
-    @EnvironmentObject var store: KoeNaWinStore
+    @EnvironmentObject private var store: KoeNaWinStore
+    @EnvironmentObject private var progressService: UserProgressService
 
     private var isLocked: Bool {
         true
@@ -101,7 +102,7 @@ struct PracticeScreen: View {
                     }
                     .buttonStyle(.plain)
 
-                    Text("Count: 0 /108")
+                    Text("Count: 0 / 108")
                         .font(.footnote)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 10)

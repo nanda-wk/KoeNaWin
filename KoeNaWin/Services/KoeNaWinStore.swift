@@ -10,10 +10,11 @@ import Foundation
 
 @MainActor
 final class KoeNaWinStore: ObservableObject {
+    static let shared = KoeNaWinStore()
     @Published private(set) var stages: [KoeNaWinStage] = []
     @Published private(set) var isLoading = false
 
-    init() {
+    private init() {
         loadData()
     }
 

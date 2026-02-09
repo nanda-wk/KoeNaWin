@@ -9,7 +9,11 @@ import Foundation
 
 @MainActor
 final class UserProgressService: ObservableObject {
-    @Published private(set) var practiceState: PracticeState? = nil
+    @Published private(set) var practiceState: PracticeState = .notStarted
+    @Published private(set) var isTodayCompleted = false
+
+    private(set) var stage = 0
+    private(set) var day = 0
 
     private let stack: CoreDataStack
     private lazy var context = stack.viewContext
@@ -19,9 +23,20 @@ final class UserProgressService: ObservableObject {
         return calendar
     }()
 
-    init(stack: CoreDataStack = .shared) {
+    init(stack: CoreDataStack = .shared, initialState: PracticeState? = nil) {
         self.stack = stack
+        if let initialState {
+            practiceState = initialState
+        } else {
+            checkUserProgress()
+        }
     }
+
+    #if DEBUG
+        func _setMockState(_ state: PracticeState) {
+            practiceState = state
+        }
+    #endif
 
     func checkUserProgress() {
         do {
@@ -42,34 +57,31 @@ final class UserProgressService: ObservableObject {
             }
 
             // 3️⃣ All completed
-            let completedTotal = try completedDaysCount(
-                for: commitment,
-                before: calendar.date(byAdding: .day, value: 1, to: today)!
-            )
+            let completedTotal = try completedDaysCount(for: commitment, before: calendar.date(byAdding: .day, value: 1, to: today)!)
 
             if completedTotal >= commitment.totalDays {
                 practiceState = .completedAll
                 return
             }
 
+            stage = (completedTotal / 9) + 1
+            day = (completedTotal % 9) + 1
+
             // 4️⃣ Today completed?
             if try isTodayCompleted(commitment: commitment, today: today) {
-                practiceState = .completedToday
+                isTodayCompleted = true
                 return
             }
 
             // 5️⃣ Find first missed past day
-            if let missedDay = try firstMissedDay(
-                commitment: commitment,
-                today: today
-            ) {
-                practiceState = .missedDay(missedDay)
+            if let missedDay = try firstMissedDay(commitment: commitment, today: today) {
+                practiceState = .missedDay(date: missedDay)
                 return
             }
 
-            practiceState = .inProgressToday
+            practiceState = .started
         } catch {
-            practiceState = nil
+            practiceState = .notStarted
         }
     }
 
@@ -116,10 +128,7 @@ extension UserProgressService {
         return try context.fetch(request).first
     }
 
-    private func completedDaysCount(
-        for commitment: Commitment,
-        before date: Date
-    ) throws -> Int {
+    private func completedDaysCount(for commitment: Commitment, before date: Date) throws -> Int {
         let request = DailyProgress.dailyProgressFetchRequest
         request.resultType = .countResultType
 
@@ -132,10 +141,7 @@ extension UserProgressService {
         return try context.count(for: request)
     }
 
-    private func completedDates(
-        for commitment: Commitment,
-        before date: Date
-    ) throws -> Set<Date> {
+    private func completedDates(for commitment: Commitment, before date: Date) throws -> Set<Date> {
         let request = DailyProgress.dailyProgressFetchRequest
         request.resultType = .dictionaryResultType
         request.propertiesToFetch = ["date"]
@@ -153,10 +159,7 @@ extension UserProgressService {
         })
     }
 
-    private func firstMissedDay(
-        commitment: Commitment,
-        today: Date
-    ) throws -> Date? {
+    private func firstMissedDay(commitment: Commitment, today: Date) throws -> Date? {
         let startDay = calendar.startOfDay(for: commitment.startDate)
         let yesterday = calendar.date(byAdding: .day, value: -1, to: today)!
 
@@ -180,10 +183,7 @@ extension UserProgressService {
         return nil
     }
 
-    private func isTodayCompleted(
-        commitment: Commitment,
-        today: Date
-    ) throws -> Bool {
+    private func isTodayCompleted(commitment: Commitment, today: Date) throws -> Bool {
         let start = today
         let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start
 
