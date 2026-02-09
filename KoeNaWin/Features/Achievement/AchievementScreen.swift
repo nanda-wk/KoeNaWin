@@ -1,5 +1,5 @@
 //
-//  AcievementScreen.swift
+//  AchievementScreen.swift
 //  KoeNaWin
 //
 //  Created by Nanda Win Kyu on 2026-02-08.
@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-struct AcievementScreen: View {
+struct AchievementScreen: View {
     private let parchmentColor = Color(red: 0.98, green: 0.96, blue: 0.95)
 
     var body: some View {
@@ -142,5 +142,5 @@ private struct CornerBracket: View {
 }
 
 #Preview {
-    AcievementScreen()
+    AchievementScreen()
 }

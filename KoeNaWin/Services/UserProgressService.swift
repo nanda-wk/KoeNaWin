@@ -12,8 +12,30 @@ final class UserProgressService: ObservableObject {
     @Published private(set) var practiceState: PracticeState = .notStarted
     @Published private(set) var isTodayCompleted = false
 
+    @Published private(set) var totalCompletedDays = 0
+    @Published private(set) var startDate: Date?
+    private(set) var totalDays = 81
     private(set) var stage = 0
     private(set) var day = 0
+
+    var daysRemaining: Int {
+        max(0, totalDays - totalCompletedDays)
+    }
+
+    var totalProgress: Double {
+        Double(totalCompletedDays) / Double(totalDays)
+    }
+
+    var currentPrayer: Prayer? {
+        guard let currentStage = KoeNaWinStore.shared.stages.first(where: { $0.stage == stage }) else {
+            return nil
+        }
+        let prayerIndex = day - 1
+        guard prayerIndex >= 0, prayerIndex < currentStage.prayers.count else {
+            return nil
+        }
+        return currentStage.prayers[prayerIndex]
+    }
 
     private let stack: CoreDataStack
     private lazy var context = stack.viewContext
@@ -28,7 +50,7 @@ final class UserProgressService: ObservableObject {
         if let initialState {
             practiceState = initialState
         } else {
-            checkUserProgress()
+            refreshState()
         }
     }
 
@@ -38,47 +60,52 @@ final class UserProgressService: ObservableObject {
         }
     #endif
 
-    func checkUserProgress() {
+    func refreshState() {
         do {
             let today = Date.today()
 
             // 1️⃣ Not started yet
             guard let commitment = try fetchActiveCommitment() else {
                 practiceState = .notStarted
+                startDate = nil
                 return
             }
 
+            startDate = commitment.startDate
             let startDay = calendar.startOfDay(for: commitment.startDate)
 
-            // 2️⃣ Scheduled for
+            // 2️⃣ Scheduled for future
             if today < startDay {
                 practiceState = .scheduled(startDate: commitment.startDate)
                 return
             }
 
-            // 3️⃣ All completed
-            let completedTotal = try completedDaysCount(for: commitment, before: calendar.date(byAdding: .day, value: 1, to: today)!)
-
-            if completedTotal >= commitment.totalDays {
-                practiceState = .completedAll
-                return
-            }
-
-            stage = (completedTotal / 9) + 1
-            day = (completedTotal % 9) + 1
-
-            // 4️⃣ Today completed?
-            if try isTodayCompleted(commitment: commitment, today: today) {
-                isTodayCompleted = true
-                return
-            }
-
-            // 5️⃣ Find first missed past day
+            // 3️⃣ Check for Missed Day (Automated Failure)
             if let missedDay = try firstMissedDay(commitment: commitment, today: today) {
+                try saveMissedDay(for: commitment, on: missedDay)
                 practiceState = .missedDay(date: missedDay)
                 return
             }
 
+            // 4️⃣ Today completed check
+            isTodayCompleted = try checkIsTodayCompleted(commitment: commitment, today: today)
+
+            // 5️⃣ Progress Calculation
+            let totalCompleted = try completedDaysCount(for: commitment, before: calendar.date(byAdding: .day, value: 1, to: today)!)
+            totalCompletedDays = totalCompleted
+            totalDays = Int(commitment.totalDays)
+
+            if totalCompleted >= commitment.totalDays {
+                practiceState = .completedAll
+                return
+            }
+
+            // Calculate current stage/day based on completion
+            // stage 1: 0-8, stage 2: 9-17, etc.
+            stage = (totalCompleted / 9) + 1
+            day = (totalCompleted % 9) + 1
+
+            // If already completed for today, we show "Started" state but the UI uses isTodayCompleted for indicator
             practiceState = .started
         } catch {
             practiceState = .notStarted
@@ -86,15 +113,14 @@ final class UserProgressService: ObservableObject {
     }
 
     func startNewCommitment(startDate: Date, commitmentReflection: String? = nil) throws {
-        let commitment = Commitment.create(
+        _ = Commitment.create(
             startDate: startDate,
             commitmentReflection: commitmentReflection,
             context: context
         )
 
-        let context = commitment.managedObjectContext ?? context
-
         try stack.persist(in: context)
+        refreshState()
     }
 
     func setDailyReminder(_ date: Date) {
@@ -117,6 +143,61 @@ final class UserProgressService: ObservableObject {
             date: date,
             repeats: false
         )
+    }
+
+    func saveDailyProgress(_ date: Date = .today(), status: DailyProgressStatus) throws {
+        guard let commitment = try fetchActiveCommitment() else {
+            practiceState = .notStarted
+            return
+        }
+
+        _ = DailyProgress.create(
+            date: date,
+            status: status,
+            commitment: commitment,
+            context: context
+        )
+
+        try stack.persist(in: context)
+        refreshState()
+    }
+
+    private func saveMissedDay(for commitment: Commitment, on date: Date) throws {
+        // Prevent duplicate missed day records for the same date
+        let existingRequest = DailyProgress.dailyProgressFetchRequest
+        existingRequest.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [
+            NSPredicate(format: "commitment == %@", commitment),
+            NSPredicate(format: "date == %@", date as NSDate),
+            NSPredicate(format: "statusRaw == %d", DailyProgressStatus.missed.rawValue),
+        ])
+
+        if try context.count(for: existingRequest) == 0 {
+            _ = DailyProgress.create(
+                date: date,
+                status: .missed,
+                commitment: commitment,
+                context: context
+            )
+        }
+
+        commitment.commitmentReflection = "Missed a day on \(date.toStringWith(format: .yyyy_MMMM_d))."
+        commitment.isActive = false
+
+        let completedTotal = try completedDaysCount(for: commitment, before: date)
+
+        _ = PracticeJourney.create(
+            startDate: commitment.startDate,
+            endDate: date,
+            outcome: .failed,
+            completedDays: Int16(completedTotal),
+            missedDays: 1, // Currently fails on first miss
+            longestStreak: Int16(completedTotal),
+            endReason: .missed,
+            reflectionNote: "Missed a day at \(date)",
+            context: context
+        )
+
+        try stack.persist(in: context)
     }
 }
 
@@ -152,10 +233,11 @@ extension UserProgressService {
             NSPredicate(format: "date < %@", date as NSDate),
         ])
 
-        let results = try context.fetch(request) as! [[String: Date]]
+        let results = try context.fetch(request) as? [[String: Any]] ?? []
 
-        return Set(results.map {
-            calendar.startOfDay(for: $0["date"]!)
+        return Set(results.compactMap {
+            guard let date = $0["date"] as? Date else { return nil }
+            return calendar.startOfDay(for: date)
         })
     }
 
@@ -183,8 +265,8 @@ extension UserProgressService {
         return nil
     }
 
-    private func isTodayCompleted(commitment: Commitment, today: Date) throws -> Bool {
-        let start = today
+    private func checkIsTodayCompleted(commitment: Commitment, today: Date) throws -> Bool {
+        let start = calendar.startOfDay(for: today)
         let end = calendar.date(byAdding: .day, value: 1, to: start) ?? start
 
         let request = DailyProgress.dailyProgressFetchRequest

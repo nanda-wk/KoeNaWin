@@ -12,6 +12,7 @@ import SwiftUI
 struct HomeScreen: View {
     @EnvironmentObject private var store: KoeNaWinStore
     @EnvironmentObject private var progressService: UserProgressService
+    @EnvironmentObject private var userPreferences: UserPreferences
 
     @State private var isPresented = false
 
@@ -20,12 +21,14 @@ struct HomeScreen: View {
     }
 
     var body: some View {
-        content
-            .navigationTitle("KoeNaWin")
-            .navigationBarTitleDisplayMode(.inline)
-            .sheet(isPresented: $isPresented) {
-                CompletedAllView()
-            }
+        NavigationStack {
+            content
+                .navigationTitle("KoeNaWin")
+                .navigationBarTitleDisplayMode(.inline)
+                .sheet(isPresented: $isPresented) {
+                    CompletedAllView()
+                }
+        }
     }
 }
 
@@ -67,42 +70,50 @@ extension HomeScreen {
     }
 
     private var vegetarianSection: some View {
-        Text("Today is vegetarian day.")
-            .font(.headline)
-            .foregroundStyle(.red)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding(.vertical, 10)
-            .listSectionBackground
+        Group {
+            if let prayer = progressService.currentPrayer, prayer.isVegetarian {
+                Text("Today is vegetarian day.")
+                    .font(.headline)
+                    .foregroundStyle(.red)
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.vertical, 10)
+                    .listSectionBackground
+            }
+        }
     }
 
+    @ViewBuilder
     private var todayMantra: some View {
-        VStack(spacing: 10) {
-            HStack {
-                Text("Monday")
-                Spacer()
-                Text("Adhitthan Stage (8)")
+        if let prayer = progressService.currentPrayer {
+            VStack(spacing: 10) {
+                HStack {
+                    Text(prayer.day.localized(to: userPreferences.appLanguage))
+                    Spacer()
+                    Text("Adhitthan Stage (\(stage))")
+                }
+                .font(.subheadline)
+                .fontWeight(.medium)
+                .foregroundStyle(.accent)
+
+                Text(prayer.mantra)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.textPrimary)
+
+                Text("Bead count (\(prayer.rounds))")
+                    .font(.body)
+                    .foregroundStyle(.textSecondary)
             }
-            .font(.subheadline)
-            .fontWeight(.medium)
-            .foregroundStyle(.accent)
-
-            Text("ဘဂဝါ")
-                .font(.title)
-                .fontWeight(.bold)
-                .foregroundStyle(.textPrimary)
-
-            Text("Bead count (2)")
-                .font(.body)
-                .foregroundStyle(.textSecondary)
+            .padding()
+            .listSectionBackground
+            .contentShape(Rectangle())
         }
-        .padding()
-        .listSectionBackground
-        .contentShape(Rectangle())
     }
 
     private var currentStageCompletion: some View {
-        let progress = Double(2) / 9.0
-        let percentage = Int(progress * 100)
+        let currentDay = progressService.day
+        let progress = Double(currentDay) / 9.0
+        let percentage = progress * 100
 
         return VStack {
             Text("Adhitthan Stage (\(stage))")
@@ -110,11 +121,11 @@ extension HomeScreen {
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)
 
-            ProgressView(value: Double(2), total: 9) {} currentValueLabel: {
+            ProgressView(value: Double(currentDay), total: 9) {} currentValueLabel: {
                 HStack {
-                    Text("\(percentage)%")
+                    Text("\(String(format: "%.1f", percentage))%")
                     Spacer()
-                    Text("\(2) / 9 Days")
+                    Text("\(currentDay) / 9 Days")
                 }
                 .font(.subheadline)
                 .foregroundStyle(.textPrimary)
@@ -135,17 +146,17 @@ extension HomeScreen {
 
             HStack {
                 ZStack {
-                    CircularProgressView(progress: 0.75)
+                    CircularProgressView(progress: progressService.totalProgress)
 
                     // Center text
-                    Text("70 / 81")
+                    Text("\(progressService.totalCompletedDays) / \(progressService.totalDays)")
                         .font(.headline)
                         .foregroundStyle(.textPrimary)
                 }
                 .padding()
 
                 VStack(spacing: 20) {
-                    Text("44.4 %")
+                    Text("\(String(format: "%.1f", progressService.totalProgress * 100)) %")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal)
@@ -159,7 +170,7 @@ extension HomeScreen {
                         Image(systemName: "staroflife.fill")
                             .font(.caption2)
 
-                        Text("\(8) days left.")
+                        Text("\(progressService.daysRemaining) days left.")
                             .lineLimit(1, reservesSpace: true)
                             .foregroundStyle(.textPrimary)
                     }
@@ -189,36 +200,26 @@ extension HomeScreen {
 }
 
 #Preview("Started") {
-    NavigationStack {
-        HomeScreen()
-            .previewEnviroments(state: .started)
-    }
+    HomeScreen()
+        .previewEnviroments(state: .started)
 }
 
 #Preview("Not Started") {
-    NavigationStack {
-        HomeScreen()
-            .previewEnviroments(state: .notStarted)
-    }
+    HomeScreen()
+        .previewEnviroments(state: .notStarted)
 }
 
 #Preview("Scheduled") {
-    NavigationStack {
-        HomeScreen()
-            .previewEnviroments(state: .scheduled(startDate: .now))
-    }
+    HomeScreen()
+        .previewEnviroments(state: .scheduled(startDate: .now))
 }
 
 #Preview("Missed Day") {
-    NavigationStack {
-        HomeScreen()
-            .previewEnviroments(state: .missedDay(date: .now))
-    }
+    HomeScreen()
+        .previewEnviroments(state: .missedDay(date: .now))
 }
 
 #Preview("Completed All") {
-    NavigationStack {
-        HomeScreen()
-            .previewEnviroments(state: .completedAll)
-    }
+    HomeScreen()
+        .previewEnviroments(state: .completedAll)
 }

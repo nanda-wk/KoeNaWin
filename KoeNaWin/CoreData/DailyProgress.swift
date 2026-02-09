@@ -27,6 +27,24 @@ extension DailyProgress {
 }
 
 extension DailyProgress {
+    static func create(
+        date: Date,
+        status: DailyProgressStatus,
+        commitment: Commitment,
+        context: NSManagedObjectContext
+    ) -> DailyProgress {
+        let dailyProgress = DailyProgress(context: context)
+        dailyProgress.id = UUID()
+        dailyProgress.date = date
+        dailyProgress.status = status
+        dailyProgress.completedAt = .now
+        dailyProgress.createdAt = .now
+        dailyProgress.commitment = commitment
+        return dailyProgress
+    }
+}
+
+extension DailyProgress {
     static var dailyProgressFetchRequest: NSFetchRequest<DailyProgress> {
         NSFetchRequest(entityName: String(describing: self))
     }

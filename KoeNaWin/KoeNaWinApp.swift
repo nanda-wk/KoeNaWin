@@ -9,6 +9,8 @@ import SwiftUI
 
 @main
 struct KoeNaWinApp: App {
+    @Environment(\.scenePhase) private var scenePhase
+
     @StateObject private var koeNaWinStore = KoeNaWinStore.shared
     @StateObject private var preferences = UserPreferences()
     @StateObject private var userProgressService = UserProgressService()
@@ -30,6 +32,11 @@ struct KoeNaWinApp: App {
             .environment(\.locale, preferences.appLanguage.locale)
             .onAppear {
                 koeNaWinStore.loadData()
+            }
+            .onChange(of: scenePhase) { newValue in
+                if newValue == .active {
+                    userProgressService.refreshState()
+                }
             }
         }
     }

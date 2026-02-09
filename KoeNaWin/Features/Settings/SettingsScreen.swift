@@ -140,6 +140,7 @@ extension SettingsScreen {
             .contentShape(.rect)
         }
         .foregroundStyle(.textPrimary)
+        .buttonStyle(.plain)
     }
 
     private var reminderPicker: some View {
@@ -221,8 +222,14 @@ extension SettingsScreen {
 
                     Spacer()
 
-                    Text(Date.now.toStringWith(format: .yyyy_MMMM_d))
-                        .font(.footnote)
+                    if let startDate = progressService.startDate {
+                        Text(startDate.toStringWith(format: .yyyy_MMMM_d))
+                            .font(.footnote)
+                    } else {
+                        Text("Not Started")
+                            .font(.footnote)
+                            .foregroundStyle(.textSecondary)
+                    }
                 }
                 .padding()
                 .listSectionBackground

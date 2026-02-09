@@ -14,6 +14,8 @@ final class UserPreferences: ObservableObject {
     @AppStorage("appTheme") var appTheme: AppTheme = .system
     @AppStorage("appLanguage") var appLanguage: AppLanguage = .myanmar
     @AppStorage("isFirstLaunch") var isFirstLaunch = true
+    @AppStorage("count") var count = 0
+    @AppStorage("round") var round = 0
 
     @AppStorage("beadsType") var beadsType: Int = 108
     @AppStorage("reminderTime") var reminderTime: Double = Date.now.timeIntervalSince1970
