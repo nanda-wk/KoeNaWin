@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SchemeUserState</key>
+	<dict>
+		<key>KoeNaWin-Dev.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>1</integer>
+		</dict>
+		<key>KoeNaWin.xcscheme_^#shared#^_</key>
+		<dict>
+			<key>orderHint</key>
+			<integer>0</integer>
+		</dict>
+	</dict>
+	<key>SuppressBuildableAutocreation</key>
+	<dict>
+		<key>53886F222D980204001840B3</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B8694D542F3D0D6D006F1DB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B8694D5E2F3D0E72006F1DB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+		<key>B8694D682F3D10E1006F1DB0</key>
+		<dict>
+			<key>primary</key>
+			<true/>
+		</dict>
+	</dict>
+</dict>
+</plist>
