@@ -9,10 +9,9 @@ import SwiftUI
 
 struct TabScreen: View {
     @EnvironmentObject var preferences: UserPreferences
-    @State private var selectedTab: TabItem = .home
 
     var body: some View {
-        TabView(selection: $selectedTab) {
+        TabView(selection: $preferences.selectedTab) {
             HomeScreen()
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
@@ -37,7 +36,7 @@ struct TabScreen: View {
                 }
                 .tag(TabItem.settings)
         }
-        .onChange(of: selectedTab) { _ in
+        .onChange(of: preferences.selectedTab) { _ in
             Haptic.selection.generate()
         }
         .fullScreenCover(isPresented: $preferences.isFirstLaunch) {
