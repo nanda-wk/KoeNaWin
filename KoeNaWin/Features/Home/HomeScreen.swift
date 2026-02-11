@@ -15,6 +15,7 @@ struct HomeScreen: View {
     @EnvironmentObject private var userPreferences: UserPreferences
 
     @State private var isPresented = false
+    @State private var isNewJourney: Bool = false
 
     private var stage: Int {
         progressService.stage
@@ -27,6 +28,9 @@ struct HomeScreen: View {
                 .navigationBarTitleDisplayMode(.inline)
                 .sheet(isPresented: $isPresented) {
                     CompletedAllView()
+                }
+                .fullScreenCover(isPresented: $isNewJourney) {
+                    JourneyScreen(mode: .newCommitment)
                 }
         }
     }
@@ -43,11 +47,11 @@ extension HomeScreen {
             case .started, .completedAll:
                 startedView
             case .notStarted:
-                NotStartedView()
+                NotStartedView(isPresented: $isNewJourney)
             case let .scheduled(startDate):
                 ScheduledView(date: startDate)
             case let .missedDay(date):
-                MissedDayView(date: date)
+                MissedDayView(isPresented: $isNewJourney, date: date)
             }
         }
     }
@@ -201,7 +205,14 @@ extension HomeScreen {
 
 #Preview("Started") {
     HomeScreen()
-        .previewEnviroments(state: .started)
+        .previewEnviroments(state: .started(
+                stage: 9,
+                day: 9,
+                totalCompletedDays: 30,
+                isTodayCompleted: false,
+                isVegetarian: true
+            )
+        )
 }
 
 #Preview("Not Started") {

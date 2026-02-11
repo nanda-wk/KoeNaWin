@@ -8,16 +8,11 @@
 import SwiftUI
 
 struct JourneyScreen: View {
-    enum JourneyMode {
-        case onboarding
-        case newCommitment
-    }
-
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var userPreferences: UserPreferences
     @EnvironmentObject private var progressService: UserProgressService
 
     let mode: JourneyMode
-    var onComplete: (() -> Void)?
 
     @State private var currentStep: Int
 
@@ -32,9 +27,8 @@ struct JourneyScreen: View {
 
     @State private var error: CoreDataError?
 
-    init(mode: JourneyMode = .onboarding, onComplete: (() -> Void)? = nil) {
+    init(mode: JourneyMode = .onboarding) {
         self.mode = mode
-        self.onComplete = onComplete
         _currentStep = State(initialValue: mode == .newCommitment ? 1 : 0)
     }
 
@@ -67,9 +61,9 @@ struct JourneyScreen: View {
             }
             .onAppear {
                 NotificationService.shared.requestAuthorization()
-                if mode == .newCommitment {
-                    selectedLanguage = userPreferences.appLanguage
-                }
+            }
+            .onChange(of: selectedDate) { newValue in
+                print(selectedDate)
             }
     }
 }
@@ -249,7 +243,6 @@ extension JourneyScreen {
                 .padding()
                 .background(.appContent)
                 .cornerRadius(26)
-//                .padding(.horizontal, 40)
                 .environment(\.locale, Locale(identifier: "en"))
 
             Spacer()
@@ -355,26 +348,34 @@ extension JourneyScreen {
     private func completeOnboarding() {
         userPreferences.reminderTime = reminderTime.timeIntervalSince1970
         userPreferences.beadsType = selectedBeadsType
-        userPreferences.appLanguage = selectedLanguage
-        userPreferences.isFirstLaunch = false
+        if mode == .onboarding {
+            userPreferences.appLanguage = selectedLanguage
+            userPreferences.isFirstLaunch = false
+            userPreferences.isEnableHaptic = true
+        }
+        
+        let startDate = calendar.startOfDay(for: selectedDate)
 
-        if isSchedule(selectedDate) {
-            progressService.setDailyReminder(reminderTime)
+        if startDate > Date.today() {
+            progressService.setNewCommitmentReminder(startDate)
         } else {
-            progressService.setNewCommitmentReminder(selectedDate)
+            progressService.setDailyReminder(reminderTime)
         }
 
         do {
-            try progressService.startNewCommitment(startDate: selectedDate)
-            onComplete?()
+            try progressService.startNewCommitment(startDate: startDate)
+            dismiss()
         } catch {
             self.error = .failedToSave
             print(error.localizedDescription)
         }
     }
+}
 
-    private func isSchedule(_ date: Date) -> Bool {
-        calendar.isDateInToday(date) && calendar.startOfDay(for: date) < Date.today()
+extension JourneyScreen {
+    enum JourneyMode {
+        case onboarding
+        case newCommitment
     }
 }
 

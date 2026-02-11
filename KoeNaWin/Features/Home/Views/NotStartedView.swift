@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct NotStartedView: View {
+    @Binding var isPresented: Bool
+    
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "figure.mind.and.body")
@@ -25,7 +27,7 @@ struct NotStartedView: View {
                 .padding(.horizontal)
 
             Button {
-                // Action to start setup
+                isPresented.toggle()
             } label: {
                 Text("Get Started")
                     .fontWeight(.bold)
@@ -34,6 +36,7 @@ struct NotStartedView: View {
                     .padding()
                     .background(Capsule().fill(.accent))
             }
+            .buttonStyle(.plain)
         }
         .padding()
         .listSectionBackground
@@ -42,5 +45,5 @@ struct NotStartedView: View {
 }
 
 #Preview {
-    NotStartedView()
+    NotStartedView(isPresented: .constant(false))
 }

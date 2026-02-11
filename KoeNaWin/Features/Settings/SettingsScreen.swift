@@ -12,6 +12,8 @@ struct SettingsScreen: View {
     @Environment(\.requestReview) private var requestReview
     @EnvironmentObject private var userPreferences: UserPreferences
     @EnvironmentObject private var progressService: UserProgressService
+    
+    @State private var selectedDate = Date.today()
 
     @State private var height: CGFloat = 500
     @State private var sheet: SheetType?
@@ -103,7 +105,7 @@ extension SettingsScreen {
             HStack {
                 Text("App Language")
                 Spacer()
-                Text("English")
+                Text(userPreferences.appLanguage.title)
                     .font(.headline)
                     .foregroundStyle(.accent)
             }
@@ -245,7 +247,7 @@ extension SettingsScreen {
     }
 
     private var startDatePicker: some View {
-        DatePicker("", selection: .constant(.now), displayedComponents: .date)
+        DatePicker("", selection: $selectedDate, displayedComponents: .date)
             .datePickerStyle(.graphical)
             .labelsHidden()
             .padding(.horizontal)
@@ -253,6 +255,7 @@ extension SettingsScreen {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
+                        progressService.setNewCommitmentReminder(selectedDate)
                         sheet = nil
                     }
                     .tint(.accent)

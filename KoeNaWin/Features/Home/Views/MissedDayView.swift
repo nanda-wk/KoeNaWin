@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct MissedDayView: View {
+    @Binding var isPresented: Bool
     let date: Date
 
     var body: some View {
@@ -25,12 +26,8 @@ struct MissedDayView: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.textSecondary)
 
-            Text("Stage \(1), Day \(2)")
-                .font(.subheadline)
-                .foregroundStyle(.textPrimary)
-
             Button {
-                // Action to resolve
+                isPresented.toggle()
             } label: {
                 Text("Resolve Missed Day")
                     .fontWeight(.bold)
@@ -39,6 +36,7 @@ struct MissedDayView: View {
                     .padding()
                     .background(Capsule().fill(.accent))
             }
+            .buttonStyle(.plain)
         }
         .padding()
         .listSectionBackground
@@ -47,5 +45,5 @@ struct MissedDayView: View {
 }
 
 #Preview {
-    MissedDayView(date: .now)
+    MissedDayView(isPresented: .constant(false), date: .now)
 }
