@@ -8,46 +8,77 @@
 import SwiftUI
 
 struct TabScreen: View {
-    @EnvironmentObject var preferences: UserPreferences
+    @EnvironmentObject private var preferences: UserPreferences
+    @EnvironmentObject private var router: Router
 
     var body: some View {
-        TabView(selection: $preferences.selectedTab) {
-            HomeScreen()
-                .tabItem {
-                    Label("Home", systemImage: "house.fill")
+        TabView(selection: $router.selectedTab) {
+            ForEach(TabItem.allCases) { tab in
+                NavigationStack(path: $router[tab]) {
+                    tab.view
+                        .withRouterDestination()
                 }
-                .tag(TabItem.home)
-
-            PracticeScreen()
                 .tabItem {
-                    Label("Practice", systemImage: "leaf.fill")
+                    Label(tab.title, systemImage: tab.icon)
                 }
-                .tag(TabItem.practice)
-
-            StagesScreen()
-                .tabItem {
-                    Label("Stages", systemImage: "squares.leading.rectangle.fill")
-                }
-                .tag(TabItem.stages)
-
-            SettingsScreen()
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape.2.fill")
-                }
-                .tag(TabItem.settings)
+                .tag(tab)
+            }
         }
-        .onChange(of: preferences.selectedTab) { _ in
+        .onChange(of: router.selectedTab) { _ in
             Haptic.selection.generate()
         }
-        .fullScreenCover(isPresented: $preferences.isFirstLaunch) {
-            JourneyScreen()
+        .modifier(SheetDestinations(router: router))
+        .onAppear {
+            if preferences.isFirstLaunch {
+                router.presentSheet(.journey(.onboarding))
+            }
         }
     }
 }
 
-enum TabItem: Int, Identifiable {
+enum TabItem: Int, Identifiable, CaseIterable {
     var id: Int { rawValue }
     case home, practice, stages, settings
+
+    var title: LocalizedStringKey {
+        switch self {
+        case .home:
+            "Home"
+        case .practice:
+            "Practice"
+        case .stages:
+            "Stages"
+        case .settings:
+            "Settings"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .home:
+            "house.fill"
+        case .practice:
+            "leaf.fill"
+        case .stages:
+            "squares.leading.rectangle.fill"
+        case .settings:
+            "gearshape.2.fill"
+        }
+    }
+
+    @ViewBuilder
+    var view: some View {
+        switch self {
+        case .home:
+            HomeScreen()
+        case .practice:
+            PracticeScreen()
+        case .stages:
+            StagesScreen()
+        case .settings:
+            SettingsScreen()
+        }
+    }
 }
 
 #Preview {
