@@ -11,28 +11,14 @@ import SwiftUI
 
 struct HomeScreen: View {
     @EnvironmentObject private var store: KoeNaWinStore
-    @EnvironmentObject private var progressService: UserProgressService
+    @EnvironmentObject private var journeyService: JourneyService
     @EnvironmentObject private var userPreferences: UserPreferences
-
-    @State private var isPresented = false
-    @State private var isNewJourney: Bool = false
-
-    private var stage: Int {
-        progressService.stage
-    }
+    @EnvironmentObject private var router: Router
 
     var body: some View {
-        NavigationStack {
-            content
-                .navigationTitle("KoeNaWin")
-                .navigationBarTitleDisplayMode(.inline)
-                .sheet(isPresented: $isPresented) {
-                    CompletedAllView()
-                }
-                .fullScreenCover(isPresented: $isNewJourney) {
-                    JourneyScreen(mode: .newCommitment)
-                }
-        }
+        content
+            .navigationTitle("KoeNaWin")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -43,15 +29,15 @@ extension HomeScreen {
             Color(.appBackground)
                 .ignoresSafeArea()
 
-            switch progressService.practiceState {
+            switch journeyService.practiceState {
             case .started, .completedAll:
                 startedView
             case .notStarted:
-                NotStartedView(isPresented: $isNewJourney)
+                NotStartedView()
             case let .scheduled(startDate):
                 ScheduledView(date: startDate)
             case let .missedDay(date):
-                MissedDayView(isPresented: $isNewJourney, date: date)
+                MissedDayView(date: date)
             }
         }
     }
@@ -69,14 +55,18 @@ extension HomeScreen {
         }
         .scrollIndicators(.never)
         .onAppear {
-            isPresented = progressService.practiceState == .completedAll
+            if journeyService.practiceState == .completedAll {
+                router.presentSheet(.achievement)
+            }
         }
     }
 
+    @ViewBuilder
     private var vegetarianSection: some View {
         Group {
-            if let prayer = progressService.currentPrayer, prayer.isVegetarian {
-                Text("Today is vegetarian day.")
+            if let prayer = journeyService.currentPrayer {
+                let message: LocalizedStringKey = prayer.isVegetarian ? "Today is vegetarian day." : "Vegetarian day in \(journeyService.vegetarianDayIn)"
+                Text(message)
                     .font(.headline)
                     .foregroundStyle(.red)
                     .frame(maxWidth: .infinity, alignment: .center)
@@ -88,12 +78,12 @@ extension HomeScreen {
 
     @ViewBuilder
     private var todayMantra: some View {
-        if let prayer = progressService.currentPrayer {
+        if let prayer = journeyService.currentPrayer {
             VStack(spacing: 10) {
                 HStack {
                     Text(prayer.day.localized(to: userPreferences.appLanguage))
                     Spacer()
-                    Text("Adhitthan Stage (\(stage))")
+                    Text("Adhitthan Stage (\(journeyService.stage))")
                 }
                 .font(.subheadline)
                 .fontWeight(.medium)
@@ -110,17 +100,20 @@ extension HomeScreen {
             }
             .padding()
             .listSectionBackground
-            .contentShape(Rectangle())
+            .contentShape(.rect)
+            .onTapGesture {
+                router.selectedTab = .practice
+            }
         }
     }
 
     private var currentStageCompletion: some View {
-        let currentDay = progressService.day
+        let currentDay = journeyService.day
         let progress = Double(currentDay) / 9.0
         let percentage = progress * 100
 
         return VStack {
-            Text("Adhitthan Stage (\(stage))")
+            Text("Adhitthan Stage (\(journeyService.stage))")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)
@@ -138,7 +131,13 @@ extension HomeScreen {
         }
         .padding()
         .listSectionBackground
-        .contentShape(Rectangle())
+        .contentShape(.rect)
+        .onTapGesture {
+            if let currentStage = journeyService.currentStage {
+                router.selectedTab = .stages
+                router.navigateTo(.stageDetails(currentStage), for: .stages)
+            }
+        }
     }
 
     private var completionSection: some View {
@@ -150,17 +149,17 @@ extension HomeScreen {
 
             HStack {
                 ZStack {
-                    CircularProgressView(progress: progressService.totalProgress)
+                    CircularProgressView(progress: journeyService.totalProgress)
 
                     // Center text
-                    Text("\(progressService.totalCompletedDays) / \(progressService.totalDays)")
+                    Text("\(journeyService.totalCompletedDays) / \(journeyService.totalDays)")
                         .font(.headline)
                         .foregroundStyle(.textPrimary)
                 }
                 .padding()
 
                 VStack(spacing: 20) {
-                    Text("\(String(format: "%.1f", progressService.totalProgress * 100)) %")
+                    Text("\(String(format: "%.1f", journeyService.totalProgress * 100)) %")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal)
@@ -174,7 +173,7 @@ extension HomeScreen {
                         Image(systemName: "staroflife.fill")
                             .font(.caption2)
 
-                        Text("\(progressService.daysRemaining) days left.")
+                        Text("\(journeyService.daysRemaining) days left.")
                             .lineLimit(1, reservesSpace: true)
                             .foregroundStyle(.textPrimary)
                     }
@@ -187,7 +186,7 @@ extension HomeScreen {
 
     @ViewBuilder
     private var completedTodayView: some View {
-        if progressService.isTodayCompleted {
+        if journeyService.isTodayCompleted {
             HStack {
                 Image(systemName: "checkmark.circle.fill")
                     .foregroundStyle(.green)
@@ -201,18 +200,6 @@ extension HomeScreen {
             .cornerRadius(26)
         }
     }
-}
-
-#Preview("Started") {
-    HomeScreen()
-        .previewEnviroments(state: .started(
-                stage: 9,
-                day: 9,
-                totalCompletedDays: 30,
-                isTodayCompleted: false,
-                isVegetarian: true
-            )
-        )
 }
 
 #Preview("Not Started") {

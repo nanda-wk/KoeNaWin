@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct JourneyScreen: View {
-    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var userPreferences: UserPreferences
-    @EnvironmentObject private var progressService: UserProgressService
+    @EnvironmentObject private var journeyService: JourneyService
+    @EnvironmentObject private var router: Router
 
     let mode: JourneyMode
 
@@ -31,12 +31,6 @@ struct JourneyScreen: View {
         self.mode = mode
         _currentStep = State(initialValue: mode == .newCommitment ? 1 : 0)
     }
-
-    private let calendar = {
-        var calendar = Calendar.current
-        calendar.timeZone = .current
-        return calendar
-    }()
 
     var body: some View {
         content
@@ -61,9 +55,6 @@ struct JourneyScreen: View {
             }
             .onAppear {
                 NotificationService.shared.requestAuthorization()
-            }
-            .onChange(of: selectedDate) { newValue in
-                print(selectedDate)
             }
     }
 }
@@ -353,18 +344,18 @@ extension JourneyScreen {
             userPreferences.isFirstLaunch = false
             userPreferences.isEnableHaptic = true
         }
-        
-        let startDate = calendar.startOfDay(for: selectedDate)
+
+        let startDate = selectedDate.startOfDay()
 
         if startDate > Date.today() {
-            progressService.setNewCommitmentReminder(startDate)
+            journeyService.setNewCommitmentReminder(startDate)
         } else {
-            progressService.setDailyReminder(reminderTime)
+            journeyService.setDailyReminder(reminderTime)
         }
 
         do {
-            try progressService.startNewCommitment(startDate: startDate)
-            dismiss()
+            try journeyService.startNewJourney(startDate: startDate)
+            router.dismissSheet()
         } catch {
             self.error = .failedToSave
             print(error.localizedDescription)

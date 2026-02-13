@@ -8,8 +8,8 @@
 import SwiftUI
 
 struct NotStartedView: View {
-    @Binding var isPresented: Bool
-    
+    @EnvironmentObject private var router: Router
+
     var body: some View {
         VStack(spacing: 20) {
             Image(systemName: "figure.mind.and.body")
@@ -27,7 +27,7 @@ struct NotStartedView: View {
                 .padding(.horizontal)
 
             Button {
-                isPresented.toggle()
+                router.presentedSheet = .journey(.newCommitment)
             } label: {
                 Text("Get Started")
                     .fontWeight(.bold)
@@ -45,5 +45,6 @@ struct NotStartedView: View {
 }
 
 #Preview {
-    NotStartedView(isPresented: .constant(false))
+    NotStartedView()
+        .previewEnviroments()
 }

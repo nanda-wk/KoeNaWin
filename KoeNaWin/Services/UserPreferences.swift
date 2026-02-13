@@ -10,7 +10,6 @@ import SwiftUI
 
 @MainActor
 final class UserPreferences: ObservableObject {
-    @AppStorage("selectedTab") var selectedTab: TabItem = .home
     @AppStorage("isEnableHaptic") var isEnableHaptic = true
     @AppStorage("appTheme") var appTheme: AppTheme = .system
     @AppStorage("appLanguage") var appLanguage: AppLanguage = .myanmar

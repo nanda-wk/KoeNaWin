@@ -9,16 +9,12 @@ import SwiftUI
 
 struct StagesScreen: View {
     @EnvironmentObject private var store: KoeNaWinStore
-    @StateObject private var router = Router()
+    @EnvironmentObject private var router: Router
 
     var body: some View {
-        NavigationStack(path: $router.path) {
-            content
-                .navigationTitle("Stages")
-                .navigationBarTitleDisplayMode(.inline)
-                .withRouterDestination()
-        }
-        .environmentObject(router)
+        content
+            .navigationTitle("Stages")
+            .navigationBarTitleDisplayMode(.inline)
     }
 }
 
@@ -28,7 +24,7 @@ extension StagesScreen {
             VStack(spacing: 12) {
                 ForEach(store.stages) { stage in
                     Button {
-                        router.navigate(to: .stageDetails(stage))
+                        router.navigateTo(.stageDetails(stage))
                     } label: {
                         StageCell(stage: stage.stage)
                     }

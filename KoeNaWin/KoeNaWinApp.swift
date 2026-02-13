@@ -13,7 +13,8 @@ struct KoeNaWinApp: App {
 
     @StateObject private var koeNaWinStore = KoeNaWinStore.shared
     @StateObject private var preferences = UserPreferences()
-    @StateObject private var userProgressService = UserProgressService()
+    @StateObject private var journeyService = JourneyService()
+    @StateObject private var router = Router()
 
     var body: some Scene {
         WindowGroup {
@@ -27,7 +28,8 @@ struct KoeNaWinApp: App {
             .id(preferences.appLanguage)
             .environmentObject(koeNaWinStore)
             .environmentObject(preferences)
-            .environmentObject(userProgressService)
+            .environmentObject(journeyService)
+            .environmentObject(router)
             .preferredColorScheme(preferences.appTheme.colorScheme)
             .environment(\.locale, preferences.appLanguage.locale)
             .onAppear {
@@ -35,7 +37,7 @@ struct KoeNaWinApp: App {
             }
             .onChange(of: scenePhase) { newValue in
                 if newValue == .active {
-                    userProgressService.refreshState()
+                    journeyService.refreshState()
                 }
             }
         }

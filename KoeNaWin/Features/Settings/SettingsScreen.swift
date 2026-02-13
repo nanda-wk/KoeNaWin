@@ -11,17 +11,28 @@ import SwiftUI
 struct SettingsScreen: View {
     @Environment(\.requestReview) private var requestReview
     @EnvironmentObject private var userPreferences: UserPreferences
-    @EnvironmentObject private var progressService: UserProgressService
-    
+    @EnvironmentObject private var journeyService: JourneyService
+
     @State private var selectedDate = Date.today()
 
     @State private var height: CGFloat = 500
     @State private var sheet: SheetType?
 
+    @State private var error: CoreDataError?
+
     var body: some View {
         content
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.inline)
+            .alert(
+                isPresented: Binding(
+                    get: { error != nil },
+                    set: { _ in error = nil }
+                ),
+                error: error
+            ) {
+                Button("OK") {}
+            }
             .sheet(item: $sheet) { sheet in
                 NavigationStack {
                     switch sheet {
@@ -157,11 +168,13 @@ extension SettingsScreen {
         )
         .datePickerStyle(.wheel)
         .labelsHidden()
+        .navigationTitle("Select your start date.")
+        .navigationBarTitleDisplayMode(.inline)
         .padding()
         .environment(\.locale, Locale(identifier: "en"))
         .presentationDetents([.fraction(0.4)])
         .onDisappear {
-            progressService.setDailyReminder(Date(timeIntervalSince1970: userPreferences.reminderTime))
+            journeyService.setDailyReminder(Date(timeIntervalSince1970: userPreferences.reminderTime))
         }
     }
 
@@ -224,7 +237,7 @@ extension SettingsScreen {
 
                     Spacer()
 
-                    if let startDate = progressService.startDate {
+                    if let startDate = journeyService.startDate {
                         Text(startDate.toStringWith(format: .yyyy_MMMM_d))
                             .font(.footnote)
                     } else {
@@ -255,8 +268,13 @@ extension SettingsScreen {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        progressService.setNewCommitmentReminder(selectedDate)
-                        sheet = nil
+                        do {
+                            try journeyService.startNewJourney(startDate: selectedDate)
+                            sheet = nil
+                        } catch {
+                            self.error = .failedToSave
+                            print(error.localizedDescription)
+                        }
                     }
                     .tint(.accent)
                 }

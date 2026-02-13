@@ -11,37 +11,45 @@ import Foundation
 @objc(DailyProgress)
 final class DailyProgress: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
+    @NSManaged var dayNumber: Int16
     @NSManaged var date: Date
     @NSManaged var statusRaw: Int16
-    @NSManaged var completedAt: Date
+    @NSManaged var completedAt: Date?
     @NSManaged var createdAt: Date
 
-    @NSManaged var commitment: Commitment
+    @NSManaged var journey: Journey
+
+    @discardableResult
+    static func create(
+        id: UUID = UUID(),
+        dayNumber: Int16,
+        date: Date,
+        status: DayStatus = .notStarted,
+        journey: Journey,
+        context: NSManagedObjectContext
+    ) -> DailyProgress {
+        let progress = DailyProgress(context: context)
+        progress.id = id
+        progress.dayNumber = dayNumber
+        progress.date = date
+        progress.status = status
+        progress.createdAt = .now
+        progress.journey = journey
+        return progress
+    }
 }
 
 extension DailyProgress {
-    var status: DailyProgressStatus {
-        get { DailyProgressStatus(rawValue: statusRaw) ?? .notStarted }
+    var status: DayStatus {
+        get { DayStatus(rawValue: statusRaw) ?? .notStarted }
         set { statusRaw = newValue.rawValue }
     }
 }
 
-extension DailyProgress {
-    static func create(
-        date: Date,
-        status: DailyProgressStatus,
-        commitment: Commitment,
-        context: NSManagedObjectContext
-    ) -> DailyProgress {
-        let dailyProgress = DailyProgress(context: context)
-        dailyProgress.id = UUID()
-        dailyProgress.date = date
-        dailyProgress.status = status
-        dailyProgress.completedAt = .now
-        dailyProgress.createdAt = .now
-        dailyProgress.commitment = commitment
-        return dailyProgress
-    }
+enum DayStatus: Int16 {
+    case notStarted = 0
+    case completed = 1
+    case missed = 2
 }
 
 extension DailyProgress {

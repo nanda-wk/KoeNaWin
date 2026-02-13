@@ -11,34 +11,44 @@ import Foundation
 @objc(Commitment)
 final class Commitment: NSManagedObject, Identifiable {
     @NSManaged var id: UUID
-    @NSManaged var startDate: Date
+    @NSManaged var reflection: String
     @NSManaged var totalDays: Int16
-    @NSManaged var commitmentReflection: String?
-    @NSManaged var isActive: Bool
+    @NSManaged var categoryRaw: Int16
     @NSManaged var createdAt: Date
 
-    @NSManaged var dailyProgresses: Set<DailyProgress>
-    @NSManaged var practiceJourney: PracticeJourney?
-}
+    @NSManaged var journeys: Set<Journey>
 
-extension Commitment {
+    @discardableResult
     static func create(
-        startDate: Date,
-        commitmentReflection: String? = nil,
+        id: UUID = UUID(),
         totalDays: Int16 = 81,
-        isActive: Bool = true,
+        category: CommitmentCategory = .koeNaWin,
+        reflection: String? = nil,
+        startDate _: Date,
         context: NSManagedObjectContext
     ) -> Commitment {
         let commitment = Commitment(context: context)
-        commitment.id = UUID()
-        commitment.startDate = startDate
-        commitment.commitmentReflection = commitmentReflection
+        commitment.id = id
         commitment.totalDays = totalDays
-        commitment.isActive = isActive
+        commitment.category = category
+        commitment.reflection = reflection ?? ""
         commitment.createdAt = .now
-        commitment.dailyProgresses = []
+        // Note: New architecture says startDate belongs to Journey.
+        // But for transition safety, we might need to handle it or ensure Journey is created too.
         return commitment
     }
+}
+
+extension Commitment {
+    var category: CommitmentCategory {
+        get { CommitmentCategory(rawValue: categoryRaw) ?? .koeNaWin }
+        set { categoryRaw = newValue.rawValue }
+    }
+}
+
+enum CommitmentCategory: Int16 {
+    case koeNaWin = 0
+    case custom = 1
 }
 
 extension Commitment {

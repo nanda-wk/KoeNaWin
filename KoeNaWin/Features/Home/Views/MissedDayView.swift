@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct MissedDayView: View {
-    @Binding var isPresented: Bool
+    @EnvironmentObject private var router: Router
     let date: Date
 
     var body: some View {
@@ -27,7 +27,7 @@ struct MissedDayView: View {
                 .foregroundStyle(.textSecondary)
 
             Button {
-                isPresented.toggle()
+                router.presentedSheet = .journey(.newCommitment)
             } label: {
                 Text("Resolve Missed Day")
                     .fontWeight(.bold)
@@ -45,5 +45,6 @@ struct MissedDayView: View {
 }
 
 #Preview {
-    MissedDayView(isPresented: .constant(false), date: .now)
+    MissedDayView(date: .now)
+        .previewEnviroments()
 }

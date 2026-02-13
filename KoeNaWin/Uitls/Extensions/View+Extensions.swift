@@ -8,11 +8,11 @@
 import SwiftUI
 
 extension View {
-    func previewEnviroments(state: PracticeState = .notStarted) -> some View {
+    func previewEnviroments(state _: PracticeState = .notStarted) -> some View {
         environmentObject(KoeNaWinStore.shared)
             .environmentObject(Router())
             .environmentObject(UserPreferences())
-            .environmentObject(UserProgressService(initialState: state))
+            .environmentObject(JourneyService()) // Note: PracticeState seeding not yet implemented in JourneyService
     }
 }
 

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct PracticeScreen: View {
     @EnvironmentObject private var store: KoeNaWinStore
-    @EnvironmentObject private var progressService: UserProgressService
+    @EnvironmentObject private var journeyService: JourneyService
     @EnvironmentObject private var userPreferences: UserPreferences
 
     @State private var isPresented = false
@@ -19,11 +19,11 @@ struct PracticeScreen: View {
     @State private var message: LocalizedStringKey = ""
 
     private var isLocked: Bool {
-        if progressService.isTodayCompleted {
+        if journeyService.isTodayCompleted {
             return true
         }
 
-        switch progressService.practiceState {
+        switch journeyService.practiceState {
         case .started:
             return false
         default:
@@ -32,6 +32,35 @@ struct PracticeScreen: View {
     }
 
     var body: some View {
+        content
+            .navigationTitle("Today's Adhitthan")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Do you want to reset beads count?", isPresented: $resetPresented) {
+                Button("Yes", role: .destructive, action: resetBeads)
+                Button("Cancel", role: .cancel, action: {})
+                    .tint(.textPrimary)
+            }
+            .alert("Today’s Adhitthan finished.", isPresented: $finishPresented) {
+                Button("Cancel", role: .cancel, action: {})
+                Button("Finished", action: saveDailyProgress)
+            }
+            .alert("", isPresented: $isPresented, actions: {}) {
+                Text(message)
+            }
+            .toolbar {
+                if !isLocked {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Finished") {
+                            finishPresented.toggle()
+                        }
+                    }
+                }
+            }
+    }
+}
+
+extension PracticeScreen {
+    private var content: some View {
         VStack {
             prayerInfo
             Spacer()
@@ -42,34 +71,11 @@ struct PracticeScreen: View {
         .padding()
         .padding(.bottom)
         .background(.appBackground, ignoresSafeAreaEdges: .all)
-        .alert("Do you want to reset beads count?", isPresented: $resetPresented) {
-            Button("Yes", role: .destructive, action: resetBeads)
-            Button("Cancel", role: .cancel, action: {})
-                .tint(.textPrimary)
-        }
-        .alert("Today’s Adhitthan finished.", isPresented: $finishPresented) {
-            Button("Cancel", role: .cancel, action: {})
-            Button("Finished", action: saveDailyProgress)
-        }
-        .alert("", isPresented: $isPresented, actions: {}) {
-            Text(message)
-        }
-        .navigationTitle("Today's Adhitthan")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            if !isLocked {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("Finished") {}
-                }
-            }
-        }
     }
-}
 
-extension PracticeScreen {
     @ViewBuilder
     private var prayerInfo: some View {
-        if let prayer = progressService.currentPrayer {
+        if let prayer = journeyService.currentPrayer {
             VStack {
                 Text(prayer.day.localized(to: userPreferences.appLanguage))
                     .font(.title3)
@@ -86,13 +92,14 @@ extension PracticeScreen {
                     .font(.caption)
                     .italic()
                     .foregroundStyle(.accent)
+                    .multilineTextAlignment(.center)
             }
         }
     }
 
     private var beadButton: some View {
         VStack {
-            if let _ = progressService.currentPrayer {
+            if let _ = journeyService.currentPrayer {
                 Text("\(userPreferences.count)")
                     .font(.system(size: 40, weight: .bold, design: .rounded))
                     .monospaced()
@@ -107,9 +114,7 @@ extension PracticeScreen {
                         .frame(width: 250, height: 250)
 
                     Circle()
-                        .fill(
-                            .accent.opacity(0.5)
-                        )
+                        .fill(.accent.opacity(0.5))
                         .frame(width: 230, height: 230)
 
                     VStack {
@@ -128,13 +133,14 @@ extension PracticeScreen {
                     }
                 }
             }
+            .buttonStyle(PressableButtonStyle())
         }
         .padding(.vertical, 15)
     }
 
     private var beadsCountInfo: some View {
         HStack(spacing: 20) {
-            Text("Total beads: \(userPreferences.round) / \(progressService.currentPrayer?.rounds ?? 0)")
+            Text("Total beads: \(userPreferences.round) / \(journeyService.currentPrayer?.rounds ?? 0)")
                 .font(.footnote)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
@@ -185,14 +191,14 @@ extension PracticeScreen {
             userPreferences.round += 1
         }
         Haptic.impact(.soft).generate()
-        if userPreferences.round == progressService.currentPrayer?.rounds ?? 0 {
+        if userPreferences.round == journeyService.currentPrayer?.rounds ?? 0 {
             saveDailyProgress()
         }
     }
 
     private func saveDailyProgress() {
         Haptic.notification(.success).generate()
-        try? progressService.saveDailyProgress(status: .completed)
+        try? journeyService.completeToday()
     }
 
     private func resetBeads() {
@@ -201,17 +207,17 @@ extension PracticeScreen {
     }
 
     private func isValid() -> Bool {
-        if progressService.isTodayCompleted {
+        if journeyService.isTodayCompleted {
             message = "You have already completed today’s Adhitthan."
             return false
         }
 
-        switch progressService.practiceState {
+        switch journeyService.practiceState {
         case .started:
             message = ""
             return true
         case .notStarted:
-            message = "No Adhitthan yet."
+            message = "You have no active Adhitthan"
             return false
         case let .scheduled(startDate):
             message = "Adhitthan will start on \(startDate.toStringWith(format: .yyyy_MMMM_d))."
@@ -220,7 +226,7 @@ extension PracticeScreen {
             message = "Missed Adhitthan on \(date.toStringWith(format: .yyyy_MMMM_d))."
             return false
         case .completedAll:
-            message = "No Adhitthan yet."
+            message = "You have achieved your Adhitthan."
             return false
         }
     }
@@ -229,8 +235,8 @@ extension PracticeScreen {
 struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.spring(response: 0.2), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+            .animation(.smooth, value: configuration.isPressed)
     }
 }
 
