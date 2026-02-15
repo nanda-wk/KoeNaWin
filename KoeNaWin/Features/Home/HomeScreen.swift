@@ -19,6 +19,9 @@ struct HomeScreen: View {
         content
             .navigationTitle("KoeNaWin")
             .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                achievement
+            }
     }
 }
 
@@ -93,6 +96,7 @@ extension HomeScreen {
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
+                    .multilineTextAlignment(.center)
 
                 Text("Bead count (\(prayer.rounds))")
                     .font(.body)
@@ -199,6 +203,15 @@ extension HomeScreen {
             .background(Color.green.opacity(0.1))
             .cornerRadius(26)
         }
+    }
+
+    @ViewBuilder
+    private var achievement: some View {
+        #if DEBUG
+            Button("", systemImage: "star.hexagon") {
+                router.presentSheet(.achievement)
+            }
+        #endif
     }
 }
 

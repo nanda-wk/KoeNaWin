@@ -130,18 +130,6 @@ final class JourneyService: ObservableObject {
         return days
     }
 
-//    func nextVegetarianDayIndex(after currentDayIndex: Int) -> Int? {
-//        let stage = currentDayIndex / 9
-//
-//        let currentStageVeg = stage * 9 + 4
-//        if currentStageVeg > currentDayIndex {
-//            return currentStageVeg
-//        }
-//
-//        let nextStageVeg = (stage + 1) * 9 + 4
-//        return nextStageVeg < 81 ? nextStageVeg : nil
-//    }
-
     func resolveDailyState() {
         guard let journey = activeJourney else {
             todayProgress = nil

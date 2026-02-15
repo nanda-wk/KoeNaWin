@@ -12,7 +12,7 @@ extension View {
         environmentObject(KoeNaWinStore.shared)
             .environmentObject(Router())
             .environmentObject(UserPreferences())
-            .environmentObject(JourneyService()) // Note: PracticeState seeding not yet implemented in JourneyService
+            .environmentObject(JourneyService())
     }
 }
 
