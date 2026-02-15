@@ -48,7 +48,7 @@ extension HomeScreen {
     private var startedView: some View {
         ScrollView {
             VStack(spacing: 25) {
-                vegetarianSection
+                topSection
                 todayMantra
                 completedTodayView
                 currentStageCompletion
@@ -65,17 +65,39 @@ extension HomeScreen {
     }
 
     @ViewBuilder
+    private var topSection: some View {
+        if journeyService.practiceState == .completedAll {
+            congratulation
+        } else {
+            vegetarianSection
+        }
+    }
+
+    private var congratulation: some View {
+        Button {
+            router.presentSheet(.achievement)
+        } label: {
+            Text("You did it, Well Done!")
+                .font(.headline)
+                .foregroundStyle(.accent)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .listSectionBackground
+                .contentShape(.rect)
+        }
+        .buttonStyle(.plain)
+    }
+
+    @ViewBuilder
     private var vegetarianSection: some View {
-        Group {
-            if let prayer = journeyService.currentPrayer {
-                let message: LocalizedStringKey = prayer.isVegetarian ? "Today is vegetarian day." : "Vegetarian day in \(journeyService.vegetarianDayIn)"
-                Text(message)
-                    .font(.headline)
-                    .foregroundStyle(.red)
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.vertical, 10)
-                    .listSectionBackground
-            }
+        if let prayer = journeyService.currentPrayer, journeyService.vegetarianDayIn > 0 {
+            let message: LocalizedStringKey = prayer.isVegetarian ? "Today is vegetarian day." : "Vegetarian day in \(journeyService.vegetarianDayIn)"
+            Text(message)
+                .font(.headline)
+                .foregroundStyle(.red)
+                .frame(maxWidth: .infinity, alignment: .center)
+                .padding()
+                .listSectionBackground
         }
     }
 

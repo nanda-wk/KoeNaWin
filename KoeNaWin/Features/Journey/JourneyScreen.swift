@@ -333,7 +333,7 @@ extension JourneyScreen {
                             if selectedDate.isMonday() {
                                 showDatePickerSheet = false
                             } else {
-                                alertMessage = "Please select a Monday to start your practice."
+                                alertMessage = "Please select a Monday to start your commitment."
                                 showAlert = true
                             }
                         }

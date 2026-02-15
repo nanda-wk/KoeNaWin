@@ -33,8 +33,6 @@ final class Commitment: NSManagedObject, Identifiable {
         commitment.category = category
         commitment.reflection = reflection ?? ""
         commitment.createdAt = .now
-        // Note: New architecture says startDate belongs to Journey.
-        // But for transition safety, we might need to handle it or ensure Journey is created too.
         return commitment
     }
 }

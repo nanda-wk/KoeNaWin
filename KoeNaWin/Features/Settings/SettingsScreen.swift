@@ -19,6 +19,8 @@ struct SettingsScreen: View {
     @State private var sheet: SheetType?
 
     @State private var error: CoreDataError?
+    @State private var showAlert = false
+    @State private var alertMessage: LocalizedStringKey = ""
 
     var body: some View {
         content
@@ -32,6 +34,13 @@ struct SettingsScreen: View {
                 error: error
             ) {
                 Button("OK") {}
+            }
+            .alert("Invalid Date", isPresented: $showAlert) {
+                Button("OK", role: .cancel) {
+                    sheet = .startDate
+                }
+            } message: {
+                Text(alertMessage)
             }
             .sheet(item: $sheet) { sheet in
                 NavigationStack {
@@ -268,12 +277,17 @@ extension SettingsScreen {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        do {
-                            try journeyService.startNewJourney(startDate: selectedDate)
-                            sheet = nil
-                        } catch {
-                            self.error = .failedToSave
-                            print(error.localizedDescription)
+                        if selectedDate.isMonday() {
+                            do {
+                                try journeyService.startNewJourney(startDate: selectedDate)
+                                sheet = nil
+                            } catch {
+                                self.error = .failedToSave
+                                print(error.localizedDescription)
+                            }
+                        } else {
+                            alertMessage = "Please select a Monday to start your commitment."
+                            showAlert = true
                         }
                     }
                     .tint(.accent)
