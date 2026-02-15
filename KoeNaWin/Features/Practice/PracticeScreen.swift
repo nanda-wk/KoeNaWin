@@ -212,12 +212,12 @@ extension PracticeScreen {
 
     private func saveDailyProgress() {
         Haptic.notification(.success).generate()
+        userPreferences.resetbeads()
         try? journeyService.completeToday()
     }
 
     private func resetBeads() {
-        userPreferences.count = 0
-        userPreferences.round = 0
+        userPreferences.resetbeads()
     }
 
     private func isValid() -> Bool {

@@ -24,14 +24,13 @@ final class Commitment: NSManagedObject, Identifiable {
         totalDays: Int16 = 81,
         category: CommitmentCategory = .koeNaWin,
         reflection: String? = nil,
-        startDate _: Date,
         context: NSManagedObjectContext
     ) -> Commitment {
         let commitment = Commitment(context: context)
         commitment.id = id
         commitment.totalDays = totalDays
         commitment.category = category
-        commitment.reflection = reflection ?? ""
+        commitment.reflection = reflection ?? "ကိုးနဝင်း မိုးလင်းမှသိမယ်"
         commitment.createdAt = .now
         return commitment
     }

@@ -225,6 +225,9 @@ extension SettingsScreen {
                 .padding(.horizontal)
         }
         .foregroundStyle(.textPrimary)
+        .onChange(of: userPreferences.beadsType) { _ in
+            userPreferences.resetbeads()
+        }
     }
 
     private var adhitthanStartDate: some View {
@@ -280,6 +283,7 @@ extension SettingsScreen {
                         if selectedDate.isMonday() {
                             do {
                                 try journeyService.startNewJourney(startDate: selectedDate)
+                                userPreferences.resetbeads()
                                 sheet = nil
                             } catch {
                                 self.error = .failedToSave

@@ -51,6 +51,7 @@ final class JourneyService: ObservableObject {
 
     init(stack: CoreDataStack = .shared) {
         self.stack = stack
+        ensureKoeNaWinCommitmentExists()
         refreshState()
     }
 
@@ -95,7 +96,7 @@ final class JourneyService: ObservableObject {
 
         if journey.outcome == .succeeded {
             practiceState = .completedAll
-        } else if journey.outcome == .failed {
+        } else if journey.outcome == .failed || journey.outcome == .abandoned {
             if let firstMiss = journey.dailyProgress.sorted(by: { $0.dayNumber < $1.dayNumber }).first(where: { $0.status == .missed }) {
                 practiceState = .missedDay(date: firstMiss.date)
             } else {
@@ -293,13 +294,49 @@ final class JourneyService: ObservableObject {
         updateJourneyStats(journey)
     }
 
-    func startNewJourney(startDate: Date, reflection: String? = nil) throws {
+    private func ensureKoeNaWinCommitmentExists() {
+        let request = Commitment.commitmentFetchRequest
+        request.predicate = NSPredicate(format: "categoryRaw == %d", CommitmentCategory.koeNaWin.rawValue)
+        request.fetchLimit = 1
+
+        do {
+            if try context.fetch(request).first == nil {
+                Commitment.create(
+                    totalDays: 81,
+                    category: .koeNaWin,
+                    context: context
+                )
+                try stack.persist(in: context)
+            }
+        } catch {
+            print("Failed to ensure KoeNaWin commitment: \(error)")
+        }
+    }
+
+    private func getOrCreateKoeNaWinCommitment() throws -> Commitment {
+        let request = Commitment.commitmentFetchRequest
+        request.predicate = NSPredicate(format: "categoryRaw == %d", CommitmentCategory.koeNaWin.rawValue)
+        request.fetchLimit = 1
+
+        if let existing = try context.fetch(request).first {
+            return existing
+        }
+
         let commitment = Commitment.create(
             totalDays: 81,
-            reflection: reflection,
-            startDate: startDate.startOfDay(),
+            category: .koeNaWin,
             context: context
         )
+        try stack.persist(in: context)
+        return commitment
+    }
+
+    func startNewJourney(startDate: Date, reflection: String? = nil) throws {
+        let commitment = try getOrCreateKoeNaWinCommitment()
+
+        if let reflection {
+            commitment.reflection = reflection
+        }
         try startNewJourney(for: commitment, startDate: startDate)
     }
 
