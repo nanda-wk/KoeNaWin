@@ -109,7 +109,7 @@ extension JourneyScreen {
             }
         }
         .animation(.spring, value: currentStep)
-        .padding(.top, 20)
+        .padding(.top)
     }
 
     // MARK: - Steps
@@ -129,6 +129,9 @@ extension JourneyScreen {
                 Text("Choose your preferred language for the application.")
                     .font(.body)
                     .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(.textSecondary)
             }
 
@@ -198,6 +201,9 @@ extension JourneyScreen {
                 Text("Choose the number of beads you \nwill use for your practice.")
                     .font(.body)
                     .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(.textSecondary)
             }
 
@@ -225,13 +231,15 @@ extension JourneyScreen {
                 Text("Set a time to remind you of your \ndaily practice.")
                     .font(.body)
                     .multilineTextAlignment(.center)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.6)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(.textSecondary)
             }
 
             DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
                 .datePickerStyle(.wheel)
                 .labelsHidden()
-                .padding()
                 .background(.appContent)
                 .cornerRadius(26)
                 .environment(\.locale, Locale(identifier: "en"))
