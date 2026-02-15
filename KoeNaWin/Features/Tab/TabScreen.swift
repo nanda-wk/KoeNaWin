@@ -85,3 +85,8 @@ enum TabItem: Int, Identifiable, CaseIterable {
     TabScreen()
         .previewEnviroments()
 }
+
+#Preview("Not First Launch") {
+    TabScreen()
+        .previewEnviroments(isFirstLaunch: false)
+}

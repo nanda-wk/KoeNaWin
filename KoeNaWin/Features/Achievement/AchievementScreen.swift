@@ -21,17 +21,6 @@ struct AchievementScreen: View {
     private let cardWidth: CGFloat = 340
     private let cardHeight: CGFloat = 620
 
-    init() {
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithOpaqueBackground()
-        appearance.shadowColor = .clear
-        appearance.backgroundColor = .clear
-
-        UINavigationBar.appearance().standardAppearance = appearance
-        UINavigationBar.appearance().scrollEdgeAppearance = appearance
-        UINavigationBar.appearance().compactAppearance = appearance
-    }
-
     var body: some View {
         NavigationStack {
             content
@@ -40,6 +29,7 @@ struct AchievementScreen: View {
                         router.dismissSheet()
                     }
                 }
+                .toolbarBackground(.hidden)
                 .alert("Photo Save", isPresented: $showSaveAlert) {
                     Button("OK", role: .cancel) {}
                 } message: {

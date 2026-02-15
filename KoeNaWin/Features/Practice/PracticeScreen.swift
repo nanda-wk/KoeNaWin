@@ -31,6 +31,10 @@ struct PracticeScreen: View {
         }
     }
 
+    private var width: CGFloat {
+        UIScreen.current?.bounds.size.width ?? 0
+    }
+
     var body: some View {
         content
             .navigationTitle("Today's Adhitthan")
@@ -69,35 +73,44 @@ extension PracticeScreen {
             beadsCountInfo
         }
         .padding()
-        .padding(.bottom)
         .background(.appBackground, ignoresSafeAreaEdges: .all)
     }
 
     @ViewBuilder
     private var prayerInfo: some View {
         if let prayer = journeyService.currentPrayer {
-            VStack {
+            VStack(spacing: 24) {
                 Text(prayer.day.localized(to: userPreferences.appLanguage))
                     .font(.title3)
                     .fontWeight(.medium)
                     .foregroundStyle(.accent)
-                    .padding(.bottom, 4)
 
                 Text(prayer.mantra)
-                    .lineLimit(2, reservesSpace: true)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .fixedSize(horizontal: false, vertical: true)
                     .multilineTextAlignment(.center)
-                    .font(.system(size: 30, weight: .bold, design: .rounded))
+                    .foregroundStyle(.textPrimary)
 
                 Text(userPreferences.buddhaAttributes[prayer.mantra] ?? "")
                     .font(.caption)
                     .italic()
                     .foregroundStyle(.accent)
                     .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                    .fixedSize(horizontal: false, vertical: true)
             }
         }
     }
 
+    @ViewBuilder
     private var beadButton: some View {
+        let outerSize: CGFloat = width * 0.6
+        let innerSize: CGFloat = width * 0.6 - 20
+
         VStack {
             if let _ = journeyService.currentPrayer {
                 Text("\(userPreferences.count)")
@@ -111,11 +124,11 @@ extension PracticeScreen {
                 ZStack {
                     Circle()
                         .stroke(.accent, lineWidth: 10)
-                        .frame(width: 250, height: 250)
+                        .frame(width: outerSize, height: outerSize)
 
                     Circle()
                         .fill(.accent.opacity(0.5))
-                        .frame(width: 230, height: 230)
+                        .frame(width: innerSize, height: innerSize)
 
                     VStack {
                         if isLocked {
@@ -127,7 +140,8 @@ extension PracticeScreen {
                         }
 
                         Text("Count")
-                            .font(.system(size: 36, weight: .bold))
+                            .font(.title)
+                            .fontWeight(.bold)
                             .foregroundStyle(.accent)
                             .opacity(isLocked ? 0.2 : 1)
                     }
@@ -240,9 +254,23 @@ struct PressableButtonStyle: ButtonStyle {
     }
 }
 
-#Preview {
+#Preview("Started") {
+    NavigationStack {
+        PracticeScreen()
+            .previewEnviroments(state: .started)
+    }
+}
+
+#Preview("Completed") {
     NavigationStack {
         PracticeScreen()
             .previewEnviroments(state: .completedAll)
+    }
+}
+
+#Preview("Not Started") {
+    NavigationStack {
+        PracticeScreen()
+            .previewEnviroments(state: .notStarted)
     }
 }

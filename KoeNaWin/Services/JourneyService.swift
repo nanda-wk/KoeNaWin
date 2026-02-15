@@ -347,4 +347,39 @@ final class JourneyService: ObservableObject {
             repeats: false
         )
     }
+
+    // MARK: - Previews
+
+    func setupForPreview(state: PracticeState) {
+        practiceState = state
+        switch state {
+        case .started:
+            totalCompletedDays = 12
+            stage = 2
+            day = 4
+            isTodayCompleted = false
+            vegetarianDayIn = 1
+        case .notStarted:
+            totalCompletedDays = 0
+            stage = 0
+            day = 0
+            isTodayCompleted = false
+        case let .scheduled(startDate):
+            self.startDate = startDate
+            totalCompletedDays = 0
+            stage = 0
+            day = 0
+            isTodayCompleted = false
+        case let .missedDay(date):
+            totalCompletedDays = 5
+            stage = 1
+            day = 6
+            isTodayCompleted = false
+        case .completedAll:
+            totalCompletedDays = 81
+            stage = 9
+            day = 9
+            isTodayCompleted = true
+        }
+    }
 }

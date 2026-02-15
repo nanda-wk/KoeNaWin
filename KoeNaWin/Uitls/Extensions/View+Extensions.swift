@@ -8,11 +8,16 @@
 import SwiftUI
 
 extension View {
-    func previewEnviroments(state _: PracticeState = .notStarted) -> some View {
-        environmentObject(KoeNaWinStore.shared)
+    func previewEnviroments(state: PracticeState = .notStarted, isFirstLaunch: Bool = true) -> some View {
+        let userPreferences = UserPreferences()
+        userPreferences.isFirstLaunch = isFirstLaunch
+        let journeyService = JourneyService()
+        journeyService.setupForPreview(state: state)
+
+        return environmentObject(KoeNaWinStore.shared)
             .environmentObject(Router())
-            .environmentObject(UserPreferences())
-            .environmentObject(JourneyService())
+            .environmentObject(userPreferences)
+            .environmentObject(journeyService)
     }
 }
 

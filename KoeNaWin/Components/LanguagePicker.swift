@@ -47,3 +47,7 @@ struct LanguagePicker: View {
         }
     }
 }
+
+#Preview {
+    LanguagePicker(selection: .constant(.english))
+}

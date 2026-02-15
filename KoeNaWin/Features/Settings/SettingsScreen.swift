@@ -168,11 +168,11 @@ extension SettingsScreen {
         )
         .datePickerStyle(.wheel)
         .labelsHidden()
-        .navigationTitle("Select your start date.")
+        .navigationTitle("Daily Reminder at ")
         .navigationBarTitleDisplayMode(.inline)
         .padding()
         .environment(\.locale, Locale(identifier: "en"))
-        .presentationDetents([.fraction(0.4)])
+        .presentationDetents([.medium])
         .onDisappear {
             journeyService.setDailyReminder(Date(timeIntervalSince1970: userPreferences.reminderTime))
         }
@@ -279,7 +279,7 @@ extension SettingsScreen {
                     .tint(.accent)
                 }
             }
-            .presentationDetents([.medium])
+            .presentationDetents([.fraction(0.65)])
     }
 
     private var socialSection: some View {
