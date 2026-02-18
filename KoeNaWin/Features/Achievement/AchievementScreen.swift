@@ -250,7 +250,7 @@ extension AchievementScreen {
         isGenerating = true
         defer { isGenerating = false }
 
-        let exportView = AchievementBadgeCard(totalDays: 81, completionDate: Date.today().toStringWith(format: .yyyy_MMMM_d))
+        let exportView = AchievementBadgeCard(totalDays: 81, completionDate: journeyService.activeJourney?.endDate?.toStringWith(format: .yyyy_MMMM_d) ?? "")
 
         let renderer = ImageRenderer(content: exportView)
         renderer.scale = UIScreen.current?.scale ?? 1

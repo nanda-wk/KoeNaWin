@@ -9,6 +9,8 @@ import Charts
 import Combine
 import SwiftUI
 
+private var shownAchievement = false
+
 struct HomeScreen: View {
     @EnvironmentObject private var store: KoeNaWinStore
     @EnvironmentObject private var journeyService: JourneyService
@@ -58,8 +60,9 @@ extension HomeScreen {
         }
         .scrollIndicators(.never)
         .onAppear {
-            if journeyService.practiceState == .completedAll {
+            if journeyService.practiceState == .completedAll, !shownAchievement {
                 router.presentSheet(.achievement)
+                shownAchievement = true
             }
         }
     }

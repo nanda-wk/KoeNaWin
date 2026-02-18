@@ -37,7 +37,7 @@ final class JourneyService: ObservableObject {
 
     var currentPrayer: Prayer? {
         guard let currentStage else { return nil }
-        let prayerIndex = day - 1
+        let prayerIndex = day
         guard prayerIndex >= 0, prayerIndex < currentStage.prayers.count else {
             return nil
         }
@@ -111,14 +111,16 @@ final class JourneyService: ObservableObject {
         isTodayCompleted = todayProgress?.status == .completed
 
         // Calculate stage and day
-        stage = (totalCompletedDays / 9) + 1
-        day = (totalCompletedDays % 9) + 1
+        if journey.outcome == .inProgress {
+            stage = (totalCompletedDays / 9) + 1
+            day = (totalCompletedDays % 9)
+        } else if journey.outcome == .succeeded {
+            stage = 9
+            day = 9
+        }
 
-        vegetarianDayIn = day > 5 ? (9 - day) + 5 : 5 - day
-
-        // Final completion check
-        if totalCompletedDays >= totalDays, journey.outcome != .succeeded {
-            practiceState = .completedAll
+        if stage < 9 || (stage == 9 && day < 5) {
+            vegetarianDayIn = day > 5 ? (9 - day) + 5 : 5 - day
         }
     }
 
@@ -342,7 +344,7 @@ final class JourneyService: ObservableObject {
 
     func startNewJourney(for commitment: Commitment, startDate: Date? = nil) throws {
         // Abandon any existing journey
-        if let current = activeJourney {
+        if let current = activeJourney, current.outcome == .inProgress {
             current.outcome = .abandoned
             current.endDate = .today()
             current.endedReasonRaw = JourneyEndReason.userStopped.rawValue
@@ -385,38 +387,41 @@ final class JourneyService: ObservableObject {
         )
     }
 
-    // MARK: - Previews
+    #if DEBUG
 
-    func setupForPreview(state: PracticeState) {
-        practiceState = state
-        switch state {
-        case .started:
-            totalCompletedDays = 12
-            stage = 2
-            day = 4
-            isTodayCompleted = false
-            vegetarianDayIn = 1
-        case .notStarted:
-            totalCompletedDays = 0
-            stage = 0
-            day = 0
-            isTodayCompleted = false
-        case let .scheduled(startDate):
-            self.startDate = startDate
-            totalCompletedDays = 0
-            stage = 0
-            day = 0
-            isTodayCompleted = false
-        case let .missedDay(date):
-            totalCompletedDays = 5
-            stage = 1
-            day = 6
-            isTodayCompleted = false
-        case .completedAll:
-            totalCompletedDays = 81
-            stage = 9
-            day = 9
-            isTodayCompleted = true
+        // MARK: - Previews
+
+        func setupForPreview(state: PracticeState) {
+            practiceState = state
+            switch state {
+            case .started:
+                totalCompletedDays = 12
+                stage = 2
+                day = 4
+                isTodayCompleted = false
+                vegetarianDayIn = 1
+            case .notStarted:
+                totalCompletedDays = 0
+                stage = 0
+                day = 0
+                isTodayCompleted = false
+            case let .scheduled(startDate):
+                self.startDate = startDate
+                totalCompletedDays = 0
+                stage = 0
+                day = 0
+                isTodayCompleted = false
+            case let .missedDay(date):
+                totalCompletedDays = 5
+                stage = 1
+                day = 6
+                isTodayCompleted = false
+            case .completedAll:
+                totalCompletedDays = 81
+                stage = 9
+                day = 9
+                isTodayCompleted = true
+            }
         }
-    }
+    #endif
 }
