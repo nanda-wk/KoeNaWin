@@ -21,6 +21,8 @@ final class JourneyService: ObservableObject {
     @Published private(set) var totalDays = 81
     @Published private(set) var stage = 0
     @Published private(set) var day = 0
+    @Published private(set) var displayStage = 0
+    @Published private(set) var displayDay = 0
     @Published private(set) var vegetarianDayIn = 0
 
     var daysRemaining: Int {
@@ -32,12 +34,12 @@ final class JourneyService: ObservableObject {
     }
 
     var currentStage: KoeNaWinStage? {
-        KoeNaWinStore.shared.stages.first(where: { $0.stage == stage })
+        KoeNaWinStore.shared.stages.first(where: { $0.stage == displayStage })
     }
 
     var currentPrayer: Prayer? {
         guard let currentStage else { return nil }
-        let prayerIndex = day
+        let prayerIndex = displayDay
         guard prayerIndex >= 0, prayerIndex < currentStage.prayers.count else {
             return nil
         }
@@ -110,13 +112,19 @@ final class JourneyService: ObservableObject {
 
         isTodayCompleted = todayProgress?.status == .completed
 
-        // Calculate stage and day
+        // Calculate stage and day (Actual Progress)
         if journey.outcome == .inProgress {
             stage = (totalCompletedDays / 9) + 1
             day = (totalCompletedDays % 9)
+            
+            let effectiveCompletedDays = isTodayCompleted ? max(0, totalCompletedDays - 1) : totalCompletedDays
+            displayStage = (effectiveCompletedDays / 9) + 1
+            displayDay = (effectiveCompletedDays % 9)
         } else if journey.outcome == .succeeded {
             stage = 9
             day = 9
+            displayStage = 9
+            displayDay = 9
         }
 
         if stage < 9 || (stage == 9 && day < 5) {
@@ -339,6 +347,11 @@ final class JourneyService: ObservableObject {
         if let reflection {
             commitment.reflection = reflection
         }
+        
+        if startDate > Date.today() {
+            setNewCommitmentReminder(startDate)
+        }
+        
         try startNewJourney(for: commitment, startDate: startDate)
     }
 
@@ -378,11 +391,16 @@ final class JourneyService: ObservableObject {
 
     func setNewCommitmentReminder(_ date: Date) {
         NotificationService.shared.cancelNotification(id: NotificationID.oneDayBeforeNotificationIdentifier)
+        var component = calendar.dateComponents([.year, .month, .day, .hour, .minute], from: date)
+        component.day = (component.day ?? 1) - 1
+        component.hour = 14
+        component.minute = 0
+        let reminderDate = calendar.date(from: component) ?? date
         NotificationService.shared.scheduleNotification(
             id: NotificationID.oneDayBeforeNotificationIdentifier,
             title: NotiMessage.oneDayBeforeNotificationTitle,
             subtitle: NotiMessage.oneDayBeforeNotificationBody,
-            date: date,
+            date: reminderDate,
             repeats: false
         )
     }
@@ -411,7 +429,7 @@ final class JourneyService: ObservableObject {
                 stage = 0
                 day = 0
                 isTodayCompleted = false
-            case let .missedDay(date):
+            case .missedDay:
                 totalCompletedDays = 5
                 stage = 1
                 day = 6

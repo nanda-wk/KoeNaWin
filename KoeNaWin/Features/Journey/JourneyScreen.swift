@@ -352,17 +352,13 @@ extension JourneyScreen {
             userPreferences.isFirstLaunch = false
             userPreferences.isEnableHaptic = true
         }
-
-        let startDate = selectedDate.startOfDay()
-
-        if startDate > Date.today() {
-            journeyService.setNewCommitmentReminder(startDate)
-        } else {
+        
+        if selectedDate.startOfDay() < Date.today() {
             journeyService.setDailyReminder(reminderTime)
-        }
+       }
 
         do {
-            try journeyService.startNewJourney(startDate: startDate)
+            try journeyService.startNewJourney(startDate: selectedDate.startOfDay())
             router.dismissSheet()
         } catch {
             self.error = .failedToSave

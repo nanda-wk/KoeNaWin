@@ -111,7 +111,7 @@ extension HomeScreen {
                 HStack {
                     Text(prayer.day.localized(to: userPreferences.appLanguage))
                     Spacer()
-                    Text("Adhitthan Stage (\(journeyService.stage))")
+                    Text("Adhitthan Stage (\(journeyService.displayStage))")
                 }
                 .font(.subheadline)
                 .fontWeight(.medium)
@@ -137,12 +137,12 @@ extension HomeScreen {
     }
 
     private var currentStageCompletion: some View {
-        let currentDay = journeyService.day
+        let currentDay = journeyService.displayDay + (journeyService.isTodayCompleted ? 1 : 0)
         let progress = Double(currentDay) / 9.0
         let percentage = progress * 100
 
         return VStack {
-            Text("Adhitthan Stage (\(journeyService.stage))")
+            Text("Adhitthan Stage (\(journeyService.displayStage))")
                 .font(.title2)
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)
