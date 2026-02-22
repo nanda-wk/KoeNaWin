@@ -19,7 +19,7 @@ struct ScheduledView: View {
             Text("Your practice starts on")
                 .foregroundStyle(.textSecondary)
 
-            Text(date.formatted(date: .abbreviated, time: .omitted))
+            Text(date.toStringWith(format: .yyyy_MMMM_d))
                 .font(.title)
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)

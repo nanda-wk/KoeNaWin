@@ -116,7 +116,7 @@ final class JourneyService: ObservableObject {
         if journey.outcome == .inProgress {
             stage = (totalCompletedDays / 9) + 1
             day = (totalCompletedDays % 9)
-            
+
             let effectiveCompletedDays = isTodayCompleted ? max(0, totalCompletedDays - 1) : totalCompletedDays
             displayStage = (effectiveCompletedDays / 9) + 1
             displayDay = (effectiveCompletedDays % 9)
@@ -347,11 +347,11 @@ final class JourneyService: ObservableObject {
         if let reflection {
             commitment.reflection = reflection
         }
-        
+
         if startDate > Date.today() {
             setNewCommitmentReminder(startDate)
         }
-        
+
         try startNewJourney(for: commitment, startDate: startDate)
     }
 

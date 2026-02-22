@@ -125,6 +125,7 @@ extension JourneyScreen {
                     .font(.title)
                     .fontWeight(.bold)
                     .foregroundStyle(.textPrimary)
+                    .multilineTextAlignment(.center)
 
                 Text("Choose your preferred language for the application.")
                     .font(.body)
@@ -155,7 +156,6 @@ extension JourneyScreen {
 
                 Text("When would you like to start your \nKoeNaWin - Practice?")
                     .font(.body)
-                    .multilineTextAlignment(.center)
                     .foregroundStyle(.textSecondary)
 
                 Text("Rule: This Buddhist practice must start on a Monday.")
@@ -163,6 +163,7 @@ extension JourneyScreen {
                     .italic()
                     .foregroundStyle(.accent)
             }
+            .multilineTextAlignment(.center)
 
             Button {
                 showDatePickerSheet = true
@@ -200,12 +201,12 @@ extension JourneyScreen {
 
                 Text("Choose the number of beads you \nwill use for your practice.")
                     .font(.body)
-                    .multilineTextAlignment(.center)
                     .lineLimit(2)
                     .minimumScaleFactor(0.6)
                     .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(.textSecondary)
             }
+            .multilineTextAlignment(.center)
 
             VStack(spacing: 16) {
                 beadOptionTile(title: "108 Beads", description: "Traditional long mala", type: 108)
@@ -236,6 +237,7 @@ extension JourneyScreen {
                     .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(.textSecondary)
             }
+            .multilineTextAlignment(.center)
 
             DatePicker("", selection: $reminderTime, displayedComponents: .hourAndMinute)
                 .datePickerStyle(.wheel)
@@ -352,10 +354,10 @@ extension JourneyScreen {
             userPreferences.isFirstLaunch = false
             userPreferences.isEnableHaptic = true
         }
-        
+
         if selectedDate.startOfDay() < Date.today() {
             journeyService.setDailyReminder(reminderTime)
-       }
+        }
 
         do {
             try journeyService.startNewJourney(startDate: selectedDate.startOfDay())

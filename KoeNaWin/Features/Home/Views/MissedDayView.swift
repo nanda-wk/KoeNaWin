@@ -22,7 +22,7 @@ struct MissedDayView: View {
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)
 
-            Text("You missed your practice on \n\(date.formatted(date: .abbreviated, time: .omitted)).")
+            Text("You missed your practice on \n\(date.toStringWith(format: .yyyy_MMMM_d)).")
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.textSecondary)
 

@@ -199,14 +199,16 @@ extension PracticeScreen {
             isPresented.toggle()
             return
         }
-        userPreferences.count += 1
-        if userPreferences.count == userPreferences.beadsType {
-            userPreferences.count = 0
-            userPreferences.round += 1
-        }
-        Haptic.impact(.soft).generate()
-        if userPreferences.round == journeyService.currentPrayer?.rounds ?? 0 {
-            saveDailyProgress()
+        withAnimation {
+            userPreferences.count += 1
+            if userPreferences.count == userPreferences.beadsType {
+                userPreferences.count = 0
+                userPreferences.round += 1
+            }
+            Haptic.impact(.soft).generate()
+            if userPreferences.round == journeyService.currentPrayer?.rounds ?? 0 {
+                saveDailyProgress()
+            }
         }
     }
 

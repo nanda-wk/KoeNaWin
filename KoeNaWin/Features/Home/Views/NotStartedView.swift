@@ -18,6 +18,7 @@ struct NotStartedView: View {
 
             Text("Begin Your Journey")
                 .font(.title2)
+                .multilineTextAlignment(.center)
                 .fontWeight(.bold)
                 .foregroundStyle(.textPrimary)
 
