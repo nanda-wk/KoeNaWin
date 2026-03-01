@@ -27,6 +27,9 @@ struct NotStartedView: View {
                 .foregroundStyle(.textSecondary)
                 .padding(.horizontal)
 
+            Spacer()
+                .frame(height: 20)
+
             Button {
                 router.presentedSheet = .journey(.newCommitment)
             } label: {

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct StageDetailsScreen: View {
+    @EnvironmentObject private var journeyService: JourneyService
+
     let stage: KoeNaWinStage
 
     var body: some View {
@@ -21,30 +23,39 @@ extension StageDetailsScreen {
     private var content: some View {
         ScrollView {
             VStack(spacing: 25) {
-                VStack(alignment: .leading) {
-                    Text("အဓိဌာန်အဆင့် (\(stage.stage)) အောင်မြင်ပြီးပါက")
-                        .font(.headline)
-
-                    Divider()
-                        .foregroundStyle(.appDivider)
-
-                    Text(stage.benefits)
-                        .font(.body)
-                        .kerning(1)
-                }
-                .foregroundStyle(.textPrimary)
-                .padding()
-                .listSectionBackground
-
-                VStack(spacing: 12) {
-                    ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { _, prayer in
-                        ListCell(prayer: prayer, completed: false)
-                    }
-                }
+                stageDetails
+                daysInStage
             }
             .padding()
         }
         .background(.appBackground)
+    }
+
+    private var stageDetails: some View {
+        VStack(alignment: .leading) {
+            Text("အဓိဌာန်အဆင့် (\(stage.stage)) အောင်မြင်ပြီးပါက")
+                .font(.headline)
+
+            Divider()
+                .foregroundStyle(.appDivider)
+
+            Text(stage.benefits)
+                .font(.body)
+                .kerning(1)
+        }
+        .foregroundStyle(.textPrimary)
+        .padding()
+        .listSectionBackground
+    }
+
+    @ViewBuilder
+    private var daysInStage: some View {
+        VStack(spacing: 12) {
+            ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { day, prayer in
+                let completed = journeyService.stage >= stage.stage && journeyService.day >= day + 1
+                ListCell(prayer: prayer, completed: completed)
+            }
+        }
     }
 }
 
@@ -88,7 +99,7 @@ struct ListCell: View {
                         .font(.body)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("(\(prayer.rounds.description))ပတ်")
+                    Text("(\(prayer.rounds))ပတ်")
                         .font(.body)
                 }
             }

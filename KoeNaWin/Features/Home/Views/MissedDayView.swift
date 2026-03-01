@@ -26,6 +26,9 @@ struct MissedDayView: View {
                 .multilineTextAlignment(.center)
                 .foregroundStyle(.textSecondary)
 
+            Spacer()
+                .frame(height: 20)
+
             Button {
                 router.presentedSheet = .journey(.newCommitment)
             } label: {

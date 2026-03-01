@@ -11,9 +11,14 @@ struct ScheduledView: View {
     let date: Date
 
     var body: some View {
-        VStack(spacing: 15) {
+        VStack(spacing: 20) {
+            Image(systemName: "figure.mind.and.body")
+                .font(.system(size: 60))
+                .foregroundStyle(.accent)
+
             Text("Practice Scheduled")
-                .font(.headline)
+                .font(.title2)
+                .fontWeight(.medium)
                 .foregroundStyle(.accent)
 
             Text("Your practice starts on")

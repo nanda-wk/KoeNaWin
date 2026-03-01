@@ -118,6 +118,7 @@ extension PracticeScreen {
                     .monospaced()
                     .foregroundStyle(.accent)
                     .contentTransition(.numericText())
+                    .environment(\.locale, Locale(identifier: "en"))
             }
 
             Button(action: addBead) {
@@ -154,7 +155,7 @@ extension PracticeScreen {
 
     private var beadsCountInfo: some View {
         HStack(spacing: 20) {
-            Text("Total beads: \(userPreferences.round) / \(journeyService.currentPrayer?.rounds ?? 0)")
+            Text("Total beads: \(String(userPreferences.round)) / \(String(journeyService.currentPrayer?.rounds ?? 0))")
                 .font(.footnote)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
@@ -179,7 +180,7 @@ extension PracticeScreen {
             }
             .buttonStyle(.plain)
 
-            Text("Count: \(userPreferences.count) / \(userPreferences.beadsType)")
+            Text("Count: \(String(userPreferences.count)) / \(String(userPreferences.beadsType))")
                 .font(.footnote)
                 .foregroundStyle(.white)
                 .padding(.horizontal, 10)
