@@ -10,6 +10,7 @@ import SwiftUI
 import UIKit
 
 struct AchievementScreen: View {
+    @Environment(\.colorScheme) private var colorScheme
     @EnvironmentObject private var journeyService: JourneyService
     @EnvironmentObject private var router: Router
     @State private var exportedPreviewImage: UIImage?
@@ -250,10 +251,18 @@ extension AchievementScreen {
         isGenerating = true
         defer { isGenerating = false }
 
-        let exportView = AchievementBadgeCard(totalDays: 81, completionDate: journeyService.activeJourney?.endDate?.toStringWith(format: .yyyy_MMMM_d) ?? "")
+        let exportView = AchievementBadgeCard(
+            totalDays: max(81, journeyService.totalDays),
+            completionDate: journeyService.activeJourney?.endDate?.toStringWith(format: .yyyy_MMMM_d) ?? Date.today().toStringWith(format: .yyyy_MMMM_d)
+        )
+        .frame(width: cardWidth, height: cardHeight)
+        .shadow(color: .black.opacity(0.35), radius: 25, x: 0, y: 20)
+        .padding(40)
+        .background(backgroundGradient)
+        .environment(\.colorScheme, colorScheme)
 
         let renderer = ImageRenderer(content: exportView)
-        renderer.scale = UIScreen.current?.scale ?? 1
+        renderer.scale = 3 // High quality for sharing
 
         guard let uiImage = renderer.uiImage, let data = uiImage.pngData() else {
             return

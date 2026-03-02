@@ -24,6 +24,12 @@ struct HomeScreen: View {
             .toolbar {
                 achievement
             }
+            .onAppear {
+                if journeyService.practiceState == .completedAll, !shownAchievement {
+                    router.presentSheet(.achievement)
+                    shownAchievement = true
+                }
+            }
     }
 }
 
@@ -59,12 +65,6 @@ extension HomeScreen {
             .padding()
         }
         .scrollIndicators(.never)
-        .onAppear {
-            if journeyService.practiceState == .completedAll, !shownAchievement {
-                router.presentSheet(.achievement)
-                shownAchievement = true
-            }
-        }
     }
 
     @ViewBuilder
@@ -237,6 +237,11 @@ extension HomeScreen {
                 router.presentSheet(.achievement)
             }
         #endif
+        if journeyService.practiceState == .completedAll, !shownAchievement {
+            Button("", systemImage: "star.hexagon") {
+                router.presentSheet(.achievement)
+            }
+        }
     }
 }
 

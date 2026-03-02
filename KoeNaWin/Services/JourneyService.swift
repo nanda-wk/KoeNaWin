@@ -54,6 +54,7 @@ final class JourneyService: ObservableObject {
     init(stack: CoreDataStack = .shared) {
         self.stack = stack
         ensureKoeNaWinCommitmentExists()
+        migrateOldUserProgress()
         refreshState()
     }
 
@@ -339,6 +340,32 @@ final class JourneyService: ObservableObject {
         )
         try stack.persist(in: context)
         return commitment
+    }
+
+    private func migrateOldUserProgress() {
+        let journeyRequest = Journey.journeyFetchRequest
+        journeyRequest.fetchLimit = 1
+
+        do {
+            let existingJourneys = try context.fetch(journeyRequest)
+            guard existingJourneys.isEmpty else { return }
+
+            let request = NSFetchRequest<NSManagedObject>(entityName: "UserProgress")
+            request.fetchLimit = 1
+
+            guard let oldProgress = try context.fetch(request).first else { return }
+
+            print("Found old UserProgress, starting migration...")
+
+            let startDate = oldProgress.value(forKey: "startDate") as? Date ?? .today()
+
+            try startNewJourney(startDate: startDate.startOfDay())
+
+            context.delete(oldProgress)
+            try stack.persist(in: context)
+        } catch {
+            print("Failed to migrate old user data: \(error)")
+        }
     }
 
     func startNewJourney(startDate: Date, reflection: String? = nil) throws {
