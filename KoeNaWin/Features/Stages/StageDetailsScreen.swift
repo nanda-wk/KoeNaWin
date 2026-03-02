@@ -1,5 +1,5 @@
 //
-//  StageDetailsView.swift
+//  StageDetailsScreen.swift
 //  KoeNaWin
 //
 //  Created by Nanda WK on 2025-03-29.
@@ -7,66 +7,78 @@
 
 import SwiftUI
 
-struct StageDetailsView: View {
-    @EnvironmentObject private var vm: HomeViewModel
+struct StageDetailsScreen: View {
+    @EnvironmentObject private var journeyService: JourneyService
+
     let stage: KoeNaWinStage
 
     var body: some View {
+        content
+            .navigationTitle("Adhitthan Stage (\(stage.stage))")
+            .navigationBarTitleDisplayMode(.inline)
+    }
+}
+
+extension StageDetailsScreen {
+    private var content: some View {
         ScrollView {
             VStack(spacing: 25) {
-                Section {
-                    VStack(alignment: .leading) {
-                        Text("stageDetailsView-section-text-\(stage.stage.description)")
-                            .font(.headline)
-
-                        Divider()
-
-                        Text(stage.benefits)
-                            .font(.body)
-                    }
-                }
-                .padding()
-                .listSectionBackground
-
-                VStack(spacing: 12) {
-                    ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { index, prayer in
-                        var completed: Bool {
-                            if vm.stage <= stage.stage {
-                                vm.stage >= stage.stage && vm.day >= index + 1
-                            } else {
-                                true
-                            }
-                        }
-                        ListCell(prayer: prayer, completed: completed)
-                    }
-                }
+                stageDetails
+                daysInStage
             }
             .padding()
         }
-        .background(Color(UIColor.systemGroupedBackground))
-        .navigationTitle("addhithan-stage-\(stage.stage.description)")
-        .navigationBarTitleDisplayMode(.inline)
-        .onAppear {
-            vm.checkProgress()
+        .background(.appBackground)
+    }
+
+    private var stageDetails: some View {
+        VStack(alignment: .leading) {
+            Text("အဓိဌာန်အဆင့် (\(stage.stage)) အောင်မြင်ပြီးပါက")
+                .font(.headline)
+
+            Divider()
+                .foregroundStyle(.appDivider)
+
+            Text(stage.benefits)
+                .font(.body)
+                .kerning(1)
+        }
+        .foregroundStyle(.textPrimary)
+        .padding()
+        .listSectionBackground
+    }
+
+    @ViewBuilder
+    private var daysInStage: some View {
+        VStack(spacing: 12) {
+            ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { day, prayer in
+                let completed = journeyService.stage >= stage.stage && journeyService.day >= day + 1
+                ListCell(prayer: prayer, completed: completed)
+            }
         }
     }
 }
 
 struct ListCell: View {
+    @EnvironmentObject private var userPreferences: UserPreferences
+
     @State private var isExpanded = false
     let prayer: Prayer
     let completed: Bool
 
     var body: some View {
         DisclosureGroup(isExpanded: $isExpanded) {
-            Text(buddhaAttributes[prayer.mantra] ?? "")
+            Text(userPreferences.buddhaAttributes[prayer.mantra] ?? "")
                 .font(.body)
+                .foregroundStyle(.textPrimary)
+                .kerning(1)
         } label: {
             VStack(alignment: .leading, spacing: 8) {
                 HStack(spacing: 10) {
                     Text(prayer.day.desc)
                         .font(.title2)
                         .fontWeight(.bold)
+                        .foregroundStyle(.textPrimary)
 
                     if completed {
                         Image(systemName: "checkmark.seal.fill")
@@ -75,7 +87,7 @@ struct ListCell: View {
                     }
 
                     if prayer.isVegetarian {
-                        Text("stagesScreen-listCell-isVegetarian")
+                        Text("သတ်သတ်လွတ်စားရန်။")
                             .font(.callout)
                             .foregroundStyle(.red)
                             .padding(.leading, 15)
@@ -87,7 +99,7 @@ struct ListCell: View {
                         .font(.body)
                         .fontWeight(.medium)
                     Spacer()
-                    Text("(\(prayer.rounds.description))ပတ်")
+                    Text("(\(prayer.rounds))ပတ်")
                         .font(.body)
                 }
             }
@@ -114,6 +126,7 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
             if configuration.isExpanded {
                 Divider()
                     .padding(.vertical, 5)
+                    .foregroundStyle(.appDivider)
 
                 configuration.content
                     .disclosureGroupStyle(self)
@@ -130,7 +143,7 @@ struct CustomDisclosureStyle: DisclosureGroupStyle {
 
 #Preview {
     NavigationStack {
-        StageDetailsView(stage: .preview)
-            .previewEnvironment()
+        StageDetailsScreen(stage: .preview)
+            .previewEnviroments()
     }
 }

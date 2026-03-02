@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import SwiftUI
 
 enum DateFormat: String {
     case yyyy_MMMM_d = "yyyy MMMM d"
@@ -14,8 +15,9 @@ enum DateFormat: String {
 
 extension Date {
     func toStringWith(format: DateFormat) -> String {
+        @AppStorage("appLanguage") var lang: AppLanguage = .myanmar
         let dateFormatter = DateFormatter()
-        dateFormatter.locale = Locale(identifier: "en_US_POSIX")
+        dateFormatter.locale = Locale(identifier: lang == .english ? "en_US_POSIX" : "my")
         dateFormatter.dateFormat = format.rawValue
         return dateFormatter.string(from: self)
     }
@@ -26,7 +28,16 @@ extension Date {
         return dateFormatter.date(from: string)
     }
 
+    func isMonday(using calendar: Calendar = .current) -> Bool {
+        let components = calendar.dateComponents([.weekday], from: self)
+        return components.weekday == 2
+    }
+
     func startOfDay(using calendar: Calendar = .current) -> Date {
         calendar.startOfDay(for: self)
+    }
+
+    static func today(using calendar: Calendar = .current) -> Date {
+        calendar.startOfDay(for: .now)
     }
 }

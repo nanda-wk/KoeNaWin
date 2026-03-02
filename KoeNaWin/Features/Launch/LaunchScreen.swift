@@ -9,19 +9,25 @@ import SwiftUI
 
 struct LaunchScreen: View {
     var body: some View {
-        VStack {
-            Image(.logo)
-                .resizable()
-                .frame(width: 90, height: 90)
-                .clipShape(.rect(cornerRadius: 26))
+        ZStack {
+            Color(.appBackground)
+                .ignoresSafeArea()
 
-            Text("KoeNaWin(ကိုးနဝင်း)")
-                .font(.title)
-                .fontWeight(.bold)
+            VStack {
+                Image(.logo)
+                    .resizable()
+                    .frame(width: 90, height: 90)
+                    .clipShape(.rect(cornerRadius: 26))
 
-            ProgressView()
-                .scaleEffect(1.5)
-                .tint(.accent)
+                Text("KoeNaWin(ကိုးနဝင်း)")
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .foregroundStyle(.textPrimary)
+
+                ProgressView()
+                    .scaleEffect(1.5)
+                    .tint(.accent)
+            }
         }
     }
 }

@@ -34,25 +34,37 @@ final class CoreDataStack {
         }
     }
 
-    func exisits<T: NSManagedObject>(_ object: T, in context: NSManagedObjectContext) -> T? {
-        try? context.existingObject(with: object.objectID) as? T
-    }
-
-    func delete(_ object: some NSManagedObject, in context: NSManagedObjectContext) throws {
-        if let existingObject = exisits(object, in: context) {
-            context.delete(existingObject)
-            Task(priority: .background) {
-                try await context.perform {
+    func delete(_ object: some NSManagedObject,
+                in context: NSManagedObjectContext) async throws
+    {
+        try await context.perform {
+            if let existing = try? context.existingObject(with: object.objectID) {
+                context.delete(existing)
+                if context.hasChanges {
                     try context.save()
                 }
             }
         }
     }
 
-    func deleteAll(_ type: (some NSManagedObject).Type) throws {
-        let fetchRequest: NSFetchRequest<NSFetchRequestResult> = NSFetchRequest(entityName: String(describing: type))
-        let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
-        try persistentContainer.persistentStoreCoordinator.execute(deleteRequest, with: viewContext)
+    func deleteAll<T: NSManagedObject>(_: T.Type) throws {
+        let request = NSFetchRequest<NSFetchRequestResult>(
+            entityName: T.entity().name!
+        )
+
+        let deleteRequest = NSBatchDeleteRequest(fetchRequest: request)
+        deleteRequest.resultType = .resultTypeObjectIDs
+
+        let result = try persistentContainer.persistentStoreCoordinator
+            .execute(deleteRequest, with: viewContext) as? NSBatchDeleteResult
+
+        if let objectIDs = result?.result as? [NSManagedObjectID] {
+            let changes = [NSDeletedObjectsKey: objectIDs]
+            NSManagedObjectContext.mergeChanges(
+                fromRemoteContextSave: changes,
+                into: [viewContext]
+            )
+        }
     }
 
     func persist(in context: NSManagedObjectContext) throws {
@@ -60,6 +72,10 @@ final class CoreDataStack {
             try context.save()
         }
     }
+}
+
+enum CoreDataError: Error, LocalizedError {
+    case failedToSave
 }
 
 extension EnvironmentValues {

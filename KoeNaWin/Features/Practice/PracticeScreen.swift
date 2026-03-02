@@ -8,228 +8,272 @@
 import SwiftUI
 
 struct PracticeScreen: View {
-    @EnvironmentObject private var configManager: ConfigManager
-    @EnvironmentObject private var vm: HomeViewModel
-    @AppStorage("count") private var count = 0
-    @AppStorage("round") private var round = 0
-    @State private var showDialog = false
-    @State private var showComplete = false
-    @State private var showAlert = false
-    @State private var alertMessage: LocalizedStringKey = ""
+    @EnvironmentObject private var store: KoeNaWinStore
+    @EnvironmentObject private var journeyService: JourneyService
+    @EnvironmentObject private var userPreferences: UserPreferences
+
+    @State private var isPresented = false
+    @State private var resetPresented = false
+    @State private var finishPresented = false
+
+    @State private var message: LocalizedStringKey = ""
 
     private var isLocked: Bool {
-        if vm.todayCompleted { return true }
+        if journeyService.isTodayCompleted {
+            return true
+        }
 
-        switch vm.status {
-        case .active: return false
-        case .missedDay, .completed, .notStarted, .notMonday, .willStart:
+        switch journeyService.practiceState {
+        case .started:
+            return false
+        default:
             return true
         }
     }
 
+    private var width: CGFloat {
+        UIScreen.current?.bounds.size.width ?? 0
+    }
+
     var body: some View {
-        ZStack {
-            Color(UIColor.systemGroupedBackground)
-                .ignoresSafeArea()
-
-            VStack {
-                VStack {
-                    Text(vm.currentPrayer?.day.localized(to: configManager.appLanguage) ?? "")
-                        .font(.title3)
-                        .fontWeight(.medium)
-                        .foregroundStyle(.accent)
-                        .padding(.bottom, 4)
-
-                    Text(vm.currentPrayer?.mantra ?? "")
-                        .lineLimit(2, reservesSpace: true)
-                        .multilineTextAlignment(.center)
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                }
-
-                Spacer()
-
-                VStack {
-                    Text("\(count.description)")
-                        .font(.system(size: 40, weight: .bold, design: .rounded))
-                        .monospaced()
-                        .foregroundStyle(.accent)
-                        .contentTransition(.numericText())
-
-                    Button {
-                        Haptic.impact(.soft).generate()
-                        addCount()
-                    } label: {
-                        ZStack {
-                            Circle()
-                                .stroke(.accent, lineWidth: 10)
-                                .frame(width: 250, height: 250)
-
-                            Circle()
-                                .fill(
-                                    .accent.opacity(0.5)
-                                )
-                                .frame(width: 230, height: 230)
-
-                            VStack {
-                                if isLocked {
-                                    Image(systemName: "lock")
-                                        .resizable()
-                                        .scaledToFit()
-                                        .frame(width: 50, height: 50)
-                                        .foregroundStyle(.accent)
-                                }
-
-                                Text("Count")
-                                    .font(.system(size: 36, weight: .bold))
-                                    .foregroundStyle(.accent)
-                                    .opacity(isLocked ? 0.2 : 1)
-                            }
+        content
+            .navigationTitle("Today's Adhitthan")
+            .navigationBarTitleDisplayMode(.inline)
+            .alert("Do you want to reset beads count?", isPresented: $resetPresented) {
+                Button("Yes", role: .destructive, action: resetBeads)
+                Button("Cancel", role: .cancel, action: {})
+                    .tint(.textPrimary)
+            }
+            .alert("Today’s Adhitthan finished.", isPresented: $finishPresented) {
+                Button("Cancel", role: .cancel, action: {})
+                Button("Finished", action: saveDailyProgress)
+            }
+            .alert("", isPresented: $isPresented, actions: {}) {
+                Text(message)
+            }
+            .toolbar {
+                if !isLocked {
+                    ToolbarItem(placement: .topBarTrailing) {
+                        Button("Finished") {
+                            finishPresented.toggle()
                         }
                     }
                 }
-                .padding(.vertical, 15)
+            }
+    }
+}
 
-                Spacer()
+extension PracticeScreen {
+    private var content: some View {
+        VStack {
+            prayerInfo
+            Spacer()
+            beadButton
+            Spacer()
+            beadsCountInfo
+        }
+        .padding()
+        .background(.appBackground, ignoresSafeAreaEdges: .all)
+    }
 
-                HStack(spacing: 20) {
-                    Text("practiceScreen-total-beads-\(round.description) /\((vm.currentPrayer?.rounds ?? 0).description)")
-                        .font(.footnote)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            Capsule()
-                                .fill(.accent)
-                        )
+    @ViewBuilder
+    private var prayerInfo: some View {
+        if let prayer = journeyService.currentPrayer {
+            VStack(spacing: 24) {
+                Text(prayer.day.localized(to: userPreferences.appLanguage))
+                    .font(.title3)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.accent)
 
-                    Button {
-                        showDialog.toggle()
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                            .font(.footnote)
-                            .foregroundStyle(.white)
-                            .padding(12)
-                            .background(
-                                Circle()
-                                    .fill(.accent)
-                            )
+                Text(prayer.mantra)
+                    .font(.title)
+                    .fontWeight(.bold)
+                    .lineLimit(2)
+                    .minimumScaleFactor(0.75)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .multilineTextAlignment(.center)
+                    .foregroundStyle(.textPrimary)
+
+                Text(userPreferences.buddhaAttributes[prayer.mantra] ?? "")
+                    .font(.caption)
+                    .italic()
+                    .foregroundStyle(.accent)
+                    .multilineTextAlignment(.center)
+                    .lineLimit(3)
+                    .minimumScaleFactor(0.8)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var beadButton: some View {
+        let outerSize: CGFloat = width * 0.6
+        let innerSize: CGFloat = width * 0.6 - 20
+
+        VStack {
+            if let _ = journeyService.currentPrayer {
+                Text("\(userPreferences.count)")
+                    .font(.system(size: 40, weight: .bold, design: .rounded))
+                    .monospaced()
+                    .foregroundStyle(.accent)
+                    .contentTransition(.numericText())
+                    .environment(\.locale, Locale(identifier: "en"))
+            }
+
+            Button(action: addBead) {
+                ZStack {
+                    Circle()
+                        .stroke(.accent, lineWidth: 10)
+                        .frame(width: outerSize, height: outerSize)
+
+                    Circle()
+                        .fill(.accent.opacity(0.5))
+                        .frame(width: innerSize, height: innerSize)
+
+                    VStack {
+                        if isLocked {
+                            Image(systemName: "lock")
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 50, height: 50)
+                                .foregroundStyle(.accent)
+                        }
+
+                        Text("Count")
+                            .font(.title)
+                            .fontWeight(.bold)
+                            .foregroundStyle(.accent)
+                            .opacity(isLocked ? 0.2 : 1)
                     }
-                    .buttonStyle(.plain)
-
-                    Text("Count: \(count.description) /\(configManager.totalBeadsCount.description)")
-                        .font(.footnote)
-                        .foregroundStyle(.white)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 12)
-                        .frame(maxWidth: .infinity)
-                        .background(
-                            Capsule()
-                                .fill(.accent)
-                        )
                 }
             }
-            .padding()
-            .padding(.bottom)
+            .buttonStyle(PressableButtonStyle())
         }
-        .alert("practiceScreen-confirmDialog", isPresented: $showDialog) {
-            Button("yes", role: .destructive, action: resetCount)
-            Button("cancel", role: .cancel, action: {})
-        }
-        .alert("practiceScreen-alert", isPresented: $showComplete) {
-            Button("cancel", action: {})
-            Button("finished", action: markTodayComplete)
-        }
-        .alert("", isPresented: $showAlert, actions: {}) {
-            Text(alertMessage)
-        }
-        .navigationTitle("practiceScreen-navTitle")
-        .navigationBarTitleDisplayMode(.inline)
-        .toolbar {
-            if case .active = vm.status, !vm.todayCompleted {
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button("finished") {
-                        showComplete.toggle()
-                    }
-                }
+        .padding(.vertical, 15)
+    }
+
+    private var beadsCountInfo: some View {
+        HStack(spacing: 20) {
+            Text("Total beads: \(String(userPreferences.round)) / \(String(journeyService.currentPrayer?.rounds ?? 0))")
+                .font(.footnote)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Capsule()
+                        .fill(.accent)
+                )
+
+            Button {
+                resetPresented.toggle()
+            } label: {
+                Image(systemName: "arrow.clockwise")
+                    .font(.footnote)
+                    .foregroundStyle(.white)
+                    .padding(12)
+                    .background(
+                        Circle()
+                            .fill(.accent)
+                    )
             }
+            .buttonStyle(.plain)
+
+            Text("Count: \(String(userPreferences.count)) / \(String(userPreferences.beadsType))")
+                .font(.footnote)
+                .foregroundStyle(.white)
+                .padding(.horizontal, 10)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(
+                    Capsule()
+                        .fill(.accent)
+                )
         }
     }
 }
 
 extension PracticeScreen {
-    private func addCount() {
-        if checkStatus() {
-            showAlert.toggle()
+    private func addBead() {
+        guard isValid() else {
+            isPresented.toggle()
             return
         }
-
-        count += 1
-        if count == configManager.totalBeadsCount {
-            count = 0
-            round += 1
-        }
-
-        let prayerRound = vm.currentPrayer?.rounds ?? 0
-        if round == prayerRound {
-            markTodayComplete()
+        withAnimation {
+            userPreferences.count += 1
+            if userPreferences.count == userPreferences.beadsType {
+                userPreferences.count = 0
+                userPreferences.round += 1
+            }
+            Haptic.impact(.soft).generate()
+            if userPreferences.round == journeyService.currentPrayer?.rounds ?? 0 {
+                saveDailyProgress()
+            }
         }
     }
 
-    private func resetCount() {
-        count = 0
-        round = 0
-        Haptic.notification(.warning).generate()
-    }
-
-    private func markTodayComplete() {
+    private func saveDailyProgress() {
         Haptic.notification(.success).generate()
-        vm.markTodayComplete()
+        userPreferences.resetbeads()
+        try? journeyService.completeToday()
     }
 
-    private func checkStatus() -> Bool {
-        var result = false
+    private func resetBeads() {
+        userPreferences.resetbeads()
+    }
 
-        if vm.todayCompleted {
-            alertMessage = "practiceScreen-todayCompleted-alertMessage"
+    private func isValid() -> Bool {
+        if journeyService.isTodayCompleted {
+            message = "You have already completed today’s Adhitthan."
+            return false
+        }
+
+        switch journeyService.practiceState {
+        case .started:
+            message = ""
             return true
-        }
-
-        switch vm.status {
-        case .active:
-            result = false
-        case let .missedDay(failureDate):
-            alertMessage = "noticeCard-missedDay-title-\(failureDate.toStringWith(format: .yyyy_MMMM_d))"
-            result = true
-        case .completed:
-            alertMessage = "noticeCard-completed-message"
-            result = true
         case .notStarted:
-            alertMessage = "noticeCard-notStarted-title"
-            result = true
-        case let .notMonday(nextMonday):
-            alertMessage = "noticeCard-notMonday-message-\(nextMonday.toStringWith(format: .yyyy_MMMM_d))"
-            result = true
-        case .willStart:
-            alertMessage = "noticeCard-willStart-title"
-            result = true
+            message = "You have no active Adhitthan"
+            return false
+        case let .scheduled(startDate):
+            message = "Adhitthan will start on \(startDate.toStringWith(format: .yyyy_MMMM_d))."
+            return false
+        case let .missedDay(date):
+            message = "Missed Adhitthan on \(date.toStringWith(format: .yyyy_MMMM_d))."
+            return false
+        case .completedAll:
+            message = "You have achieved your Adhitthan."
+            return false
         }
-
-        return result
     }
 }
 
 struct PressableButtonStyle: ButtonStyle {
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
-            .scaleEffect(configuration.isPressed ? 0.95 : 1)
-            .animation(.spring(response: 0.2), value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed ? 0.9 : 1)
+            .animation(.smooth, value: configuration.isPressed)
     }
 }
 
-#Preview {
+#Preview("Started") {
     NavigationStack {
         PracticeScreen()
-            .previewEnvironment()
+            .previewEnviroments(state: .started)
+    }
+}
+
+#Preview("Completed") {
+    NavigationStack {
+        PracticeScreen()
+            .previewEnviroments(state: .completedAll)
+    }
+}
+
+#Preview("Not Started") {
+    NavigationStack {
+        PracticeScreen()
+            .previewEnviroments(state: .notStarted)
     }
 }
