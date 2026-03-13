@@ -70,9 +70,14 @@ extension AchievementScreen {
     private var badgeCard: some View {
         AchievementBadgeCard(
             totalDays: max(81, journeyService.totalDays),
-            completionDate: Date.today().toStringWith(format: .yyyy_MMMM_d)
+            completionDate: completionDateString
         )
         .shadow(color: .black.opacity(0.35), radius: 25, x: 0, y: 20)
+    }
+
+    private var completionDateString: String {
+        let date = journeyService.activeJourney?.endDate ?? Date.today()
+        return date.toStringWith(format: .yyyy_MMMM_d)
     }
 
     @ViewBuilder
@@ -253,7 +258,7 @@ extension AchievementScreen {
 
         let exportView = AchievementBadgeCard(
             totalDays: max(81, journeyService.totalDays),
-            completionDate: journeyService.activeJourney?.endDate?.toStringWith(format: .yyyy_MMMM_d) ?? Date.today().toStringWith(format: .yyyy_MMMM_d)
+            completionDate: completionDateString
         )
         .frame(width: cardWidth, height: cardHeight)
         .shadow(color: .black.opacity(0.35), radius: 25, x: 0, y: 20)
@@ -284,8 +289,8 @@ extension AchievementScreen {
 struct AchievementExport: View {
     var body: some View {
         AchievementBadgeCard(
-            totalDays: max(81, 81),
-            completionDate: Date.today().toStringWith(format: .yyyy_MMMM_d)
+            totalDays: 81,
+            completionDate: "2026 MARCH 9"
         )
         .padding()
         .background(backgroundGradient.ignoresSafeArea())
