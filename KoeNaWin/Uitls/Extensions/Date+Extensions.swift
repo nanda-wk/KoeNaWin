@@ -40,4 +40,9 @@ extension Date {
     static func today(using calendar: Calendar = .current) -> Date {
         calendar.startOfDay(for: .now)
     }
+
+    func daysSince(_ date: Date, using calendar: Calendar = .current) -> Int {
+        let components = calendar.dateComponents([.day], from: date.startOfDay(using: calendar), to: startOfDay(using: calendar))
+        return components.day ?? 0
+    }
 }

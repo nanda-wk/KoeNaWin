@@ -68,7 +68,7 @@ extension JourneyScreen {
                 get: { currentStep },
                 set: { newValue in
                     if currentStep == 1, newValue > currentStep {
-                        if selectedDate.isMonday() {
+                        if isValidStartDate(selectedDate) {
                             currentStep = newValue
                         }
                     } else {
@@ -89,7 +89,7 @@ extension JourneyScreen {
             }
             .tabViewStyle(.page(indexDisplayMode: .never))
             .highPriorityGesture(
-                currentStep == 1 && !selectedDate.isMonday() ? DragGesture() : nil
+                currentStep == 1 && !isValidStartDate(selectedDate) ? DragGesture() : nil
             )
 
             navigationButtons
@@ -97,6 +97,12 @@ extension JourneyScreen {
                 .padding(.horizontal, 24)
         }
         .background(.appBackground)
+    }
+
+    private func isValidStartDate(_ date: Date) -> Bool {
+        let isMonday = date.isMonday()
+        let daysAgo = date.daysSince(.today())
+        return isMonday && daysAgo >= -81
     }
 
     private var stepIndicator: some View {
@@ -315,10 +321,10 @@ extension JourneyScreen {
                     .foregroundStyle(.white)
                     .padding()
                     .frame(width: 140)
-                    .background((currentStep == 1 && !selectedDate.isMonday()) ? .gray : .accent)
+                    .background((currentStep == 1 && !isValidStartDate(selectedDate)) ? .gray : .accent)
                     .cornerRadius(26)
             }
-            .disabled(currentStep == 1 && !selectedDate.isMonday())
+            .disabled(currentStep == 1 && !isValidStartDate(selectedDate))
             .buttonStyle(.plain)
         }
     }
@@ -332,11 +338,14 @@ extension JourneyScreen {
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button("Done") {
-                            if selectedDate.isMonday() {
-                                showDatePickerSheet = false
-                            } else {
+                            if !selectedDate.isMonday() {
                                 alertMessage = "Please select a Monday to start your commitment."
                                 showAlert = true
+                            } else if selectedDate.daysSince(.today()) < -81 {
+                                alertMessage = "The start date cannot be more than 81 days in the past."
+                                showAlert = true
+                            } else {
+                                showDatePickerSheet = false
                             }
                         }
                         .tint(.accent)

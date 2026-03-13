@@ -280,7 +280,13 @@ extension SettingsScreen {
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Button("Done") {
-                        if selectedDate.isMonday() {
+                        if !selectedDate.isMonday() {
+                            alertMessage = "Please select a Monday to start your commitment."
+                            showAlert = true
+                        } else if selectedDate.daysSince(.today()) < -81 {
+                            alertMessage = "The start date cannot be more than 81 days in the past."
+                            showAlert = true
+                        } else {
                             do {
                                 try journeyService.startNewJourney(startDate: selectedDate)
                                 userPreferences.resetbeads()
@@ -289,9 +295,6 @@ extension SettingsScreen {
                                 self.error = .failedToSave
                                 print(error.localizedDescription)
                             }
-                        } else {
-                            alertMessage = "Please select a Monday to start your commitment."
-                            showAlert = true
                         }
                     }
                     .tint(.accent)

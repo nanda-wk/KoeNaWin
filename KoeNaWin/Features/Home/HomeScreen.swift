@@ -237,11 +237,6 @@ extension HomeScreen {
                 router.presentSheet(.achievement)
             }
         #endif
-        if journeyService.practiceState == .completedAll, !shownAchievement {
-            Button("", systemImage: "star.hexagon") {
-                router.presentSheet(.achievement)
-            }
-        }
     }
 }
 
@@ -253,6 +248,11 @@ extension HomeScreen {
 #Preview("Scheduled") {
     HomeScreen()
         .previewEnviroments(state: .scheduled(startDate: .now))
+}
+
+#Preview("Started") {
+    HomeScreen()
+        .previewEnviroments(state: .started)
 }
 
 #Preview("Missed Day") {

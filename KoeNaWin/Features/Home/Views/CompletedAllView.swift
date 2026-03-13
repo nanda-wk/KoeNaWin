@@ -34,4 +34,5 @@ struct CompletedAllView: View {
 
 #Preview {
     CompletedAllView()
+        .previewEnviroments()
 }
