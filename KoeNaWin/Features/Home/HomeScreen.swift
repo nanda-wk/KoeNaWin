@@ -22,7 +22,7 @@ struct HomeScreen: View {
             .navigationTitle("KoeNaWin")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                achievement
+//                achievement
             }
             .onAppear {
                 if journeyService.practiceState == .completedAll, !shownAchievement {
@@ -77,18 +77,18 @@ extension HomeScreen {
     }
 
     private var congratulation: some View {
-        Button {
-            router.presentSheet(.achievement)
-        } label: {
-            Text("You did it, Well Done!")
-                .font(.headline)
-                .foregroundStyle(.accent)
-                .frame(maxWidth: .infinity, alignment: .center)
-                .padding()
-                .listSectionBackground
-                .contentShape(.rect)
-        }
-        .buttonStyle(.plain)
+//        Button {
+//            router.presentSheet(.achievement)
+//        } label: {
+        Text("You did it, Well Done!")
+            .font(.headline)
+            .foregroundStyle(.accent)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding()
+            .listSectionBackground
+            .contentShape(.rect)
+//        }
+//        .buttonStyle(.plain)
     }
 
     @ViewBuilder
