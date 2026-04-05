@@ -472,4 +472,13 @@ final class JourneyService: ObservableObject {
             isTodayCompleted = true
         }
     }
+
+    func isCompletedStage(_ stage: KoeNaWinStage, _ day: Int) -> Bool {
+        if stage.stage < self.stage {
+            return true
+        } else if day <= self.day {
+            return true
+        }
+        return false
+    }
 }

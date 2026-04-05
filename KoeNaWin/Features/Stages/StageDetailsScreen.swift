@@ -52,8 +52,7 @@ extension StageDetailsScreen {
     private var daysInStage: some View {
         VStack(spacing: 12) {
             ForEach(Array(stage.prayers.enumerated()), id: \.element.id) { day, prayer in
-                let completed = journeyService.stage >= stage.stage && journeyService.day >= day + 1
-                ListCell(prayer: prayer, completed: completed)
+                ListCell(prayer: prayer, completed: journeyService.isCompletedStage(stage, day + 1))
             }
         }
     }
