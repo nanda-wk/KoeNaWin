@@ -1,0 +1,392 @@
+{
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/.claude/settings.json": {
+    "mtime": 1781804271.8632712,
+    "ast_hash": "e1073342e958ac9f00716938c8f165e3",
+    "semantic_hash": "e1073342e958ac9f00716938c8f165e3"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Components/CircularProgressView.swift": {
+    "mtime": 1781804103.8982375,
+    "ast_hash": "2f5903581842ce96a2c0492e5a5c50ac",
+    "semantic_hash": "2f5903581842ce96a2c0492e5a5c50ac"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Components/CustomProgressViewStyle.swift": {
+    "mtime": 1781804103.8983467,
+    "ast_hash": "b7ff48296aaf906a92173907f49f4d36",
+    "semantic_hash": "b7ff48296aaf906a92173907f49f4d36"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Components/LanguagePicker.swift": {
+    "mtime": 1781804103.8984478,
+    "ast_hash": "4d1a5331a033dfc9faf338d53787dd84",
+    "semantic_hash": "4d1a5331a033dfc9faf338d53787dd84"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Components/WebView.swift": {
+    "mtime": 1781804103.8985417,
+    "ast_hash": "17c700c472fd78952c0f0281552454b6",
+    "semantic_hash": "17c700c472fd78952c0f0281552454b6"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/CoreData/Commitment.swift": {
+    "mtime": 1781804103.898716,
+    "ast_hash": "d6aac7590f0d7bb49122ab0bc1ec82af",
+    "semantic_hash": "d6aac7590f0d7bb49122ab0bc1ec82af"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/CoreData/CoreDataStack.swift": {
+    "mtime": 1781804103.8988078,
+    "ast_hash": "9ae431d68df4ff31c6ed1bf4430d193b",
+    "semantic_hash": "9ae431d68df4ff31c6ed1bf4430d193b"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/CoreData/DailyProgress.swift": {
+    "mtime": 1781804103.8988924,
+    "ast_hash": "eec7a23e487a549a764521b7a4377eaa",
+    "semantic_hash": "eec7a23e487a549a764521b7a4377eaa"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/CoreData/Journey.swift": {
+    "mtime": 1781804103.898992,
+    "ast_hash": "735c312657ed0145e830b44e699466b0",
+    "semantic_hash": "735c312657ed0145e830b44e699466b0"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/CoreData/UserProgress.swift": {
+    "mtime": 1781804103.8992844,
+    "ast_hash": "8d4704ad4fa7cfff31ef599af18c9ce4",
+    "semantic_hash": "8d4704ad4fa7cfff31ef599af18c9ce4"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Achievement/AchievementScreen.swift": {
+    "mtime": 1781804103.899586,
+    "ast_hash": "74f2bcd1b3151c993fb897bc54f672a4",
+    "semantic_hash": "74f2bcd1b3151c993fb897bc54f672a4"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Home/HomeScreen.swift": {
+    "mtime": 1781804103.899869,
+    "ast_hash": "6c6c73d34f5ebd0cffe658c103035e8c",
+    "semantic_hash": "6c6c73d34f5ebd0cffe658c103035e8c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Home/Views/MissedDayView.swift": {
+    "mtime": 1781804103.9000335,
+    "ast_hash": "0caaa8cd5f3ae334956934320d446230",
+    "semantic_hash": "0caaa8cd5f3ae334956934320d446230"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Home/Views/NotStartedView.swift": {
+    "mtime": 1781804103.900138,
+    "ast_hash": "cfab1ba3938df5ce80b6136f2a148ae6",
+    "semantic_hash": "cfab1ba3938df5ce80b6136f2a148ae6"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Home/Views/ScheduledView.swift": {
+    "mtime": 1781804103.900235,
+    "ast_hash": "c721db43cb4078ae6aa0165fe20e2e6f",
+    "semantic_hash": "c721db43cb4078ae6aa0165fe20e2e6f"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Journey/JourneyScreen.swift": {
+    "mtime": 1781804103.9004898,
+    "ast_hash": "d2f4f2226804ad2a3dbe3eb8488c7c52",
+    "semantic_hash": "d2f4f2226804ad2a3dbe3eb8488c7c52"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Launch/LaunchScreen.swift": {
+    "mtime": 1781804103.9006643,
+    "ast_hash": "20c582b0740a0efbe12103b02b711b5b",
+    "semantic_hash": "20c582b0740a0efbe12103b02b711b5b"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Practice/PracticeScreen.swift": {
+    "mtime": 1781804103.9009116,
+    "ast_hash": "af7594d2ff69e0ac5eea2cf5590b5fdc",
+    "semantic_hash": "af7594d2ff69e0ac5eea2cf5590b5fdc"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Settings/SettingsScreen.swift": {
+    "mtime": 1781804103.9011517,
+    "ast_hash": "a7b8e3aead3a8977cf8cee80cda26be1",
+    "semantic_hash": "a7b8e3aead3a8977cf8cee80cda26be1"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Stages/StageDetailsScreen.swift": {
+    "mtime": 1781804103.9013302,
+    "ast_hash": "8fb39254c44770dd7e7f7d62cf240a0d",
+    "semantic_hash": "8fb39254c44770dd7e7f7d62cf240a0d"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Stages/StagesScreen.swift": {
+    "mtime": 1781804103.9014385,
+    "ast_hash": "728082f4590ecd1e1bc7c57012bba7be",
+    "semantic_hash": "728082f4590ecd1e1bc7c57012bba7be"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Features/Tab/TabScreen.swift": {
+    "mtime": 1781804103.9016,
+    "ast_hash": "3f8a315f83fd31cd9aee3cab879cc078",
+    "semantic_hash": "3f8a315f83fd31cd9aee3cab879cc078"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/KoeNaWinApp.swift": {
+    "mtime": 1781804103.9017003,
+    "ast_hash": "a9e59c07421739d1cfe134a920ee8421",
+    "semantic_hash": "a9e59c07421739d1cfe134a920ee8421"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Models/AppLanguage.swift": {
+    "mtime": 1781804103.901869,
+    "ast_hash": "c9bbd754ac9586cd9b80e68b34230d34",
+    "semantic_hash": "c9bbd754ac9586cd9b80e68b34230d34"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Models/AppTheme.swift": {
+    "mtime": 1781804103.9019814,
+    "ast_hash": "9455570c8e1d2b8427f5198d76eefae0",
+    "semantic_hash": "9455570c8e1d2b8427f5198d76eefae0"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Models/Day.swift": {
+    "mtime": 1781804103.902097,
+    "ast_hash": "f2742c9b525c0e43b321fc16964d9af2",
+    "semantic_hash": "f2742c9b525c0e43b321fc16964d9af2"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Models/KoeNaWinStage.swift": {
+    "mtime": 1781804103.9021974,
+    "ast_hash": "68addde23584c83fbc0d61449bcd5157",
+    "semantic_hash": "68addde23584c83fbc0d61449bcd5157"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Models/Prayer.swift": {
+    "mtime": 1781804103.90229,
+    "ast_hash": "bf936d977abd4453bcd0c42881514e3f",
+    "semantic_hash": "bf936d977abd4453bcd0c42881514e3f"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/AccentColor.colorset/Contents.json": {
+    "mtime": 1781804103.9025655,
+    "ast_hash": "3195bdc7f433703e49442847e47017c9",
+    "semantic_hash": "3195bdc7f433703e49442847e47017c9"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/AppIcon.appiconset/Contents.json": {
+    "mtime": 1781804103.90272,
+    "ast_hash": "1e7d9f62ead0713d0b35b83aec06be9e",
+    "semantic_hash": "1e7d9f62ead0713d0b35b83aec06be9e"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/Contents.json": {
+    "mtime": 1781804103.9178813,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/Contents.json": {
+    "mtime": 1781804103.918022,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/appBackground.colorset/Contents.json": {
+    "mtime": 1781804103.9181612,
+    "ast_hash": "bca5cc7abc777760952f698d75b50ee0",
+    "semantic_hash": "bca5cc7abc777760952f698d75b50ee0"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/appContent.colorset/Contents.json": {
+    "mtime": 1781804103.9182804,
+    "ast_hash": "4d8fec01d462f3dcceb929db64b01b40",
+    "semantic_hash": "4d8fec01d462f3dcceb929db64b01b40"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/appDivider.colorset/Contents.json": {
+    "mtime": 1781804103.918386,
+    "ast_hash": "a9a1bfb84f93b148f04e678571fd2ec6",
+    "semantic_hash": "a9a1bfb84f93b148f04e678571fd2ec6"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/textPrimary.colorset/Contents.json": {
+    "mtime": 1781804103.918499,
+    "ast_hash": "b3c640e80b019e190b10c6484c6e78d1",
+    "semantic_hash": "b3c640e80b019e190b10c6484c6e78d1"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/colors/textSecondary.colorset/Contents.json": {
+    "mtime": 1781804103.918661,
+    "ast_hash": "62bee5649f0fdeac6e157650c4839b9d",
+    "semantic_hash": "62bee5649f0fdeac6e157650c4839b9d"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/english.imageset/Contents.json": {
+    "mtime": 1781804103.918791,
+    "ast_hash": "15727ba964601372986e09da2943a27c",
+    "semantic_hash": "15727ba964601372986e09da2943a27c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/logo.imageset/Contents.json": {
+    "mtime": 1781804103.9193707,
+    "ast_hash": "173b60e0b601881cab5536145a0cb81b",
+    "semantic_hash": "173b60e0b601881cab5536145a0cb81b"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/myanmar.imageset/Contents.json": {
+    "mtime": 1781804103.932286,
+    "ast_hash": "2038f062dd87a8ed4f9f9e6667ff3226",
+    "semantic_hash": "2038f062dd87a8ed4f9f9e6667ff3226"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/KoeNaWin.json": {
+    "mtime": 1781804103.9326563,
+    "ast_hash": "224c741b23807b76a370baf65e3975ce",
+    "semantic_hash": "224c741b23807b76a370baf65e3975ce"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Preview Content/Preview Assets.xcassets/Contents.json": {
+    "mtime": 1781804103.9329224,
+    "ast_hash": "9deb2ada1cc834bbebf8bbad9c8978a1",
+    "semantic_hash": "9deb2ada1cc834bbebf8bbad9c8978a1"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Router/Router.swift": {
+    "mtime": 1781804103.9330258,
+    "ast_hash": "72b291bfb2c414876a419803984a2b0e",
+    "semantic_hash": "72b291bfb2c414876a419803984a2b0e"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Router/RouterDestination.swift": {
+    "mtime": 1781804103.9330897,
+    "ast_hash": "72af1eae7b961d54541265d4d3fd1adc",
+    "semantic_hash": "72af1eae7b961d54541265d4d3fd1adc"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Router/RouterSheet.swift": {
+    "mtime": 1781804103.9331527,
+    "ast_hash": "377b1ef4fbd9567d581fca470351d057",
+    "semantic_hash": "377b1ef4fbd9567d581fca470351d057"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Services/JourneyService.swift": {
+    "mtime": 1781804103.9332948,
+    "ast_hash": "cbb39679b0e05d6b89a01ea6050f1cd7",
+    "semantic_hash": "cbb39679b0e05d6b89a01ea6050f1cd7"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Services/KoeNaWinStore.swift": {
+    "mtime": 1781804103.933362,
+    "ast_hash": "8a662f6c607edf39789f514d48032968",
+    "semantic_hash": "8a662f6c607edf39789f514d48032968"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Services/NotificationService.swift": {
+    "mtime": 1781804103.9334269,
+    "ast_hash": "2437809296b8bf860905827db950cc4d",
+    "semantic_hash": "2437809296b8bf860905827db950cc4d"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Services/UserPreferences.swift": {
+    "mtime": 1781804103.9335024,
+    "ast_hash": "1919069e4e0ffdcc38620da64d528363",
+    "semantic_hash": "1919069e4e0ffdcc38620da64d528363"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Constants.swift": {
+    "mtime": 1781804103.9336083,
+    "ast_hash": "f468f81b31007ee08c35d09a93ea1880",
+    "semantic_hash": "f468f81b31007ee08c35d09a93ea1880"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Extensions/Bundle+Extensions.swift": {
+    "mtime": 1781804103.9337146,
+    "ast_hash": "8e2ee55e20af8c1574cf6677c7908239",
+    "semantic_hash": "8e2ee55e20af8c1574cf6677c7908239"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Extensions/Common+Extensions.swift": {
+    "mtime": 1781804103.933778,
+    "ast_hash": "cf1884a7b245e160c2cbe5db31a64291",
+    "semantic_hash": "cf1884a7b245e160c2cbe5db31a64291"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Extensions/Date+Extensions.swift": {
+    "mtime": 1781804103.933844,
+    "ast_hash": "f256947eec849b70121b88a75d2014df",
+    "semantic_hash": "f256947eec849b70121b88a75d2014df"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Extensions/String+Extensions.swift": {
+    "mtime": 1781804103.9339058,
+    "ast_hash": "8a6a3b2c3a38704ca27662ea83ddc847",
+    "semantic_hash": "8a6a3b2c3a38704ca27662ea83ddc847"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Extensions/View+Extensions.swift": {
+    "mtime": 1781804103.9339676,
+    "ast_hash": "e7cf1c0c370545b21eadfccf3767dd7c",
+    "semantic_hash": "e7cf1c0c370545b21eadfccf3767dd7c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Uitls/Haptic.swift": {
+    "mtime": 1781804103.9340374,
+    "ast_hash": "6985789d795dc915291f8bf70f05635b",
+    "semantic_hash": "6985789d795dc915291f8bf70f05635b"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWinTests/KoeNaWinTests.swift": {
+    "mtime": 1781804103.934153,
+    "ast_hash": "244615712ba6ad2b30f62785d48783b6",
+    "semantic_hash": "244615712ba6ad2b30f62785d48783b6"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWinUITests/KoeNaWinUITests.swift": {
+    "mtime": 1781804103.9342623,
+    "ast_hash": "664cec80011c56933c2e2159e6efdeb9",
+    "semantic_hash": "664cec80011c56933c2e2159e6efdeb9"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWinUITests/KoeNaWinUITestsLaunchTests.swift": {
+    "mtime": 1781804103.9343266,
+    "ast_hash": "f91ce9ffd8be450385660e5ee21932c5",
+    "semantic_hash": "f91ce9ffd8be450385660e5ee21932c5"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/buildServer.json": {
+    "mtime": 1781804103.9345345,
+    "ast_hash": "43d6fa6a470d6f07acd1f72aa3c59194",
+    "semantic_hash": "43d6fa6a470d6f07acd1f72aa3c59194"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/CLAUDE.md": {
+    "mtime": 1781804271.862999,
+    "ast_hash": "82efb97a359f5c7290bf2513d14686be",
+    "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/README.md": {
+    "mtime": 1781804103.9344685,
+    "ast_hash": "ab000210f32dec858d744451f8560ff5",
+    "semantic_hash": "ab000210f32dec858d744451f8560ff5"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/AppIcon.appiconset/KoeNaWin_Second_Logo 1.png": {
+    "mtime": 1781804103.9082801,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/AppIcon.appiconset/KoeNaWin_Second_Logo 2.png": {
+    "mtime": 1781804103.9130325,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/AppIcon.appiconset/KoeNaWin_Second_Logo.png": {
+    "mtime": 1781804103.9176292,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/english.imageset/united-states-2 1.png": {
+    "mtime": 1781804103.9189348,
+    "ast_hash": "218f936fc192343d0485baaa35fe5e18",
+    "semantic_hash": "218f936fc192343d0485baaa35fe5e18"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/english.imageset/united-states-2 2.png": {
+    "mtime": 1781804103.9191194,
+    "ast_hash": "218f936fc192343d0485baaa35fe5e18",
+    "semantic_hash": "218f936fc192343d0485baaa35fe5e18"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/english.imageset/united-states-2.png": {
+    "mtime": 1781804103.9192433,
+    "ast_hash": "218f936fc192343d0485baaa35fe5e18",
+    "semantic_hash": "218f936fc192343d0485baaa35fe5e18"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/logo.imageset/KoeNaWin_Second_Logo 1.png": {
+    "mtime": 1781804103.9235616,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/logo.imageset/KoeNaWin_Second_Logo 2.png": {
+    "mtime": 1781804103.9275928,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/logo.imageset/KoeNaWin_Second_Logo.png": {
+    "mtime": 1781804103.9321098,
+    "ast_hash": "17d3898f7de416abdf6045ebfadcc336",
+    "semantic_hash": "17d3898f7de416abdf6045ebfadcc336"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/myanmar.imageset/myanmar-2 1.png": {
+    "mtime": 1781804103.9323838,
+    "ast_hash": "77b713779cb3cb332e58d9666663d95c",
+    "semantic_hash": "77b713779cb3cb332e58d9666663d95c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/myanmar.imageset/myanmar-2 2.png": {
+    "mtime": 1781804103.9324725,
+    "ast_hash": "77b713779cb3cb332e58d9666663d95c",
+    "semantic_hash": "77b713779cb3cb332e58d9666663d95c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/KoeNaWin/Resources/Assets.xcassets/myanmar.imageset/myanmar-2.png": {
+    "mtime": 1781804103.93256,
+    "ast_hash": "77b713779cb3cb332e58d9666663d95c",
+    "semantic_hash": "77b713779cb3cb332e58d9666663d95c"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/images/image1.png": {
+    "mtime": 1781804103.9359138,
+    "ast_hash": "de2935204fe278ebb22ebe18b81b27b3",
+    "semantic_hash": "de2935204fe278ebb22ebe18b81b27b3"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/images/image2.png": {
+    "mtime": 1781804103.9371238,
+    "ast_hash": "931df0dcfefe74b8ceddad8e75a50262",
+    "semantic_hash": "931df0dcfefe74b8ceddad8e75a50262"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/images/image3.png": {
+    "mtime": 1781804103.9389732,
+    "ast_hash": "66a92c29548df07d981a30c732068799",
+    "semantic_hash": "66a92c29548df07d981a30c732068799"
+  },
+  "/Users/nanda/workspace/xcode_projects/KoeNaWin/images/image4.png": {
+    "mtime": 1781804103.9414027,
+    "ast_hash": "1f6b5886de416610e385d654d3fa4e14",
+    "semantic_hash": "1f6b5886de416610e385d654d3fa4e14"
+  }
+}
